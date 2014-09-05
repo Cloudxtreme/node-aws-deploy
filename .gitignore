@@ -1,0 +1,8 @@
+.DS_Store
+.metadata
+.elasticbeanstalk
+.idea
+*.iml
+node_modules
+npm-debug.log
+config/local*.json

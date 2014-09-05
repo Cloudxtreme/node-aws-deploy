@@ -1,0 +1,14 @@
+{
+    "name": "node-aws-deploy",
+    "version": "0.0.1",
+    "private": true,
+
+    "dependencies": {
+        "aws-sdk": "== 2.0.15",
+        "jszip": "== 2.4.0",
+        "express": "== 4.8.8",
+        "config": "== 1.1.0",
+        "debug": "== 2.0.0",
+        "lodash": "== 2.4.1"
+    }
+}
