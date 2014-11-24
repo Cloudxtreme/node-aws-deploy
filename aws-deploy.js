@@ -3,6 +3,8 @@ var api = require('./server/api');
 var express = require('express');
 var bodyParser = require('body-parser');
 
+require('./aws-deploy/schemas');
+
 var DeployService = Service.extend({
     initialize: function () {
         this.__super__().initialize();
