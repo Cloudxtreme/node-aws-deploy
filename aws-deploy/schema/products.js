@@ -3,7 +3,7 @@ var filters = require('../filters');
 var db = require('../../server/db');
 var async = require('async');
 
-schema.on('create', 'products',
+schema.on('create', '/products',
     filters.authCheck,
 function createProduct(data, callback, info) {
     data.product_creator = info.session.user_id;
@@ -18,7 +18,7 @@ function createProduct(data, callback, info) {
     });
 });
 
-schema.on('read', 'products',
+schema.on('read', '/products',
     filters.authCheck,
 function getProducts(callback) {
     db.query("SELECT * FROM awd_products ORDER BY product_name", function (err, rows) {
@@ -26,7 +26,7 @@ function getProducts(callback) {
     });
 });
 
-schema.on('update', 'products/:product_id',
+schema.on('update', '/products/:product_id',
     filters.authCheck, filters.productWriteCheck,
 function updateProduct(product_id, data, callback, info) {
     async.series([
@@ -50,7 +50,7 @@ function updateProduct(product_id, data, callback, info) {
     ], callback);
 });
 
-schema.on('destroy', 'products/:product_id',
+schema.on('destroy', '/products/:product_id',
     filters.authCheck, filters.productWriteCheck,
 function destroyProduct(product_id, callback) {
     db.query("DELETE FROM awd_products WHERE product_id = ? LIMIT 1", [product_id], callback);

@@ -80,8 +80,7 @@ schema.on('emit', '/session', function (method, data, callback, info) {
     }
 });
 
-schema.on('create', 'user',
-userStringFilter,
+schema.on('create', '/user',
 function (data, callback, info) {
     if (!config.users.register) {
         callback(new SchemaError("User registration is disabled"));
