@@ -55,7 +55,7 @@ _.assign(Handler.prototype, {
         var params = [];
 
         while (!_.isUndefined(pattern)) {
-            var match = /^\:([^\/])+?(? :\/(.*))?$/.exec(pattern);
+            var match = /^\:([^\/])+?(?:\/(.*))?$/.exec(pattern);
             pattern = match[2];
             params.push(match[1]);
             output += "([^\/]+)?";
