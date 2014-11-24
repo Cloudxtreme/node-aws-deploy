@@ -1,2 +1,33 @@
 {
+    "db": {
+        "type": "mysql",
+
+        "mysql": {
+            "host": "localhost",
+            "user": "aws-deploy",
+            "password": "aws-deploy",
+            "database": "aws-deploy",
+            "charset": "utf8",
+            "limit": 10,
+            "debug": false
+        }
+    },
+
+    "session": {
+        "secret": "SECRET",
+        "store": "memory",
+
+        "redis": {
+        }
+    },
+
+    "endpoints": {
+        "http": {
+            "listen": "0.0.0.0:4040"
+        }
+    },
+
+    "users": {
+        "register": false
+    }
 }

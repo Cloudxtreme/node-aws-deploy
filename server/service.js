@@ -3,6 +3,8 @@ var EventEmitter = require('events').EventEmitter;
 var _ = require('lodash');
 var express = require('express');
 var debug = require('debug')('aws-deploy:service');
+var config = require('config');
+var assert = require('assert');
 
 function Service() {
     this.initialize.apply(this, arguments);
@@ -43,23 +45,46 @@ _.assign(Service, {
 
 _.assign(Service.prototype, {
     initialize: function () {
+        var app = this.app = express();
+
+        this.on('listening', function (server) {
+            debug("listening on %s:%d", server.address().address, server.address().port);
+            server.on('close', function () {
+                debug("server closed");
+            });
+        });
     },
 
     start: function () {
-        var app = this.app = express();
+        var server;
 
-        app.get('/', function (req, res) {
-            res.send('hello world');
-        });
+        var hostPort = /(?:([^:]+):)?([0-9]+)/.exec(config.endpoints.http.listen);
+        assert(hostPort, "Invalid HTTP endpoint listen address");
 
-        app.listen(8080, function () {
-            console.log(app);
+        var args = [Number(hostPort[2])];
 
-            debug('now listening on port ' + app.address);
-        });
+        if (!_.isUndefined(hostPort[1])) {
+            args.push(hostPort[1]);
+        }
+
+        args.push(function () {
+            this.emit('listening', server);
+        }.bind(this));
+
+        server = this.server = this.app.listen.apply(this.app, args);
     },
 
     stop: function () {
+        if (!this.server) {
+            return;
+        }
+
+        this.server.close();
+        delete this.server;
+    },
+
+    __super__: function () {
+        return this.constructor.__super__;
     }
 });
 
