@@ -16,18 +16,18 @@ schema.on('read', '/session', function (callback, info) {
 });
 
 schema.on('destroy', '/session',
-    filters.authCheck,
-    function destroySession(callback, info) {
-        var session = info.session;
+filters.authCheck,
+function destroySession(callback, info) {
+    var session = info.session;
 
-        delete session.user_id;
-        session.save(function () {
-            callback(null, {
-                session_id: session.id,
-                user_id: 0
-            });
+    delete session.user_id;
+    session.save(function () {
+        callback(null, {
+            session_id: session.id,
+            user_id: 0
         });
     });
+});
 
 schema.on('emit', '/session', function (method, data, callback, info) {
     var session = info.session;
