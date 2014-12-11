@@ -95,8 +95,10 @@ _.assign(Application.prototype, {
     compile: function (callback) {
         var options = this.options;
 
+        var cwd = process.cwd();
+
         _.each(options.js, function (scripts, name) {
-            var matches = this.match(options.root, scripts);
+            var matches = this.match(options.root, scripts, cwd);
             this.build(this.js, name, matches, {
                 type: 'text/javascript',
                 root: 'js/'
@@ -104,7 +106,7 @@ _.assign(Application.prototype, {
         }, this);
 
         _.each(options.templates, function (templates, name) {
-            var matches = this.match(options.root, templates);
+            var matches = this.match(options.root, templates, cwd);
             this.build(this.templates, name, matches, {
                 type: 'text/javascript',
                 root: 'templates/',
@@ -129,7 +131,7 @@ _.assign(Application.prototype, {
         }, this);
 
         _.each(options.css, function (css, name) {
-            var matches = this.match(options.root, css);
+            var matches = this.match(options.root, css, cwd);
             this.build(this.css, name, matches, {
                 type: 'text/css',
                 root: 'css/'
@@ -243,7 +245,7 @@ _.assign(Application.prototype, {
         }.bind(this));
     },
 
-    match: function (root, patterns) {
+    match: function (root, patterns, cwd) {
         var files = [];
 
         _.each(patterns, function (pattern) {
@@ -254,6 +256,12 @@ _.assign(Application.prototype, {
 
             var searchPath = path.join(root, pattern);
             var matches = glob.sync(searchPath);
+
+            if (cwd) {
+                matches = matches.map(function (match) {
+                    return path.relative(cwd, match);
+                });
+            }
 
             files.push({files: matches});
         });

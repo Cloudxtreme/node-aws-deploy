@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var debug = require('debug')('aws-deploy:mysql');
 var config = require('config');
 var _ = require('lodash');
-var db = require('../db');
+var DbError = require('../db').DbError;
 
 var pool = mysql.createPool({
     host: config.db.mysql.host,
@@ -33,7 +33,7 @@ var pool = mysql.createPool({
 });
 
 exports.query = function (query, params, callback, context) {
-    if (_.isFunction(callback)) {
+    if (!_.isFunction(callback)) {
         context = callback;
         callback = params;
         params = undefined;
@@ -42,6 +42,7 @@ exports.query = function (query, params, callback, context) {
     pool.query(query, params, function (err, rows, fields) {
         if (err) {
             callback(new DbError(err));
+            return;
         }
 
         if (callback) {
@@ -51,7 +52,7 @@ exports.query = function (query, params, callback, context) {
 };
 
 exports.querySingle = function (query, params, callback, context) {
-    if (_.isFunction(callback)) {
+    if (!_.isFunction(callback)) {
         context = callback;
         callback = params;
         params = undefined;
@@ -59,12 +60,12 @@ exports.querySingle = function (query, params, callback, context) {
 
     exports.query(query, params, function (err, rows) {
         if (err || !_.isArray(rows)) {
-            callback(new DbError(err || "Response not in row format"));
+            callback(err || new DbError("Response not in row format"));
             return;
         }
 
         if (callback) {
             callback.apply(context, [null, rows[0]]);
         }
-    });
+    }, context);
 };

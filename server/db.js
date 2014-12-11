@@ -6,9 +6,10 @@ function DbError(err) {
     Error.captureStackTrace(this, arguments.callee);
 
     this.name = this.constructor.name;
-    this.message = message;
+    this.message = err;
 }
 require('util').inherits(DbError, Error);
+exports.DbError = DbError;
 
 switch (config.db.type) {
     case 'mysql': {
