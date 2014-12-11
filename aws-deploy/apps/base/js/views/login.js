@@ -2,7 +2,7 @@ LoginView = AwsDeploy.View.extend({
     initialize: function () {
         this.template = Templates.get("common/login");
 
-        this.listenTo(this.model, 'signin', this.close);
+        this.listenTo(this.model, 'signin:authorized', this.close);
     },
 
     events: {
@@ -17,9 +17,13 @@ LoginView = AwsDeploy.View.extend({
     login: function (event) {
         event.preventDefault();
 
+        this.$el.find("#login_failed").addClass("hidden");
+
         var user_email = this.$el.find("#user_email").val();
         var user_pass = this.$el.find("#user_pass").val();
 
-        this.model.login(user_email, user_pass);
+        this.model.login(user_email, user_pass, _.bind(function (err) {
+            this.$el.find("#login_failed").toggleClass("hidden", !err);
+        }, this));
     }
 });

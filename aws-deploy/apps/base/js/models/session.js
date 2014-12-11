@@ -10,17 +10,31 @@ SessionModel = AwsDeploy.Model.extend({
         return this.isReady() && (this.get("user_id") > 0);
     },
 
-    login: function (user_email, user_pass) {
+    initialize: function () {
+        this.listenTo(this, 'change', this.onChange);
+        this.fetch();
+    },
+
+    login: function (user_email, user_pass, callback) {
         this.emit('login', {
             user_email: user_email,
             user_pass: user_pass
         }, {
-            success: function (model, response) {
-                console.log("SUCCESS", arguments);
-            },
-            error: function (model, response) {
-                console.log("ERROR", arguments);
-            }
+            success: _.bind(function (model, response) {
+                callback && callback(null);
+                this.trigger('signin signin:authorized');
+            }, this),
+            error: _.bind(function (model, response) {
+                callback && callback("login failed");
+            }, this)
         });
+    },
+
+    onChange: function () {
+        if (this.get("user_id") > 0) {
+            this.trigger("signin signin:authorized");
+        } else {
+            this.trigger("signin signin:unauthorized");
+        }
     }
 });
