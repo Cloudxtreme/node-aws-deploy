@@ -5,6 +5,7 @@ var filters = require('../filters');
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 var config = require('config');
+var async = require('async');
 
 schema.on('read', '/session', function (callback, info) {
     var session = info.session;
@@ -59,6 +60,11 @@ schema.on('emit', '/session', function (method, data, callback, info) {
                     });
                 }
             ], function loginUser(err, user_id) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
                 var session = info.session;
                 session.reload(function (err) {
                     session.user_id = user_id;
@@ -70,8 +76,6 @@ schema.on('emit', '/session', function (method, data, callback, info) {
                     })
                 })
             });
-
-            callback(new SchemaError("Login not implemented"));
         } break;
 
         default: {

@@ -1,6 +1,10 @@
 var MainApp = Backbone.Router.extend({
     initialize: function () {
-        this.navbar = new NavBarView();
+        this.session = new SessionModel();
+
+        this.navbar = new NavBarView({
+            model: this.session
+        });
         $('#header').html(this.navbar.render().el);
     },
 
