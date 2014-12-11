@@ -43,7 +43,7 @@ exports.errorHandler = function (err, req, res, next) {
         } break;
 
         case db.DbError: {
-            res.status(550).set({
+            res.status(403).set({
                 "Content-Type": "application/json"
             }).send({
                 message: err.message
@@ -51,7 +51,7 @@ exports.errorHandler = function (err, req, res, next) {
         } break;
 
         case schema.SchemaError: {
-            res.status(550).set({
+            res.status(403).set({
                 "Content-Type": "application/json"
             }).send({
                 message: err.message
@@ -67,11 +67,11 @@ exports.errorHandler = function (err, req, res, next) {
 };
 
 exports.login = function (req, res, next) {
-    next(new ApiError(404, "login not implemented"));
+    next(new ApiError(404, "Login Not Implemented"));
 };
 
 exports.token = function (req, res, next) {
-    next(new ApiError(550, "Token Not Available"));
+    next(new ApiError(403, "Token Not Available"));
 };
 
 exports.request = function (req, res, next) {
@@ -139,7 +139,7 @@ exports.update = function (req, res, next) {
     };
 
     if (!req.body || !_.isObject(req.body)) {
-        next(new ApiError(550, "Access Denied"));
+        next(new ApiError(403, "Access Denied"));
         return;
     }
 
@@ -171,7 +171,7 @@ exports.create = function (req, res, next) {
     };
 
     if (!req.body || !_.isObject(req.body)) {
-        next(new ApiError(550, "Access Denied"));
+        next(new ApiError(403, "Forbidden"));
         return;
     }
 
@@ -230,7 +230,7 @@ exports.emit = function (req, res, next) {
     };
 
     if (!req.body || !_.isObject(req.body)) {
-        next(new ApiError(550, "Access Denied"));
+        next(new ApiError(403, "Forbidden"));
         return;
     }
 
@@ -238,7 +238,7 @@ exports.emit = function (req, res, next) {
     var data = req.body.data;
 
     if (!_.isString(method) || !_.isObject(data)) {
-        next(new ApiError(550, "Access Denied"));
+        next(new ApiError(403, "Forbidden"));
         return;
     }
 
