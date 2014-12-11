@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>AWS Deploy</title>
+    <% _.each(css, function (style) { %><link href="<%= style.name %>" rel="stylesheet" type="<%= style.type %>"/><% }); %>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="content"></div>
+    <div id="footer"></div>
+</body>
+<% _.each(templates, function (template) { %><script src="<%= template.name %>" type="<%= template.type %>"></script><% }); %>
+<% _.each(js, function (script) { %><script src="<%= script.name %>" type="<%= script.type %>"></script><% }); %>
+</html>

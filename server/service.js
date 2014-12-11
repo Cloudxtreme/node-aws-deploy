@@ -5,6 +5,7 @@ var express = require('express');
 var debug = require('debug')('aws-deploy:service');
 var config = require('config');
 var assert = require('assert');
+var async = require('async');
 
 function Service() {
     this.initialize.apply(this, arguments);
@@ -44,7 +45,7 @@ _.assign(Service, {
 });
 
 _.assign(Service.prototype, {
-    initialize: function () {
+    initialize: function (callback) {
         var app = this.app = express();
 
         this.on('listening', function (server) {
@@ -53,6 +54,8 @@ _.assign(Service.prototype, {
                 debug("server closed");
             });
         });
+
+        async.nextTick(callback);
     },
 
     start: function () {
