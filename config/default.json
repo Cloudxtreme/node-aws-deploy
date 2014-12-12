@@ -4,9 +4,9 @@
 
         "mysql": {
             "host": "localhost",
-            "user": "aws-deploy",
-            "password": "aws-deploy",
-            "database": "aws-deploy",
+            "user": "aws_deploy",
+            "password": "aws_deploy",
+            "database": "aws_deploy",
             "charset": "utf8",
             "limit": 10,
             "debug": false
