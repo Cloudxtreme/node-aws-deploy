@@ -28,7 +28,8 @@ module.exports = Application.create({
     "css": {
         "lib": [
             "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.css",
-            "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap-theme.css"
+            "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap-theme.css",
+            "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css"
         ],
         "common": [
             "css/*.css"

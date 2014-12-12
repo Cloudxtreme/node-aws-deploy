@@ -21,11 +21,15 @@ LoginView = AwsDeploy.View.extend({
         event.preventDefault();
 
         this.$el.find("#login_failed").addClass("hidden");
+        this.$el.find("#login_progress").toggleClass("hidden", false);
+        this.$el.find("form#login button[type=submit]").prop("disabled", true);
 
         var user_email = this.$el.find("form#login input#user_email").val();
         var user_pass = this.$el.find("form#login input#user_pass").val();
 
         this.options.session.login(user_email, user_pass, _.bind(function (err) {
+            this.$el.find("#login_progress").toggleClass("hidden", true);
+            this.$el.find("form#login button[type=submit]").prop("disabled", false);
             this.$el.find("#login_failed").toggleClass("hidden", !err);
         }, this));
     },
@@ -33,23 +37,28 @@ LoginView = AwsDeploy.View.extend({
     register: function (event) {
         event.preventDefault();
 
-        this.$el.find("#registration_failed").addClass("hidden");
-
         var user_email = this.$el.find("form#register input#user_email").val();
         var user_name = this.$el.find("form#register input#user_name").val();
         var user_pass = this.$el.find("form#register input#user_pass").val();
         var user_pass_repeat = this.$el.find("form#register input#user_pass_repeat").val();
+
+        this.$el.find("#registration_failed").addClass("hidden");
 
         if (user_pass !== user_pass_repeat) {
             this.alert("register.password-mismatch");
             return;
         }
 
+        this.$el.find("#progress_progress").toggleClass("hidden", false);
+        this.$el.find("form#register button[type=submit]").prop("disabled", true);
+
         this.options.session.register({
             user_email: user_email,
             user_name: user_name,
             user_pass: user_pass
         }, _.bind(function (err) {
+            this.$el.find("#progress_progress").toggleClass("hidden", true);
+            this.$el.find("form#register button[type=submit]").prop("disabled", false);
             this.$el.find("#registration_failed").toggleClass("hidden", !err);
         }, this));
     },

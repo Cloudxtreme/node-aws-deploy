@@ -10,7 +10,12 @@
         <input type="password" class="form-control" id="user_pass" placeholder="login.password">
     </div>
 
-    <button type="submit" class="btn btn-default">login.submit</button>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default">login.submit</button>
+        <span id="login_progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
+    </div>
+
+
 
     <p id="login_failed" class="hidden bg-danger">login.failed</p>
 </form>
@@ -35,7 +40,10 @@
         <input type="password" class="form-control" id="user_pass_repeat">
     </div>
 
-    <button type="submit" class="btn btn-default">register.submit</button>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default">register.submit</button>
+        <span id="registration_progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
+    </div>
 
     <p id="registration_failed" class="hidden bg-danger">register.registration_failed</p>
 </form>
