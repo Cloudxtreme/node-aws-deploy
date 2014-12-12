@@ -18,14 +18,11 @@ var pool = mysql.createPool({
             values = _.clone(values);
             return query.replace(/(\?)/g, function (text, key) {
                 return values.length > 0 ? this.escape(values.shift()) : null;
-            })
+            }.bind(this));
         } else if (_.isObject(values)) {
             return query.replace(/\:(\w+)/g, function (text, key) {
-                if (values.hasOwnProperty(key)) {
-                    return this.escape(values[key]);
-                }
-                return null;
-            })
+                return values.hasOwnProperty(key) ? this.escape(values[key]) : null;
+            }.bind(this));
         } else {
             return query;
         }
