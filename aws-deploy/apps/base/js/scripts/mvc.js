@@ -189,3 +189,11 @@ AwsDeploy.View = Backbone.View.extend({
         return d;
     }
 });
+
+AwsDeploy.Router = Backbone.Router.extend({
+    onSignin: function () {
+        if (!Backbone.History.started) {
+            Backbone.history.start();
+        }
+    }
+});

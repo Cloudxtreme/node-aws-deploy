@@ -1,21 +1,13 @@
-var MainApp = Backbone.Router.extend({
+var MainApp = AwsDeploy.Router.extend({
     initialize: function () {
-        this.session = new SessionModel();
+        this.session = new SessionManager();
+        this.listenTo(this.session, 'signin', this.onSignin);
 
         this.navbar = new NavBarView({
-            model: this.session
+            session: this.session
         });
         $('#header').html(this.navbar.render().el);
-    },
-
-    routes: {
-        "": "index"
-    },
-
-    index: function () {
     }
 });
 
 var app = new MainApp();
-
-Backbone.history.start();

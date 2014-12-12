@@ -1,20 +1,42 @@
 NavBarView = AwsDeploy.View.extend({
-    initialize: function () {
+    initialize: function (options) {
         this.template = Templates.get("common/navbar");
+        this.options = options;
+
+        this.listenTo(this.options.session, 'signin', this.render);
     },
 
     events: {
-        "click #login": "showLogin"
+        "click #login": "showLogin",
+        "click #profile": "showProfile",
+        "click #logout": "logout"
     },
 
     render: function () {
         this.$el.html(this.template());
+        this.delegateEvents();
         return this;
     },
 
     showLogin: function () {
         this.modalView(new LoginView({
-            model: this.model
+            session: this.options.session
         }));
+    },
+
+    showProfile: function (event) {
+        event.preventDefault();
+        this.modalView(new ProfileView({
+            session: this.options.session
+        }));
+    },
+
+    logout: function (event) {
+        event.preventDefault();
+
+        this.confirm("navbar.logout-confirm", function (ok) {
+            this.options.session.logout();
+        });
     }
+
 });

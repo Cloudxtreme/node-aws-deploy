@@ -21,11 +21,9 @@ function destroySession(callback, info) {
     var session = info.session;
 
     delete session.user_id;
-    session.save(function () {
-        callback(null, {
-            session_id: session.id,
-            user_id: 0
-        });
+    callback(null, {
+        session_id: session.id,
+        user_id: 0
     });
 });
 
@@ -66,15 +64,11 @@ schema.on('emit', '/session', function (method, data, callback, info) {
                 }
 
                 var session = info.session;
-                session.reload(function (err) {
-                    session.user_id = user_id;
-                    session.save(function () {
-                        callback(null, {
-                            session_id: session.id,
-                            user_id: user_id
-                        });
-                    })
-                })
+                session.user_id = user_id;
+                callback(null, {
+                    session_id: session.id,
+                    user_id: user_id
+                });
             });
         } break;
 
@@ -91,9 +85,14 @@ function (data, callback, info) {
         return;
     }
 
+    if (!(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i).test(data.user_email)) {
+        callback(new SchemaError("Invalid email address"));
+        return;
+    }
+
     async.series([
         function ensureUniqueEmail(callback) {
-            db.querySingle("SELECT * FROM awd_users WHERE user_email = ? LIMIT 1", function (err, user) {
+            db.querySingle("SELECT * FROM awd_users WHERE user_email = :user_email LIMIT 1", data, function (err, user) {
                 if (err || user) {
                     callback(err || new SchemaError("User already exists"));
                     return;
@@ -126,9 +125,14 @@ function (data, callback, info) {
         }
 
         db.query("INSERT INTO awd_users" +
-        " (user_email, user_name, user_pass, user_created, user_level)" +
+        " (user_email, user_name, user_pass, user_created_at, user_created_from, user_level)" +
         " VALUES" +
-        " (:user_email, :user_name, :user_pass, NOW(), 0)", data, function (err, result) {
+        " (:user_email, :user_name, :user_pass, NOW(), :user_created_from, 0)", {
+            user_email: data.user_email,
+            user_name: data.user_name,
+            user_pass: data.user_pass,
+            user_created_from: info.address
+        }, function (err, result) {
             if (err) {
                 callback(err);
                 return;
@@ -138,12 +142,21 @@ function (data, callback, info) {
             delete data.user_pass;
 
             var session = info.session;
-            session.reload(function (err) {
-                session.user_id = data.user_id;
-                session.save(function () {
-                    callback(null, data);
-                });
-            });
+            session.user_id = data.user_id;
+            callback(null, data);
         });
+    });
+});
+
+schema.on('read', '/users/:user_id',
+filters.authCheck,
+function (user_id, callback, info) {
+    if (info.session.user_id != user_id) {
+        callback(new SchemaError("Access Denied"));
+        return;
+    }
+
+    db.query("SELECT user_email, user_name FROM awd_users WHERE user_id = ? LIMIT 1", [user_id], function (err, rows) {
+        callback(err, rows);
     });
 });

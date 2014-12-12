@@ -1,12 +1,41 @@
-<form role="form">
+<form id="login" role="form">
     <div class="form-group">
+        <a class="pull-right" href="#" id="show_register">login.register</a>
         <label for="user_email">login.email</label>
         <input type="email" class="form-control" id="user_email" placeholder="login.email">
     </div>
+
     <div class="form-group">
         <label for="user_pass">login.password</label>
         <input type="password" class="form-control" id="user_pass" placeholder="login.password">
     </div>
+
     <button type="submit" class="btn btn-default">login.submit</button>
-    <div id="login_failed" class="hidden text-danger">login.failed</div>
+
+    <p id="login_failed" class="hidden bg-danger">login.failed</p>
+</form>
+<form id="register" class="hidden" role="form">
+    <div class="form-group">
+        <label for="user_email">register.email</label>
+        <input type="email" class="form-control" id="user_email" placeholder="register.email">
+    </div>
+
+    <div class="form-group">
+        <label for="user_name">register.name</label>
+        <input type="text" class="form-control" id="user_name" placeholder="register.name">
+    </div>
+
+    <div class="form-group">
+        <label for="user_pass">register.password</label>
+        <input type="password" class="form-control" id="user_pass">
+    </div>
+
+    <div class="form-group">
+        <label for="user_pass_repeat">register.password-repeat</label>
+        <input type="password" class="form-control" id="user_pass_repeat">
+    </div>
+
+    <button type="submit" class="btn btn-default">register.submit</button>
+
+    <p id="registration_failed" class="hidden bg-danger">register.registration_failed</p>
 </form>
