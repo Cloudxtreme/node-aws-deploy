@@ -35,7 +35,9 @@ NavBarView = AwsDeploy.View.extend({
         event.preventDefault();
 
         this.confirm("navbar.logout-confirm", function (ok) {
-            this.options.session.logout();
+            if (ok) {
+                this.options.session.logout();
+            }
         });
     }
 
