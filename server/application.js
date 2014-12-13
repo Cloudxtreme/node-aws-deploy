@@ -120,7 +120,7 @@ _.assign(Application.prototype, {
 
                         try {
                             var compiled = _.template(data);
-                            var templateData = 'Templates = window.Templates||{};Templates.'  + name + '_' + path.basename(output, '.js') + ' = ' + compiled.source;
+                            var templateData = 'Templates = window.Templates||{};Templates.'  + name + '_' + path.basename(output, '.js').replace(/[^a-z0-9]/gi,"_") + ' = ' + compiled.source;
                             callback(null, templateData);
                         } catch (e) {
                             callback(e);
