@@ -195,5 +195,19 @@ AwsDeploy.Router = Backbone.Router.extend({
         if (!Backbone.History.started) {
             Backbone.history.start();
         }
+    },
+
+    showView: function (selector, view) {
+        if (this._currentView) {
+            this._currentView.close();
+        }
+
+        $(selector).html(view.render().el);
+
+        this._currentView = view;
+        this.trigger('showview', view);
+
+        $(window).scrollTop(0,0);
+        return view;
     }
 });
