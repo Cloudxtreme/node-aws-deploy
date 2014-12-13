@@ -5,10 +5,7 @@ SessionModel = AwsDeploy.Model.extend({
 
 UserModel = AwsDeploy.Model.extend({
     idAttribute: "user_id",
-    urlRoot: function () {
-        return "/user"
-    }
-
+    urlRoot: "/user"
 });
 
 UserCollection = AwsDeploy.Collection.extend({
@@ -21,6 +18,6 @@ UserCollection = AwsDeploy.Collection.extend({
 LocalUserCollection = AwsDeploy.Collection.extend({
     model: UserModel,
     url: function () {
-        return "/users/" + this.user_id;
+        return "/user";
     }
 });
