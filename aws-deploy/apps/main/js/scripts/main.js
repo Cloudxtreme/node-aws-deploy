@@ -7,6 +7,14 @@ var MainApp = AwsDeploy.Router.extend({
             session: this.session
         });
         $('#header').html(this.navbar.render().el);
+    },
+
+    routes: {
+        "products": "showProducts"
+    },
+
+    showProducts: function () {
+        this.showView("#content", new ProductsListView());
     }
 });
 

@@ -13,6 +13,7 @@ module.exports = Base.extend({
 
     "js": {
         "main": [
+            "js/views/*.js",
             "js/scripts/main.js"
         ]
     },
