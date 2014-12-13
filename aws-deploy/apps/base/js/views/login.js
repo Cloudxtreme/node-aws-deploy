@@ -20,7 +20,6 @@ LoginView = AwsDeploy.View.extend({
     login: function (event) {
         event.preventDefault();
 
-        this.$el.find("#login_failed").addClass("hidden");
         this.$el.find("#login_progress").toggleClass("hidden", false);
         this.$el.find("form#login button[type=submit]").prop("disabled", true);
 
@@ -28,9 +27,12 @@ LoginView = AwsDeploy.View.extend({
         var user_pass = this.$el.find("form#login input#user_pass").val();
 
         this.options.session.login(user_email, user_pass, _.bind(function (err) {
+            if (err) {
+                toastr.error("login.login-failed");
+            }
+
             this.$el.find("#login_progress").toggleClass("hidden", true);
             this.$el.find("form#login button[type=submit]").prop("disabled", false);
-            this.$el.find("#login_failed").toggleClass("hidden", !err);
         }, this));
     },
 
@@ -41,8 +43,6 @@ LoginView = AwsDeploy.View.extend({
         var user_name = this.$el.find("form#register input#user_name").val();
         var user_pass = this.$el.find("form#register input#user_pass").val();
         var user_pass_repeat = this.$el.find("form#register input#user_pass_repeat").val();
-
-        this.$el.find("#registration_failed").addClass("hidden");
 
         if (!user_name.length) {
             this.alert("register.name-missing");
@@ -62,9 +62,12 @@ LoginView = AwsDeploy.View.extend({
             user_name: user_name,
             user_pass: user_pass
         }, _.bind(function (err) {
+            if (err) {
+                toastr.error("register.registration-failed");
+            }
+
             this.$el.find("#registration_progress").toggleClass("hidden", true);
             this.$el.find("form#register button[type=submit]").prop("disabled", false);
-            this.$el.find("#registration_failed").toggleClass("hidden", !err);
         }, this));
     },
 

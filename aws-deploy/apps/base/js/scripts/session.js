@@ -51,11 +51,7 @@ _.extend(SessionManager.prototype, {
 
     register: function (data, callback) {
         var user = new UserModel();
-        user.save({
-            user_email: data.user_email,
-            user_name: data.user_name,
-            user_pass: data.user_pass
-        }, {
+        user.save(data, {
             success: _.bind(function () {
                 this.session.fetch();
                 callback && callback(null);
@@ -79,7 +75,6 @@ _.extend(SessionManager.prototype, {
                 window.location.reload();
             }
         } else if (this.session.has("session_id") && this.session.get("user_id") > 0) {
-            this.users.user_id = this.session.get("user_id");
             this.users.fetch({
                 reset: true
             });
