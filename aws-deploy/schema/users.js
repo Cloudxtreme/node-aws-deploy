@@ -50,7 +50,7 @@ schema.on('emit', '/session', function (method, data, callback, info) {
                 }, function verifyPassword(user, callback) {
                     bcrypt.compare(data.user_pass, user.user_pass, function (err, res) {
                         if (err || (res != true)) {
-                            callback(new SchemaError(err || "Login failed"));
+                            callback(new SchemaError(err || "Password mismatch"));
                             return;
                         }
 
@@ -148,15 +148,91 @@ function (data, callback, info) {
     });
 });
 
-schema.on('read', '/users/:user_id',
+schema.on('read', '/user',
 filters.authCheck,
-function (user_id, callback, info) {
-    if (info.session.user_id != user_id) {
-        callback(new SchemaError("Access Denied"));
+function (callback, info) {
+    db.query("SELECT user_id, user_email, user_name FROM awd_users WHERE user_id = ? LIMIT 1", [info.session.user_id], callback);
+});
+
+schema.on('update', '/user/:user_id',
+filters.authCheck,
+function (user_id, data, callback, info) {
+    if (user_id != info.session.user_id) {
+        callback(new SchemaError("Mismatching user id"));
         return;
     }
 
-    db.query("SELECT user_email, user_name FROM awd_users WHERE user_id = ? LIMIT 1", [user_id], function (err, rows) {
-        callback(err, rows);
-    });
+    async.series([
+        function (callback) {
+            db.querySingle("SELECT user_id FROM awd_users WHERE user_email = :user_email AND user_id <> :user_id LIMIT 1", data, function (err, user) {
+                if (err || user) {
+                    callback(err || new SchemaError("Email already exists"));
+                    return;
+                }
+
+                callback(null);
+            });
+        }, function (callback) {
+            db.query("UPDATE awd_users" +
+                " SET user_email = :user_email, user_name = :user_name" +
+                " WHERE user_id = :user_id", data, callback);
+        }
+    ], callback);
+
+});
+
+schema.on('emit', '/user/:user_id',
+filters.authCheck,
+function (user_id, method, data, callback, info) {
+    if (user_id != info.session.user_id) {
+        callback(new SchemaError("Mismatching user id"));
+        return;
+    }
+
+    switch (method) {
+        case 'set-password': {
+            async.waterfall([
+                function (callback) {
+                    db.querySingle("SELECT user_pass FROM awd_users WHERE user_id = ? LIMIT 1", [user_id], function (err, user) {
+                        if (err || !user) {
+                            callback(err || new SchemaError("User not found"));
+                            return;
+                        }
+
+                        bcrypt.compare(data.old_password, user.user_pass, function (err, res) {
+                            if (err || (res != true)) {
+                                callback(new SchemaError(err || "Password mismatch"));
+                                return;
+                            }
+
+                            callback(null);
+                        });
+                    });
+                }, function (callback) {
+                    bcrypt.genSalt(10, function (err, salt) {
+                        if (err) {
+                            callback(new SchemaError(err));
+                            return;
+                        }
+
+                        bcrypt.hash(data.new_password, salt, function (err, hash) {
+                            if (err) {
+                                callback(new SchemaError(err));
+                                return;
+                            }
+
+                            db.query("UPDATE awd_users SET user_pass = :user_pass WHERE user_id = :user_id LIMIT 1", {
+                                user_pass: hash,
+                                user_id: user_id
+                            }, callback);
+                        });
+                    });
+                }
+            ], callback);
+        } break;
+
+        default: {
+            callback("Unknown method");
+        } break;
+    }
 });
