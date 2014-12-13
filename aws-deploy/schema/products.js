@@ -6,8 +6,11 @@ var async = require('async');
 schema.on('create', '/products',
     filters.authCheck,
 function createProduct(data, callback, info) {
-    data.product_creator = info.session.user_id;
-    db.query("INSERT INTO awd_products (product_name) VALUES (:product_name)", data, function (err, results) {
+    data.product_created_by = info.session.user_id;
+    db.query("INSERT INTO awd_products" +
+    " (product_name,product_created_at,product_created_by)" +
+    " VALUES" +
+    " (:product_name,NOW(),:product_created_by)", data, function (err, result) {
         if (err) {
             callback(err);
             return;
