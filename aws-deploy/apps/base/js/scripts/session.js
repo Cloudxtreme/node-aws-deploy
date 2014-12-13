@@ -52,9 +52,9 @@ _.extend(SessionManager.prototype, {
     register: function (data, callback) {
         var user = new UserModel();
         user.save({
-            user_email: user_email,
-            user_name: user_name,
-            user_pass: user_pass
+            user_email: data.user_email,
+            user_name: data.user_name,
+            user_pass: data.user_pass
         }, {
             success: _.bind(function () {
                 this.session.fetch();

@@ -44,12 +44,17 @@ LoginView = AwsDeploy.View.extend({
 
         this.$el.find("#registration_failed").addClass("hidden");
 
+        if (!user_name.length) {
+            this.alert("register.name-missing");
+            return;
+        }
+
         if (user_pass !== user_pass_repeat) {
             this.alert("register.password-mismatch");
             return;
         }
 
-        this.$el.find("#progress_progress").toggleClass("hidden", false);
+        this.$el.find("#registration_progress").toggleClass("hidden", false);
         this.$el.find("form#register button[type=submit]").prop("disabled", true);
 
         this.options.session.register({
@@ -57,7 +62,7 @@ LoginView = AwsDeploy.View.extend({
             user_name: user_name,
             user_pass: user_pass
         }, _.bind(function (err) {
-            this.$el.find("#progress_progress").toggleClass("hidden", true);
+            this.$el.find("#registration_progress").toggleClass("hidden", true);
             this.$el.find("form#register button[type=submit]").prop("disabled", false);
             this.$el.find("#registration_failed").toggleClass("hidden", !err);
         }, this));
