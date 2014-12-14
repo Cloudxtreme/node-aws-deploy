@@ -115,7 +115,7 @@ ProductDialogView = AwsDeploy.View.extend({
         }
 
         var product_application = this.$el.find("#product_application").val();
-        if (!!product_application && product_application == this.environments.application_name) {
+        if (!product_application || product_application == this.environments.application_name) {
             return;
         }
 

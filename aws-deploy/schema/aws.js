@@ -37,6 +37,11 @@ function (callback) {
 schema.on('read', '/aws-environments/:app_name',
 filters.authCheck,
 function (app_name,callback) {
+    if (!app_name) {
+        callback("No app specified");
+        return;
+    }
+
     ELB.describeEnvironments({
         "ApplicationName": app_name
     }, function (err, data) {
