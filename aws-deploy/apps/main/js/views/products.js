@@ -63,46 +63,117 @@ ProductDialogView = AwsDeploy.View.extend({
         this.template = Templates.get("main/product-form");
 
         this.applications = new AwsApplicationCollection();
-        this.listenTo(this.applications, 'reset', this.render);
+        this.listenTo(this.applications, 'reset', this.update);
+        this.listenTo(this.applications, 'reset', this.refreshEnvironments);
 
         this.environments = new AwsEnvironmentCollection();
-        this.listenTo(this.environments, 'reset', this.render);
+        this.listenTo(this.environments, 'reset', this.update);
 
-        this.applications.fetch({
-            reset: true
-        });
-
-        this.environments.fetch({
-            reset: true
-        });
+        this.refresh();
     },
 
     events: {
-        "submit form": "submit"
+        "submit form": "submit",
+        "change #product_application": "refresh",
+        "change #product_environment": "refresh"
     },
 
     render: function () {
-        var data;
-        if (this.model) {
-            data = this.model.toJSON();
-        } else {
-            data = {
-                product_name: "",
-                product_application: ""
-            }
+        this.$el.html(this.template());
+        return this;
+    },
+
+    refresh: function () {
+        this.refreshApplications();
+        this.refreshEnvironments();
+    },
+
+    refreshApplications: function () {
+        console.log("refreshApplications");
+
+        if (this._refreshingApplications) {
+            return;
         }
 
-        this.$el.html(this.template(data));
-        return this;
+        if (this.applications.length > 0) {
+            return;
+        }
+
+        this._refreshingApplications = true;
+        this.applications.fetch({
+            reset: true,
+            success: _.bind(function () {
+                delete this._refreshingApplications;
+            }, this),
+            error: _.bind(function () {
+                delete this._refreshingApplications;
+            }, this)
+        });
+    },
+
+    refreshEnvironments: function () {
+        console.log("refreshEnvironments");
+
+        if (this._refreshingEnvironments) {
+            return;
+        }
+
+        var product_application = this.$el.find("#product_application").val();
+        if (!!product_application && product_application == this.environments.application_name) {
+            return;
+        }
+
+        this._refreshingEnvironments = true;
+        this.environments.app_name = product_application;
+        this.environments.fetch({
+            reset: true,
+            success: _.bind(function () {
+                delete this._refreshingEnvironments;
+            }, this),
+            error: _.bind(function () {
+                delete this._refreshingEnvironments;
+            }, this)
+        })
+    },
+
+    update: function () {
+        var product_application = this.$el.find("#product_application");
+        var applications = this.$el.find("datalist#applications");
+        if (applications) {
+            applications.empty();
+            this.applications.each(function (app) {
+                var node = $("<option>").attr("value", app.get("app_name")).html(app.get("app_description"));
+                applications.append(node);
+            });
+        }
+        product_application.parent().toggleClass("has-error", !(!product_application.val() || !!this.applications.get(product_application.val())));
+        product_application.parent().toggleClass("has-success", !!this.applications.get(product_application.val()));
+
+        var product_environment = this.$el.find("#product_environment");
+        console.log("updateEnvironments", this.environments.toJSON());
+        var environments = this.$el.find("datalist#environments");
+        if (environments) {
+            environments.empty();
+            this.environments.each(function (env) {
+                var node = $("<option>").attr("value", env.get("env_id")).html(env.get("env_name"));
+                environments.append(node);
+            });
+        }
+        product_environment.parent().toggleClass("has-error", !(!product_environment.val() || !!this.environments.get(product_environment.val())));
+        product_environment.parent().toggleClass("has-success", !!this.environments.get(product_environment.val()));
     },
 
     submit: function (event) {
         event.preventDefault();
 
         var product_name = this.$el.find("#product_name").val();
+        var product_application = this.$el.find("#product_application").val();
+        var product_environment = this.$el.find("#product_environment").val();
 
         this.collection.create({
-            product_name: product_name
+            product_name: product_name,
+            product_application: product_application,
+            product_environment: product_environment
         }, {
             success: _.bind(function () {
                 toastr.success("products.product-created");

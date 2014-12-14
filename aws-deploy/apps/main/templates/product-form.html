@@ -16,13 +16,5 @@
 
     <button class="btn btn-success">product.save</button>
 </form>
-<datalist id="applications">
-<% this.applications.each(function (app) { %>
-    <option value="<%= app.get("app_name") %>"><%= app.get("app_description") %></option>
-<% }); %>
-</datalist>
-<datalist id="environments">
-    <% this.environments.each(function (env) { %>
-    <option value="<%= env.get("env_id") %>"><%= env.get("env_name") %></option>
-    <% }); %>
-</datalist>
+<datalist id="applications"></datalist>
+<datalist id="environments"></datalist>

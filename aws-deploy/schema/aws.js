@@ -34,9 +34,9 @@ function (callback) {
     });
 });
 
-schema.on('read', '/aws-environments',
+schema.on('read', '/aws-environments/:app_name',
 filters.authCheck,
-function (callback) {
+function (app_name,callback) {
     ELB.describeEnvironments({}, function (err, data) {
         if (err) {
             callback(err);
@@ -58,6 +58,8 @@ function (callback) {
                 env_status: env.Status,
                 env_health: env.Health
             };
+        }).filter(function (env) {
+            return app_name == env.env_application;
         }));
     });
 });

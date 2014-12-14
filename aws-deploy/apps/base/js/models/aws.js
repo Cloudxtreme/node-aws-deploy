@@ -1,5 +1,5 @@
 AwsApplicationModel = AwsDeploy.Model.extend({
-    idAttribute: "aws_name"
+    idAttribute: "app_name"
 });
 
 AwsApplicationCollection = AwsDeploy.Collection.extend({
@@ -13,7 +13,9 @@ AwsEnvironmentModel = AwsDeploy.Model.extend({
 
 AwsEnvironmentCollection = AwsDeploy.Collection.extend({
     model: AwsEnvironmentModel,
-    url: "/aws-environments"
+    url: function () {
+        return "/aws-environments/" + this.app_name;
+    }
 });
 
 AwsApplicationVersionModel = AwsDeploy.Model.extend({

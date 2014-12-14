@@ -8,9 +8,9 @@ schema.on('create', '/products',
 function createProduct(data, callback, info) {
     data.product_created_by = info.session.user_id;
     db.query("INSERT INTO awd_products" +
-    " (product_name,product_created_at,product_created_by)" +
+    " (product_name,product_created_at,product_created_by,product_application,product_environment)" +
     " VALUES" +
-    " (:product_name,NOW(),:product_created_by)", data, function (err, result) {
+    " (:product_name,NOW(),:product_created_by,:product_application,:product_environment)", data, function (err, result) {
         if (err) {
             callback(err);
             return;
@@ -48,6 +48,8 @@ function updateProduct(product_id, data, callback, info) {
         }, function (callback) {
             db.query("UPDATE awd_products SET" +
             " product_name = :product_name" +
+            " product_application = :product_application" +
+            " product_environment = :product_environment" +
             " WHERE product_id = :product_id", data, callback);
         }
     ], callback);
