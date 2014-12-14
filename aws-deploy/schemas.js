@@ -1,3 +1,4 @@
+require('./schema/aws');
 require('./schema/common');
-require('./schema/users');
 require('./schema/products');
+require('./schema/users');
