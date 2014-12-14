@@ -37,7 +37,9 @@ function (callback) {
 schema.on('read', '/aws-environments/:app_name',
 filters.authCheck,
 function (app_name,callback) {
-    ELB.describeEnvironments({}, function (err, data) {
+    ELB.describeEnvironments({
+        "ApplicationName": app_name
+    }, function (err, data) {
         if (err) {
             callback(err);
             return;
@@ -58,8 +60,6 @@ function (app_name,callback) {
                 env_status: env.Status,
                 env_health: env.Health
             };
-        }).filter(function (env) {
-            return app_name == env.env_application;
         }));
     });
 });

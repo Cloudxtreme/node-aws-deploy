@@ -89,8 +89,6 @@ ProductDialogView = AwsDeploy.View.extend({
     },
 
     refreshApplications: function () {
-        console.log("refreshApplications");
-
         if (this._refreshingApplications) {
             return;
         }
@@ -112,8 +110,6 @@ ProductDialogView = AwsDeploy.View.extend({
     },
 
     refreshEnvironments: function () {
-        console.log("refreshEnvironments");
-
         if (this._refreshingEnvironments) {
             return;
         }
@@ -150,7 +146,6 @@ ProductDialogView = AwsDeploy.View.extend({
         product_application.parent().toggleClass("has-success", !!this.applications.get(product_application.val()));
 
         var product_environment = this.$el.find("#product_environment");
-        console.log("updateEnvironments", this.environments.toJSON());
         var environments = this.$el.find("datalist#environments");
         if (environments) {
             environments.empty();
