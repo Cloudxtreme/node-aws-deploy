@@ -29,5 +29,11 @@
 
     "users": {
         "register": false
+    },
+
+    "aws": {
+        "region": null,
+        "key": null,
+        "secret": null
     }
 }
