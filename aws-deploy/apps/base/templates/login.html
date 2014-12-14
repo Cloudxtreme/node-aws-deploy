@@ -1,6 +1,8 @@
 <form id="login" role="form">
     <div class="form-group">
+        <% if (this.config.get("user_registration")) { %>
         <a class="pull-right" href="#" id="show_register">login.register</a>
+        <% } %>
         <label for="user_email">login.email</label>
         <input type="email" class="form-control" id="user_email" placeholder="login.email">
     </div>

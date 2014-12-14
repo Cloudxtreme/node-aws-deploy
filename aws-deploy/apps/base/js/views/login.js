@@ -4,6 +4,11 @@ LoginView = AwsDeploy.View.extend({
         this.template = Templates.get("common/login");
 
         this.listenTo(this.options.session, 'signin:authorized', this.close);
+
+        this.config = new ConfigurationModel();
+        this.listenTo(this.config, 'change', this.render);
+
+        this.config.fetch();
     },
 
     events: {

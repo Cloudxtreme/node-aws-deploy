@@ -10,10 +10,15 @@ var MainApp = AwsDeploy.Router.extend({
     },
 
     routes: {
-        "products": "showProducts"
+        "": "showProducts"
     },
 
     showProducts: function () {
+        if (!this.session.isAuthorized()) {
+            this.navbar.showLogin();
+            return;
+        }
+
         this.showView("#content", new ProductsListView());
     }
 });
