@@ -12,7 +12,7 @@ ProductsListView = AwsDeploy.View.extend({
     },
 
     events: {
-        "click #add_product": "showAddProductDialog"
+        "click #add_product": "showProductDialog"
     },
 
     render: function () {
@@ -37,8 +37,8 @@ ProductsListView = AwsDeploy.View.extend({
         this.addChildView(view);
     },
 
-    showAddProductDialog: function () {
-        this.modalView(new ProductAddDialogView({
+    showProductDialog: function () {
+        this.modalView(new ProductDialogView({
             collection: this.products
         }));
     }
@@ -58,9 +58,23 @@ ProductItemView = AwsDeploy.View.extend({
     }
 });
 
-ProductAddDialogView = AwsDeploy.View.extend({
+ProductDialogView = AwsDeploy.View.extend({
     initialize: function () {
-        this.template = Templates.get("main/product-add-dialog");
+        this.template = Templates.get("main/product-form");
+
+        this.applications = new AwsApplicationCollection();
+        this.listenTo(this.applications, 'reset', this.render);
+
+        this.environments = new AwsEnvironmentCollection();
+        this.listenTo(this.environments, 'reset', this.render);
+
+        this.applications.fetch({
+            reset: true
+        });
+
+        this.environments.fetch({
+            reset: true
+        });
     },
 
     events: {
@@ -68,7 +82,17 @@ ProductAddDialogView = AwsDeploy.View.extend({
     },
 
     render: function () {
-        this.$el.html(this.template());
+        var data;
+        if (this.model) {
+            data = this.model.toJSON();
+        } else {
+            data = {
+                product_name: "",
+                product_application: ""
+            }
+        }
+
+        this.$el.html(this.template(data));
         return this;
     },
 

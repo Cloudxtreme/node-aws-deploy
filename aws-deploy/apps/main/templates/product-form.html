@@ -1,0 +1,28 @@
+<form role="form">
+    <div class="form-group">
+        <label for="product_name">product.name</label>
+        <input type="text" class="form-control" id="product_name" placeholder="product.name">
+    </div>
+
+    <div class="form-group">
+        <label for="product_application">product.application</label>
+        <input type="text" class="form-control" list="applications" id="product_application">
+    </div>
+
+    <div class="form-group">
+        <label for="product_environment">product.environment</label>
+        <input type="text" class="form-control" list="environments" id="product_environment">
+    </div>
+
+    <button class="btn btn-success">product.save</button>
+</form>
+<datalist id="applications">
+<% this.applications.each(function (app) { %>
+    <option value="<%= app.get("app_name") %>"><%= app.get("app_description") %></option>
+<% }); %>
+</datalist>
+<datalist id="environments">
+    <% this.environments.each(function (env) { %>
+    <option value="<%= env.get("env_id") %>"><%= env.get("env_name") %></option>
+    <% }); %>
+</datalist>
