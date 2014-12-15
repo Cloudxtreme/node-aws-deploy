@@ -160,7 +160,7 @@ exports.create = function (url, data, info, callback) {
             handler.call(url, components[2], undefined, data, info, callback);
         }, callback);
     } else {
-        callback(new SchemaError("No handler for " + key + " (create)"));
+        callback(new SchemaError("No handler for " + url + " (create)"));
     }
 };
 
@@ -179,7 +179,7 @@ exports.read = function (url, info, callback) {
             handler.call(url, components[2], undefined, undefined, info, callback);
         }, callback);
     } else {
-        callback(new SchemaError("No handler for " + key + " (read)"));
+        callback(new SchemaError("No handler for " + url + " (read)"));
     }
 };
 
@@ -198,7 +198,7 @@ exports.update = function (url, data, info, callback) {
             handler.call(url, components[2], undefined, data, info, callback);
         }, callback);
     } else {
-        callback(new SchemaError("No handler for " + key + " (update)"));
+        callback(new SchemaError("No handler for " + url + " (update)"));
     }
 };
 
@@ -217,7 +217,7 @@ exports.destroy = function (url, info, callback) {
             handler.call(url, components[2], undefined, undefined, info, callback);
         }, callback);
     } else {
-        callback(new SchemaError("No handler for " + key + " (destroy)"));
+        callback(new SchemaError("No handler for " + url + " (destroy)"));
     }
 };
 
@@ -236,6 +236,6 @@ exports.emit = function (url, method, data, info, callback) {
             handler.call(url, components[2], method, data, info, callback);
         }, callback);
     } else {
-        callback(new SchemaError("No handler for " + key + " (emit)"));
+        callback(new SchemaError("No handler for " + url + " (emit)"));
     }
 };
