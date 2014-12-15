@@ -10,7 +10,9 @@ var MainApp = AwsDeploy.Router.extend({
     },
 
     routes: {
-        "": "showProducts"
+        "": "showProducts",
+        "product/:product_id": "showProduct",
+        "product/:product_id/edit": "editProduct"
     },
 
     showProducts: function () {
@@ -20,6 +22,44 @@ var MainApp = AwsDeploy.Router.extend({
         }
 
         this.showView("#content", new ProductsListView());
+    },
+
+    showProduct: function (product_id) {
+        if (!this.session.isAuthorized()) {
+            this.navbar.showLogin();
+            return;
+        }
+
+        var products = new ProductCollection();
+        products.fetch({
+            success: _.bind(function (collection) {
+                var product = collection.get(product_id);
+
+                this.showView("#content", new ProductView({model: product}));
+            }, this),
+            error: function () {
+                toastr.error("router.failed-products-fetch");
+            }
+        });
+    },
+
+    editProduct: function (product_id) {
+        if (!this.session.isAuthorized()) {
+            this.navbar.showLogin();
+            return;
+        }
+
+        var products = new ProductCollection();
+        products.fetch({
+            success: _.bind(function (collection) {
+                var product = collection.get(product_id);
+
+                this.showView("#content", new ProductView({model: product, edit: true}));
+            }, this),
+            error: function () {
+                toastr.error("router.failed-products-fetch");
+            }
+        });
     }
 });
 

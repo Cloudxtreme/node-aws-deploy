@@ -184,3 +184,112 @@ ProductDialogView = AwsDeploy.View.extend({
         });
     }
 });
+
+ProductView = AwsDeploy.View.extend({
+    initialize: function (options) {
+        this.options = options;
+        this.template = Templates.get("main/product");
+
+        this.listenTo(this.model, 'change', this.render);
+
+        this.versions = new AwsApplicationVersionCollection();
+        if (!!this.model.get("product_application")) {
+            this.versions.app_name = this.model.get("product_application");
+            this.listenTo(this.versions, 'reset', this.render);
+            this.versions.fetch({
+                reset: true
+            });
+        }
+
+        this.environments = new AwsEnvironmentCollection();
+        if (!!this.model.get("product_environment")) {
+            this.environments.app_name = this.model.get("product_application");
+            this.listenTo(this.environments, 'reset', this.render);
+            this.environments.fetch({
+                reset: true
+            });
+        }
+    },
+
+    events: {
+        "submit form#product": "saveProduct",
+        "click button#link": "linkProduct",
+        "click button#delete": "destroyProduct"
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.model.toJSON()));
+
+        this.$el.find("#product_name").val(this.model.get("product_name"));
+        this.$el.find("#product_application").val(this.model.get("product_application"));
+        this.$el.find("#product_environment").val(this.model.get("product_environment"));
+        this.$el.find("#product_repo_type").val(this.model.get("product_repo_type"));
+        this.$el.find("#product_repo_url").val(this.model.get("product_repo_url"));
+
+        this.setEditMode(!!this.options.edit);
+        this.delegateEvents();
+        return this;
+    },
+
+    environment: function () {
+        if (!this.model.get("product_environment")) {
+            return null;
+        }
+
+        return this.environments.get(this.model.get("product_environment"));
+    },
+
+    saveProduct: function (event) {
+        event.preventDefault();
+
+        var product_name = this.$el.find("#product_name").val();
+        var product_application = this.$el.find("#product_application").val();
+        var product_environment = this.$el.find("#product_environment").val();
+        var product_repo_type = this.$el.find("#product_repo_type").val();
+        var product_repo_url = this.$el.find("#product_repo_url").val();
+
+        this.model.save({
+            product_name: product_name,
+            product_application: product_application,
+            product_environment: product_environment,
+            product_repo_type: !!product_repo_type ? product_repo_type : null,
+            product_repo_url: product_repo_url
+        }, {
+            wait: true,
+            success: _.bind(function () {
+                toastr.success("product.saved");
+                app.navigate("#product/" + this.model.id, {trigger: true});
+            }, this),
+            error: _.bind(function () {
+                toastr.error("product.save-failed");
+            }, this)
+        })
+    },
+
+    linkProduct: function (event) {
+        event.preventDefault();
+
+        switch (this.model.get("product_repo_type")) {
+            case 'github': {
+                var github = new GithubApi();
+                github.link(this.model.id, function (err) {
+                    if (err) {
+                        toastr.error("product.repo-link-failed");
+                    }
+                });
+            } break;
+
+            default: {
+                toastr.error("product.repo-type-invalid");
+            } break;
+        }
+
+    },
+
+    destroyProduct: function (event) {
+        event.preventDefault();
+
+        this.confirm("product.delete-product-confirm", function (ok) {
+        });
+    }
+});

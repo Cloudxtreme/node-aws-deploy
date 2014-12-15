@@ -1,0 +1,67 @@
+<form role="form" id="product" class="well">
+    <div class="form-group">
+        <a href="#product/<%= product_id %>/edit" class="pull-right"><span class="glyphicon glyphicon-edit"></span></a>
+        <label for="product_name">product.name</label>
+        <input id="product_name" class="form-control" type="text">
+    </div>
+
+    <div class="form-group">
+        <label for="product_application">product.application</label>
+        <input id="product_application" class="form-control" type="text">
+    </div>
+
+    <div class="form-group">
+        <label for="product_environment">product.environment</label>
+        <input id="product_environment" class="form-control" type="text">
+    </div>
+
+    <div class="form-group">
+        <label for="product_repo_type">product.repo-type</label>
+        <select id="product_repo_type" class="form-control">
+            <option value=""></option>
+            <option value="github">Github</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="product_repo_url">product.repo-url</label>
+        <input id="product_repo_url" class="form-control" type="text" value="<%- product_repo_url %>">
+    </div>
+
+    <div class="form-group edit-mode-only">
+        <button id="save" class="btn btn-primary">product.save</button>
+        <button id="link" class="btn btn-warning">product.link-repo</button>
+        <button id="delete" class="btn btn-danger pull-right">product.delete</button>
+    </div>
+</form>
+
+<%
+var environment = this.environment();
+if (environment) {
+%>
+
+<form role="form" id="application" class="read-mode-only">
+    <div class="form-group">
+        <button id="check" class="btn btn-info">application.check</button>
+    </div>
+
+    <div class="form-group">
+        <label for="deployed_version">application.deployed-version</label>
+        <input id="deployed_version" type="text" class="form-control" value="<%= environment.get('env_version') %>">
+    </div>
+
+    <div class="form-group">
+        <label for="available_versions">application.available-versions</label>
+        <select id="available_versions" class="form-control">
+            <% this.versions.each(function (version) { %>
+                <option value="<%= version.get('version_label') %>"><%= version.get('version_label') %></option>
+            <% }); %>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <button id="deploy" class="btn btn-primary">application.deploy</button>
+    </div>
+</form>
+
+<% } %>
