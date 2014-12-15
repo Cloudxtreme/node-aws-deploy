@@ -1,0 +1,13 @@
+body {
+    background-color: #ddd;
+}
+
+div#content {
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 4px 4px;
+    min-height: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 12px #aaa;
+    background: #fefefe;
+}
