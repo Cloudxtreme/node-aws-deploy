@@ -187,6 +187,12 @@ AwsDeploy.View = Backbone.View.extend({
             d.find('input[autofocus]:first').focus();
         });
         return d;
+    },
+
+    setEditMode: function (editing) {
+        this.$el.find('form :input:not(.ignore-edit-mode)').prop('disabled', !editing);
+        this.$el.find('.edit-mode-only:not(.ignore-edit-mode)').toggle(editing);
+        this.$el.find('.read-mode-only:not(.ignore-edit-mode)').toggle(!editing);
     }
 });
 
