@@ -72,6 +72,11 @@ function (app_name,callback) {
 schema.on('read', '/aws-versions/:app_name',
 filters.authCheck,
 function (app_name, callback) {
+    if (!app_name) {
+        callback("No app specified");
+        return;
+    }
+
     ELB.describeApplicationVersions({
         "ApplicationName": app_name
     }, function (err, data) {
@@ -80,7 +85,7 @@ function (app_name, callback) {
             return;
         }
 
-        callback(null, data.ApplicationVersion.map(function (version) {
+        callback(null, data.ApplicationVersions.map(function (version) {
             return {
                 app_name: version.ApplicationName,
                 version_description: version.Description,
