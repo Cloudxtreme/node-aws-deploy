@@ -1,18 +1,18 @@
-ProductsListView = AwsDeploy.View.extend({
+DeploymentsListView = AwsDeploy.View.extend({
     initialize: function (options) {
         this.options = options;
-        this.template = Templates.get("main/products");
+        this.template = Templates.get("main/deployments");
 
-        this.products = new ProductCollection();
-        this.listenTo(this.products, 'reset', this.addAll);
+        this.deployments = new DeploymentCollection();
+        this.listenTo(this.deployments, 'reset', this.addAll);
 
-        this.products.fetch({
+        this.deployments.fetch({
             reset: true
         });
     },
 
     events: {
-        "click #add_product": "showProductDialog"
+        "click #add_deployment": "showCreateDeploymentDialog"
     },
 
     render: function () {
@@ -28,27 +28,27 @@ ProductsListView = AwsDeploy.View.extend({
 
     addAll: function () {
         this.closeChildViews();
-        this.products.each(this.addOne, this);
+        this.deployments.each(this.addOne, this);
         this.render();
     },
 
     addOne: function (model) {
-        var view = new ProductItemView({model: model});
+        var view = new DeploymentsItemView({model: model});
         this.addChildView(view);
     },
 
-    showProductDialog: function () {
-        this.modalView(new ProductDialogView({
-            collection: this.products
+    showCreateDeploymentDialog: function () {
+        this.modalView(new CreateDeploymentDialogView({
+            collection: this.deployments
         }));
     }
 });
 
-ProductItemView = AwsDeploy.View.extend({
+DeploymentsItemView = AwsDeploy.View.extend({
     tagName: 'tr',
 
     initialize: function () {
-        this.template = Templates.get("main/products-item");
+        this.template = Templates.get("main/deployments-item");
         this.listenTo(this.model, 'change', this.render);
     },
 
@@ -58,9 +58,9 @@ ProductItemView = AwsDeploy.View.extend({
     }
 });
 
-ProductDialogView = AwsDeploy.View.extend({
+CreateDeploymentDialogView = AwsDeploy.View.extend({
     initialize: function () {
-        this.template = Templates.get("main/product-form");
+        this.template = Templates.get("main/deployment-create-dialog");
 
         this.applications = new AwsApplicationCollection();
         this.listenTo(this.applications, 'reset', this.update);
@@ -74,8 +74,8 @@ ProductDialogView = AwsDeploy.View.extend({
 
     events: {
         "submit form": "submit",
-        "change #product_application": "refresh",
-        "change #product_environment": "refresh"
+        "change #deployment_application": "refresh",
+        "change #deployment_environment": "refresh"
     },
 
     render: function () {
@@ -114,13 +114,13 @@ ProductDialogView = AwsDeploy.View.extend({
             return;
         }
 
-        var product_application = this.$el.find("#product_application").val();
-        if (!product_application || product_application == this.environments.application_name) {
+        var deployment_application = this.$el.find("#deployment_application").val();
+        if (!deployment_application || deployment_application == this.environments.application_name) {
             return;
         }
 
         this._refreshingEnvironments = true;
-        this.environments.app_name = product_application;
+        this.environments.app_name = deployment_application;
         this.environments.fetch({
             reset: true,
             success: _.bind(function () {
@@ -133,7 +133,7 @@ ProductDialogView = AwsDeploy.View.extend({
     },
 
     update: function () {
-        var product_application = this.$el.find("#product_application");
+        var deployment_application = this.$el.find("#deployment_application");
         var applications = this.$el.find("datalist#applications");
         if (applications) {
             applications.empty();
@@ -142,10 +142,10 @@ ProductDialogView = AwsDeploy.View.extend({
                 applications.append(node);
             });
         }
-        product_application.parent().toggleClass("has-error", !(!product_application.val() || !!this.applications.get(product_application.val())));
-        product_application.parent().toggleClass("has-success", !!this.applications.get(product_application.val()));
+        deployment_application.parent().toggleClass("has-error", !(!deployment_application.val() || !!this.applications.get(deployment_application.val())));
+        deployment_application.parent().toggleClass("has-success", !!this.applications.get(deployment_application.val()));
 
-        var product_environment = this.$el.find("#product_environment");
+        var deployment_environment = this.$el.find("#deployment_environment");
         var environments = this.$el.find("datalist#environments");
         if (environments) {
             environments.empty();
@@ -154,24 +154,24 @@ ProductDialogView = AwsDeploy.View.extend({
                 environments.append(node);
             });
         }
-        product_environment.parent().toggleClass("has-error", !(!product_environment.val() || !!this.environments.get(product_environment.val())));
-        product_environment.parent().toggleClass("has-success", !!this.environments.get(product_environment.val()));
+        deployment_environment.parent().toggleClass("has-error", !(!deployment_environment.val() || !!this.environments.get(deployment_environment.val())));
+        deployment_environment.parent().toggleClass("has-success", !!this.environments.get(deployment_environment.val()));
     },
 
     submit: function (event) {
         event.preventDefault();
 
-        var product_name = this.$el.find("#product_name").val();
-        var product_application = this.$el.find("#product_application").val();
-        var product_environment = this.$el.find("#product_environment").val();
+        var deployment_name = this.$el.find("#deployment_name").val();
+        var deployment_application = this.$el.find("#deployment_application").val();
+        var deployment_environment = this.$el.find("#deployment_environment").val();
 
         this.collection.create({
-            product_name: product_name,
-            product_application: product_application,
-            product_environment: product_environment
+            deployment_name: deployment_name,
+            deployment_application: deployment_application,
+            deployment_environment: deployment_environment
         }, {
             success: _.bind(function () {
-                toastr.success("products.product-created");
+                toastr.success("deployments.deployment-created");
                 this.close();
 
                 this.collection.fetch({
@@ -179,22 +179,22 @@ ProductDialogView = AwsDeploy.View.extend({
                 });
             }, this),
             error: _.bind(function () {
-                toastr.error("products.product-creation-failed");
+                toastr.error("deployments.deployment-creation-failed");
             }, this)
         });
     }
 });
 
-ProductView = AwsDeploy.View.extend({
+DeploymentView = AwsDeploy.View.extend({
     initialize: function (options) {
         this.options = options;
-        this.template = Templates.get("main/product");
+        this.template = Templates.get("main/deployment");
 
         this.listenTo(this.model, 'change', this.render);
 
         this.versions = new AwsApplicationVersionCollection();
-        if (!!this.model.get("product_application")) {
-            this.versions.app_name = this.model.get("product_application");
+        if (!!this.model.get("deployment_application")) {
+            this.versions.app_name = this.model.get("deployment_application");
             this.listenTo(this.versions, 'reset', this.render);
             this.versions.fetch({
                 reset: true
@@ -202,8 +202,8 @@ ProductView = AwsDeploy.View.extend({
         }
 
         this.environments = new AwsEnvironmentCollection();
-        if (!!this.model.get("product_environment")) {
-            this.environments.app_name = this.model.get("product_application");
+        if (!!this.model.get("deployment_environment")) {
+            this.environments.app_name = this.model.get("deployment_application");
             this.listenTo(this.environments, 'reset', this.render);
             this.environments.fetch({
                 reset: true
@@ -212,19 +212,19 @@ ProductView = AwsDeploy.View.extend({
     },
 
     events: {
-        "submit form#product": "saveProduct",
-        "click button#link": "linkProduct",
-        "click button#delete": "destroyProduct"
+        "submit form#deployment": "saveDeployment",
+        "click button#link": "linkDeployment",
+        "click button#delete": "destroyDeployment"
     },
 
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
 
-        this.$el.find("#product_name").val(this.model.get("product_name"));
-        this.$el.find("#product_application").val(this.model.get("product_application"));
-        this.$el.find("#product_environment").val(this.model.get("product_environment"));
-        this.$el.find("#product_repo_type").val(this.model.get("product_repo_type"));
-        this.$el.find("#product_repo_url").val(this.model.get("product_repo_url"));
+        this.$el.find("#deployment_name").val(this.model.get("deployment_name"));
+        this.$el.find("#deployment_application").val(this.model.get("deployment_application"));
+        this.$el.find("#deployment_environment").val(this.model.get("deployment_environment"));
+        this.$el.find("#deployment_repo_type").val(this.model.get("deployment_repo_type"));
+        this.$el.find("#deployment_repo_url").val(this.model.get("deployment_repo_url"));
 
         this.setEditMode(!!this.options.edit);
         this.delegateEvents();
@@ -232,64 +232,64 @@ ProductView = AwsDeploy.View.extend({
     },
 
     environment: function () {
-        if (!this.model.get("product_environment")) {
+        if (!this.model.get("deployment_environment")) {
             return null;
         }
 
-        return this.environments.get(this.model.get("product_environment"));
+        return this.environments.get(this.model.get("deployment_environment"));
     },
 
-    saveProduct: function (event) {
+    saveDeployment: function (event) {
         event.preventDefault();
 
-        var product_name = this.$el.find("#product_name").val();
-        var product_application = this.$el.find("#product_application").val();
-        var product_environment = this.$el.find("#product_environment").val();
-        var product_repo_type = this.$el.find("#product_repo_type").val();
-        var product_repo_url = this.$el.find("#product_repo_url").val();
+        var deployment_name = this.$el.find("#deployment_name").val();
+        var deployment_application = this.$el.find("#deployment_application").val();
+        var deployment_environment = this.$el.find("#deployment_environment").val();
+        var deployment_repo_type = this.$el.find("#deployment_repo_type").val();
+        var deployment_repo_url = this.$el.find("#deployment_repo_url").val();
 
         this.model.save({
-            product_name: product_name,
-            product_application: product_application,
-            product_environment: product_environment,
-            product_repo_type: !!product_repo_type ? product_repo_type : null,
-            product_repo_url: product_repo_url
+            deployment_name: deployment_name,
+            deployment_application: deployment_application,
+            deployment_environment: deployment_environment,
+            deployment_repo_type: !!deployment_repo_type ? deployment_repo_type : null,
+            deployment_repo_url: deployment_repo_url
         }, {
             wait: true,
             success: _.bind(function () {
-                toastr.success("product.saved");
-                app.navigate("#product/" + this.model.id, {trigger: true});
+                toastr.success("deployment.saved");
+                app.navigate("#deployment/" + this.model.id, {trigger: true});
             }, this),
             error: _.bind(function () {
-                toastr.error("product.save-failed");
+                toastr.error("deployment.save-failed");
             }, this)
         })
     },
 
-    linkProduct: function (event) {
+    linkDeployment: function (event) {
         event.preventDefault();
 
-        switch (this.model.get("product_repo_type")) {
+        switch (this.model.get("deployment_repo_type")) {
             case 'github': {
                 var github = new GithubApi();
                 github.link(this.model.id, function (err) {
                     if (err) {
-                        toastr.error("product.repo-link-failed");
+                        toastr.error("deployment.repo-link-failed");
                     }
                 });
             } break;
 
             default: {
-                toastr.error("product.repo-type-invalid");
+                toastr.error("deployment.repo-type-invalid");
             } break;
         }
 
     },
 
-    destroyProduct: function (event) {
+    destroyDeployment: function (event) {
         event.preventDefault();
 
-        this.confirm("product.delete-product-confirm", function (ok) {
+        this.confirm("deployment.delete-deployment-confirm", function (ok) {
         });
     }
 });

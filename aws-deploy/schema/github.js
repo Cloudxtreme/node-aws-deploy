@@ -13,17 +13,17 @@ schema.on('read', '/github/:callback_id',
 function (callback_id, callback, info) {
     async.waterfall([
         function (callback) {
-            db.querySingle("SELECT * FROM awd_products" +
-            " JOIN awd_auth_states ON awd_auth_states.product_id = awd_products.product_id" +
-            " WHERE state_id = ? LIMIT 1", [info.request.query["state"]], function (err, product) {
-                if (err || !product) {
-                    callback(err || new SchemaError("Product not found"));
+            db.querySingle("SELECT * FROM awd_deployments" +
+            " JOIN awd_auth_states ON awd_auth_states.deployment_id = awd_deployments.deployment_id" +
+            " WHERE state_id = ? LIMIT 1", [info.request.query["state"]], function (err, deployment) {
+                if (err || !deployment) {
+                    callback(err || new SchemaError("Deployment not found"));
                     return;
                 }
 
-                callback(null, product);
+                callback(null, deployment);
             });
-        }, function (product, callback) {
+        }, function (deployment, callback) {
             request.post({
                 url: config.github.endpoint.auth + "/login/oauth/access_token",
                 json: true,
@@ -41,18 +41,18 @@ function (callback_id, callback, info) {
                     return;
                 }
 
-                db.query("UPDATE awd_products SET product_repo_access_token = ? WHERE product_id = ? LIMIT 1", [body.access_token, product.product_id], function (err) {
-                    callback(err, product.product_id);
+                db.query("UPDATE awd_deployments SET deployment_repo_access_token = ? WHERE deployment_id = ? LIMIT 1", [body.access_token, deployment.deployment_id], function (err) {
+                    callback(err, deployment.deployment_id);
                 });
             });
         }
-    ], function (err, product_id) {
-        info.response.redirect(err ? "/" : "/#product/" + product_id);
+    ], function (err, deployment_id) {
+        info.response.redirect(err ? "/" : "/#deployment/" + deployment_id);
     });
 });
 
 schema.on('emit', '/github',
-    filters.authCheck, filters.productWriteCheck,
+    filters.authCheck, filters.deploymentWriteCheck,
 function (method, data, callback) {
     if (!config.github.client) {
         callback("github not configured");
@@ -63,23 +63,23 @@ function (method, data, callback) {
         case 'link': {
             async.waterfall([
                 function (callback) {
-                    db.querySingle("SELECT * FROM awd_products WHERE product_id = ? LIMIT 1", [data.product_id], function (err, product) {
-                        if (err || !product) {
-                            callback(err || new SchemaError("Product not found"));
+                    db.querySingle("SELECT * FROM awd_deployments WHERE deployment_id = ? LIMIT 1", [data.deployment_id], function (err, deployment) {
+                        if (err || !deployment) {
+                            callback(err || new SchemaError("Deployment not found"));
                             return;
                         }
-                        callback(null, product);
+                        callback(null, deployment);
                     });
-                }, function (product, callback) {
+                }, function (deployment, callback) {
                     crypto.pseudoRandomBytes(30, function (err, buf) {
                         if (err) {
                             callback(err);
                             return;
                         }
 
-                        db.query("INSERT INTO awd_auth_states (state_id, product_id) VALUES (:state_id, :product_id)", {
+                        db.query("INSERT INTO awd_auth_states (state_id, deployment_id) VALUES (:state_id, :deployment_id)", {
                             state_id: buf.toString('base64'),
-                            product_id: product.product_id
+                            deployment_id: deployment.deployment_id
                         }, function (err) {
                             callback(err, {
                                 state: buf.toString('base64'),

@@ -1,8 +1,8 @@
-ProductModel = AwsDeploy.Model.extend({
-    idAttribute: "product_id"
+DeploymentModel = AwsDeploy.Model.extend({
+    idAttribute: "deployment_id"
 });
 
-ProductCollection = AwsDeploy.Collection.extend({
-    model: ProductModel,
-    url: "/products"
+DeploymentCollection = AwsDeploy.Collection.extend({
+    model: DeploymentModel,
+    url: "/deployments"
 });

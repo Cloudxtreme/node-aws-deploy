@@ -10,54 +10,54 @@ var MainApp = AwsDeploy.Router.extend({
     },
 
     routes: {
-        "": "showProducts",
-        "product/:product_id": "showProduct",
-        "product/:product_id/edit": "editProduct"
+        "": "showDeployments",
+        "deployments/:deployment_id": "showDeployment",
+        "deployments/:deployment_id/edit": "editDeployment"
     },
 
-    showProducts: function () {
+    showDeployments: function () {
         if (!this.session.isAuthorized()) {
             this.navbar.showLogin();
             return;
         }
 
-        this.showView("#content", new ProductsListView());
+        this.showView("#content", new DeploymentsListView());
     },
 
-    showProduct: function (product_id) {
+    showDeployment: function (deployment_id) {
         if (!this.session.isAuthorized()) {
             this.navbar.showLogin();
             return;
         }
 
-        var products = new ProductCollection();
-        products.fetch({
+        var deployments = new DeploymentCollection();
+        deployments.fetch({
             success: _.bind(function (collection) {
-                var product = collection.get(product_id);
+                var deployment = collection.get(deployment_id);
 
-                this.showView("#content", new ProductView({model: product}));
+                this.showView("#content", new DeploymentView({model: deployment}));
             }, this),
             error: function () {
-                toastr.error("router.failed-products-fetch");
+                toastr.error("router.failed-deployments-fetch");
             }
         });
     },
 
-    editProduct: function (product_id) {
+    editDeployment: function (deployment_id) {
         if (!this.session.isAuthorized()) {
             this.navbar.showLogin();
             return;
         }
 
-        var products = new ProductCollection();
-        products.fetch({
+        var deployments = new DeploymentCollection();
+        deployments.fetch({
             success: _.bind(function (collection) {
-                var product = collection.get(product_id);
+                var deployment = collection.get(deployment_id);
 
-                this.showView("#content", new ProductView({model: product, edit: true}));
+                this.showView("#content", new DeploymentView({model: deployment, edit: true}));
             }, this),
             error: function () {
-                toastr.error("router.failed-products-fetch");
+                toastr.error("router.failed-deployments-fetch");
             }
         });
     }

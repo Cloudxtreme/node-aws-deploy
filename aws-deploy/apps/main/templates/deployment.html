@@ -1,37 +1,37 @@
-<form role="form" id="product" class="well">
+<form role="form" id="deployment" class="well">
     <div class="form-group">
-        <a href="#product/<%= product_id %>/edit" class="pull-right"><span class="glyphicon glyphicon-edit"></span></a>
-        <label for="product_name">product.name</label>
-        <input id="product_name" class="form-control" type="text">
+        <a href="#deployment/<%= deployment_id %>/edit" class="pull-right"><span class="glyphicon glyphicon-edit"></span></a>
+        <label for="deployment_name">deployment.name</label>
+        <input id="deployment_name" class="form-control" type="text">
     </div>
 
     <div class="form-group">
-        <label for="product_application">product.application</label>
-        <input id="product_application" class="form-control" type="text">
+        <label for="deployment_application">deployment.application</label>
+        <input id="deployment_application" class="form-control" type="text">
     </div>
 
     <div class="form-group">
-        <label for="product_environment">product.environment</label>
-        <input id="product_environment" class="form-control" type="text">
+        <label for="deployment_environment">deployment.environment</label>
+        <input id="deployment_environment" class="form-control" type="text">
     </div>
 
     <div class="form-group">
-        <label for="product_repo_type">product.repo-type</label>
-        <select id="product_repo_type" class="form-control">
+        <label for="deployment_repo_type">deployment.repo-type</label>
+        <select id="deployment_repo_type" class="form-control">
             <option value=""></option>
             <option value="github">Github</option>
         </select>
     </div>
 
     <div class="form-group">
-        <label for="product_repo_url">product.repo-url</label>
-        <input id="product_repo_url" class="form-control" type="text" value="<%- product_repo_url %>">
+        <label for="deployment_repo_url">deployment.repo-url</label>
+        <input id="deployment_repo_url" class="form-control" type="text" value="<%- deployment_repo_url %>">
     </div>
 
     <div class="form-group edit-mode-only">
-        <button id="save" class="btn btn-primary">product.save</button>
-        <button id="link" class="btn btn-warning">product.link-repo</button>
-        <button id="delete" class="btn btn-danger pull-right">product.delete</button>
+        <button id="save" class="btn btn-primary">deployment.save</button>
+        <button id="link" class="btn btn-warning">deployment.link-repo</button>
+        <button id="delete" class="btn btn-danger pull-right">deployment.delete</button>
     </div>
 </form>
 

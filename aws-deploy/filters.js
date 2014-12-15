@@ -8,13 +8,13 @@ exports.authCheck = {
     }
 };
 
-exports.productReadCheck = {
+exports.deploymentReadCheck = {
     call: function (data, next) {
         next(null);
     }
 };
 
-exports.productWriteCheck = {
+exports.deploymentWriteCheck = {
     call: function (data, next) {
         next(null);
     }
