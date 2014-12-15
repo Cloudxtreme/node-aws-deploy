@@ -35,5 +35,14 @@
         "region": null,
         "key": null,
         "secret": null
+    },
+
+    "github": {
+        "client": null,
+        "secret": null,
+        "endpoint": {
+            "api": "https://api.github.com",
+            "auth": "https://github.com"
+        }
     }
 }
