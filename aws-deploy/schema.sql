@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.9 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.11, for Win64 (x86_64)
 --
 -- Host: localhost    Database: aws_deploy
 -- ------------------------------------------------------
--- Server version	5.6.19
+-- Server version	5.6.11-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,20 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `awd_auth_states`
+--
+
+DROP TABLE IF EXISTS `awd_auth_states`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `awd_auth_states` (
+  `state_id` varchar(40) NOT NULL,
+  `product_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`state_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `awd_products`
@@ -29,6 +43,9 @@ CREATE TABLE `awd_products` (
   `product_created_by` bigint(20) NOT NULL,
   `product_application` varchar(100) NOT NULL,
   `product_environment` varchar(64) NOT NULL,
+  `product_repo_type` enum('github') DEFAULT NULL,
+  `product_repo_url` text,
+  `product_repo_access_token` text,
   PRIMARY KEY (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -61,4 +78,4 @@ CREATE TABLE `awd_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-14 12:10:14
+-- Dump completed on 2014-12-15 18:52:20
