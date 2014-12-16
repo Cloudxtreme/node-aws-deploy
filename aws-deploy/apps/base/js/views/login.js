@@ -34,11 +34,11 @@ LoginView = AwsDeploy.View.extend({
         this.options.session.login(user_email, user_pass, _.bind(function (err) {
             if (err) {
                 toastr.error("login.login-failed");
+
+                this.$el.find("#login_progress").toggleClass("hidden", true);
+                this.$el.find("form#login button[type=submit]").prop("disabled", false);
                 return;
             }
-
-            this.$el.find("#login_progress").toggleClass("hidden", true);
-            this.$el.find("form#login button[type=submit]").prop("disabled", false);
 
             window.location.reload();
         }, this));
@@ -72,11 +72,11 @@ LoginView = AwsDeploy.View.extend({
         }, _.bind(function (err) {
             if (err) {
                 toastr.error("register.registration-failed");
+
+                this.$el.find("#registration_progress").toggleClass("hidden", true);
+                this.$el.find("form#register button[type=submit]").prop("disabled", false);
                 return;
             }
-
-            this.$el.find("#registration_progress").toggleClass("hidden", true);
-            this.$el.find("form#register button[type=submit]").prop("disabled", false);
 
             window.location.reload();
         }, this));
