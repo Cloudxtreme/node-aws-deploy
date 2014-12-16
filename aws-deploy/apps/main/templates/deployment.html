@@ -1,67 +1,11 @@
-<form role="form" id="deployment" class="well">
-    <div class="form-group">
-        <a href="#deployment/<%= deployment_id %>/edit" class="pull-right"><span class="glyphicon glyphicon-edit"></span></a>
-        <label for="deployment_name">deployment.name</label>
-        <input id="deployment_name" class="form-control" type="text">
+<div class="row">
+    <div class="col-md-3">
+        <ul class="nav nav-pills nav-stacked" id="menu">
+            <li id="overview"><a href="#deployments/<%= deployment_id %>">deployment.overview</a></li>
+            <li id="edit"><a href="#deployments/<%= deployment_id %>/edit">deployment.edit</a></li>
+            <li id="repository"><a href="#deployments/<%= deployment_id %>/repository">deployment.repository</a></li>
+            <li id="aws"><a href="#deployments/<%= deployment_id %>/aws">deployment.aws</a></li>
+        </ul>
     </div>
-
-    <div class="form-group">
-        <label for="deployment_application">deployment.application</label>
-        <input id="deployment_application" class="form-control" type="text">
-    </div>
-
-    <div class="form-group">
-        <label for="deployment_environment">deployment.environment</label>
-        <input id="deployment_environment" class="form-control" type="text">
-    </div>
-
-    <div class="form-group">
-        <label for="deployment_repo_type">deployment.repo-type</label>
-        <select id="deployment_repo_type" class="form-control">
-            <option value=""></option>
-            <option value="github">Github</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="deployment_repo_url">deployment.repo-url</label>
-        <input id="deployment_repo_url" class="form-control" type="text" value="<%- deployment_repo_url %>">
-    </div>
-
-    <div class="form-group edit-mode-only">
-        <button id="save" class="btn btn-primary">deployment.save</button>
-        <button id="link" class="btn btn-warning">deployment.link-repo</button>
-        <button id="delete" class="btn btn-danger pull-right">deployment.delete</button>
-    </div>
-</form>
-
-<%
-var environment = this.environment();
-if (environment) {
-%>
-
-<form role="form" id="application" class="read-mode-only">
-    <div class="form-group">
-        <button id="check" class="btn btn-info">application.check</button>
-    </div>
-
-    <div class="form-group">
-        <label for="deployed_version">application.deployed-version</label>
-        <input id="deployed_version" type="text" class="form-control" value="<%= environment.get('env_version') %>">
-    </div>
-
-    <div class="form-group">
-        <label for="available_versions">application.available-versions</label>
-        <select id="available_versions" class="form-control">
-            <% this.versions.each(function (version) { %>
-                <option value="<%= version.get('version_label') %>"><%= version.get('version_label') %></option>
-            <% }); %>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <button id="deploy" class="btn btn-primary">application.deploy</button>
-    </div>
-</form>
-
-<% } %>
+    <div class="col-md-9" id="deployment"></div>
+</div>

@@ -1,0 +1,45 @@
+<form class="form">
+    <div class="form-group">
+        <label for="repository_type">repository.type</label>
+        <select id="repository_type" class="form-control">
+            <option value=""></option>
+            <option value="github">Github</option>
+        </select>
+    </div>
+<% if (this.repository.get("repository_type")) { %>
+<% if (!this.repository.get("repository_linked")) { %>
+    <div class="form-group">
+        <button id="link" class="btn btn-primary">repository.link</button>
+    </div>
+<%
+} else if (!this.repository.get("repository_url")) {
+    switch (this.repository.get("repository_type")) {
+        case 'github': {
+%>
+    <div class="form-group">
+        <label for="repository_name">repository.name</label>
+        <select id="repository_name" class="form-control" disabled></select>
+    </div>
+
+    <div class="form-group">
+        <label for="repository_branch">repository.branch</label>
+        <select id="repository_branch" class="form-control" disabled></select>
+    </div>
+
+    <div class="form-group">
+        <button id="save" class="btn btn-primary" disabled>repository.save</button>
+    </div>
+<%
+        } break;
+    }
+} else {%>
+<div class="form-group">
+    <label for="repository_url">repository.label</label>
+    <input id="repository_url" class="form-control" type="text" value="<%= repository_url %>" disabled>
+</div>
+<div class="form-group">
+    <button id="unlink" class="btn btn-danger">repository.unlink</button>
+</div>
+<% } %>
+<% } %>
+</form>

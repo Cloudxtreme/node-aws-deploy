@@ -11,8 +11,10 @@ var MainApp = AwsDeploy.Router.extend({
 
     routes: {
         "": "showDeployments",
-        "deployments/:deployment_id": "showDeployment",
-        "deployments/:deployment_id/edit": "editDeployment"
+        "deployments/:deployment_id": "showDeploymentOverview",
+        "deployments/:deployment_id/edit": "showDeploymentEdit",
+        "deployments/:deployment_id/repository": "showDeploymentRepository",
+        "deployments/:deployment_id/aws": "showDeploymentAws"
     },
 
     showDeployments: function () {
@@ -24,42 +26,99 @@ var MainApp = AwsDeploy.Router.extend({
         this.showView("#content", new DeploymentsListView());
     },
 
-    showDeployment: function (deployment_id) {
+    showDeploymentOverview: function (deployment_id) {
         if (!this.session.isAuthorized()) {
             this.navbar.showLogin();
             return;
         }
 
-        var deployments = new DeploymentCollection();
-        deployments.fetch({
-            success: _.bind(function (collection) {
-                var deployment = collection.get(deployment_id);
-
-                this.showView("#content", new DeploymentView({model: deployment}));
-            }, this),
-            error: function () {
-                toastr.error("router.failed-deployments-fetch");
-            }
+        this.before({
+            deployment_id: deployment_id
+        }, function (deployment) {
+            this.showView("#content", new DeploymentView({
+                model: deployment, type: 'overview'
+            }));
         });
     },
 
-    editDeployment: function (deployment_id) {
+    showDeploymentEdit: function (deployment_id) {
         if (!this.session.isAuthorized()) {
             this.navbar.showLogin();
             return;
         }
 
-        var deployments = new DeploymentCollection();
-        deployments.fetch({
-            success: _.bind(function (collection) {
-                var deployment = collection.get(deployment_id);
-
-                this.showView("#content", new DeploymentView({model: deployment, edit: true}));
-            }, this),
-            error: function () {
-                toastr.error("router.failed-deployments-fetch");
-            }
+        this.before({
+            deployment_id: deployment_id
+        }, function (deployment) {
+            this.showView("#content", new DeploymentView({
+                model: deployment, type: 'edit'
+            }));
         });
+    },
+
+    showDeploymentRepository: function (deployment_id) {
+        if (!this.session.isAuthorized()) {
+            this.navbar.showLogin();
+            return;
+        }
+
+        this.before({
+            deployment_id: deployment_id
+        }, function (deployment) {
+            this.showView("#content", new DeploymentView({
+                model: deployment, type: 'repository'
+            }));
+        });
+    },
+
+    showDeploymentAws: function (deployment_id) {
+        if (!this.session.isAuthorized()) {
+            this.navbar.showLogin();
+            return;
+        }
+
+        this.before({
+            deployment_id: deployment_id
+        }, function (deployment) {
+            this.showView("#content", new DeploymentView({
+                model: deployment, type: 'aws'
+            }));
+        });
+    },
+
+    before: function (options, callback) {
+        if (_.isUndefined(callback) && _.isFunction(options)) {
+            callback = options;
+            options = {};
+        }
+
+        var args = [];
+        var actions = [];
+
+        if (options.deployment_id) {
+            actions.push(_.bind(function (callback) {
+                if (options.deployment_id) {
+                    this._deployments = new DeploymentCollection();
+                    this._deployments.fetch({
+                        reset: true,
+                        success: function (collection) {
+                            args.push(collection.get(options.deployment_id));
+                            callback();
+                        },
+                        error: callback
+                    })
+                } else {
+                    async.nextTick(callback);
+                }
+            }, this));
+        }
+
+        async.series(actions, _.bind(function (err) {
+            if (err) {
+                return;
+            }
+            callback.apply(this, args);
+        }, this));
     }
 });
 

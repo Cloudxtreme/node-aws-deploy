@@ -2,20 +2,21 @@ var config = require('config');
 var async = require('async');
 var crypto = require('crypto');
 var request = require('request');
+var url = require('url');
 
 var schema = require('../../server/schema');
 var SchemaError = schema.SchemaError;
 var db = require("../../server/db")
 var filters = require('../filters');
 
-schema.on('read', '/github/:callback_id',
+schema.on('read', '/github/callback',
     filters.authCheck,
-function (callback_id, callback, info) {
+function (callback, info) {
     async.waterfall([
         function (callback) {
-            db.querySingle("SELECT * FROM awd_deployments" +
-            " JOIN awd_auth_states ON awd_auth_states.deployment_id = awd_deployments.deployment_id" +
-            " WHERE state_id = ? LIMIT 1", [info.request.query["state"]], function (err, deployment) {
+            db.querySingle("SELECT * FROM awd_repositories" +
+            " JOIN awd_deployments ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
+            " WHERE repository_state = ? LIMIT 1", [info.request.query["state"]], function (err, deployment) {
                 if (err || !deployment) {
                     callback(err || new SchemaError("Deployment not found"));
                     return;
@@ -25,7 +26,7 @@ function (callback_id, callback, info) {
             });
         }, function (deployment, callback) {
             request.post({
-                url: config.github.endpoint.auth + "/login/oauth/access_token",
+                url: url.resolve(config.github.endpoint.auth, "/login/oauth/access_token"),
                 json: true,
                 body: {
                     client_id: config.github.client,
@@ -37,66 +38,106 @@ function (callback_id, callback, info) {
                 }
             }, function (err, response, body) {
                 if (err || response.statusCode != 200 || !body.hasOwnProperty("access_token")) {
-                    callback(err ||new SchemaError("Request failed"));
+                    callback(err || new SchemaError("Request failed"));
                     return;
                 }
 
-                db.query("UPDATE awd_deployments SET deployment_repo_access_token = ? WHERE deployment_id = ? LIMIT 1", [body.access_token, deployment.deployment_id], function (err) {
+                db.query("UPDATE awd_repositories SET repository_credentials = ? WHERE deployment_id = ? LIMIT 1", [body.access_token, deployment.deployment_id], function (err) {
                     callback(err, deployment.deployment_id);
                 });
             });
         }
     ], function (err, deployment_id) {
-        info.response.redirect(err ? "/" : "/#deployment/" + deployment_id);
+        info.response.redirect(err ? "/" : "/#deployments/" + deployment_id + "/repository");
     });
 });
 
-schema.on('emit', '/github',
+schema.on('read', '/github/:deployment_id/urls',
     filters.authCheck, filters.deploymentWriteCheck,
-function (method, data, callback) {
-    if (!config.github.client) {
-        callback("github not configured");
-        return;
-    }
-
-    switch (method) {
-        case 'link': {
-            async.waterfall([
-                function (callback) {
-                    db.querySingle("SELECT * FROM awd_deployments WHERE deployment_id = ? LIMIT 1", [data.deployment_id], function (err, deployment) {
-                        if (err || !deployment) {
-                            callback(err || new SchemaError("Deployment not found"));
-                            return;
-                        }
-                        callback(null, deployment);
-                    });
-                }, function (deployment, callback) {
-                    crypto.pseudoRandomBytes(30, function (err, buf) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
-
-                        db.query("INSERT INTO awd_auth_states (state_id, deployment_id) VALUES (:state_id, :deployment_id)", {
-                            state_id: buf.toString('base64'),
-                            deployment_id: deployment.deployment_id
-                        }, function (err) {
-                            callback(err, {
-                                state: buf.toString('base64'),
-                                client: config.github.client,
-                                endpoint: config.github.endpoint.auth
-                            });
-                        });
-                    });
+function (deployment_id, callback) {
+    async.waterfall([
+        function (callback) {
+            db.querySingle("SELECT * FROM awd_repositories WHERE deployment_id = ? LIMIT 1", [deployment_id], function (err, repository) {
+                if (err || !repository) {
+                    callback(err || new SchemaError("Could not find repository"));
+                    return;
                 }
-            ], callback);
-        } break;
 
-        case 'unlink': {
-        } break;
+                if (repository.repository_type != 'github' || !repository.repository_credentials) {
+                    callback(new SchemaError("Repository linking not completed"));
+                    return;
+                }
 
-        default: {
-            callback(new SchemaError("Invalid method"));
-        } break;
-    }
+                callback(null, repository);
+            });
+        }, function (repository, callback) {
+            request.get({
+                url: url.resolve(config.github.endpoint.api, "/user/repos"),
+                json: true,
+                headers: {
+                    "Authorization": "token " + repository.repository_credentials,
+                    "User-Agent": "node-aws-deploy",
+                    "Accept": "application/vnd.github.moondragon-preview+json"
+                }
+            }, function (err, response, body) {
+                if (err || response.statusCode != 200) {
+                    callback(err || new SchemaError("Request failed"));
+                    return;
+                }
+
+                callback(null, body.map(function (repo) {
+                    return {
+                        id: repo.id,
+                        full_name: repo.full_name,
+                        git_url: repo.git_url,
+                        html_url: repo.html_url
+                    };
+                }));
+            });
+        }
+    ], callback);
+});
+
+schema.on('read', '/github/:deployment_id/branches/:owner/:repo',
+    filters.authCheck, filters.deploymentWriteCheck,
+function (deployment_id, owner, repo, callback) {
+    async.waterfall([
+        function (callback) {
+            db.querySingle("SELECT * FROM awd_repositories WHERE deployment_id = ? LIMIT 1", [deployment_id], function (err, repository) {
+                if (err || !repository) {
+                    callback(err || new SchemaError("Could not find repository"));
+                    return;
+                }
+
+                if (repository.repository_type != 'github' || !repository.repository_credentials) {
+                    callback(new SchemaError("Repository linking not completed"));
+                    return;
+                }
+
+                callback(null, repository);
+            });
+        }, function (repository, callback) {
+            request.get({
+                url: url.resolve(config.github.endpoint.api, "/repos/" + owner + "/" + repo + "/branches"),
+                json: true,
+                headers: {
+                    "Authorization": "token " + repository.repository_credentials,
+                    "User-Agent": "node-aws-deploy",
+                    "Accept": "application/vnd.github.moondragon-preview+json"
+                }
+            }, function (err, response, body) {
+                if (err || response.statusCode != 200) {
+                    callback(err || new SchemaError("Request failed"));
+                    return;
+                }
+
+                callback(null, body.map(function (repo) {
+                    return {
+                        name: repo.name,
+                        sha: repo.commit.sha
+                    };
+                }));
+            });
+        }
+    ], callback);
 });

@@ -60,7 +60,7 @@ DeploymentsItemView = AwsDeploy.View.extend({
 
 CreateDeploymentDialogView = AwsDeploy.View.extend({
     initialize: function () {
-        this.template = Templates.get("main/deployment-create-dialog");
+        this.template = Templates.get("main/deployment-dialog-create");
 
         this.applications = new AwsApplicationCollection();
         this.listenTo(this.applications, 'reset', this.update);
@@ -192,6 +192,245 @@ DeploymentView = AwsDeploy.View.extend({
 
         this.listenTo(this.model, 'change', this.render);
 
+        switch (options.type) {
+            case 'overview': {
+                this.tabView = new DeploymentOverviewView({
+                    model: this.model
+                });
+            } break;
+
+            case 'edit': {
+                this.tabView = new DeploymentEditView({
+                    model: this.model
+                });
+            } break;
+
+            case 'repository': {
+                this.tabView = new DeploymentRepositoryView({
+                    model: this.model
+                });
+            } break;
+
+            case 'aws': {
+                this.tabView = new DeploymentAwsView({
+                    model: this.model
+                });
+            } break;
+        }
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.model.toJSON()));
+
+        if (this.tabView) {
+            this.$el.find("div#deployment").html(this.tabView.render().el);
+        }
+
+        this.$el.find("ul#menu li#" + this.options.type).addClass("active");
+
+        return this;
+    }
+});
+
+DeploymentOverviewView = AwsDeploy.View.extend({
+    initialize: function () {
+        this.template = Templates.get("main/deployment-tab-overview");
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.model.toJSON()));
+        return this;
+    }
+});
+
+DeploymentEditView = AwsDeploy.View.extend({
+    initialize: function () {
+        this.template = Templates.get("main/deployment-tab-edit");
+    },
+
+    events: {
+        "submit form": "save",
+        "click button#destroy": "destroy"
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.model.toJSON()));
+
+        this.$el.find("#deployment_name").val(this.model.get("deployment_name"));
+        this.$el.find("#deployment_application").val(this.model.get("deployment_application"));
+        this.$el.find("#deployment_environment").val(this.model.get("deployment_environment"));
+
+        return this;
+    },
+
+    save: function (event) {
+        event.preventDefault();
+
+        var deployment_name = this.$el.find("#deployment_name").val();
+        var deployment_application = this.$el.find("#deployment_application").val();
+        var deployment_environment = this.$el.find("#deployment_environment").val();
+
+        this.model.save({
+            deployment_name: deployment_name,
+            deployment_application: deployment_application,
+            deployment_environment: deployment_environment
+        }, {
+            wait: true,
+            success: _.bind(function () {
+                toastr.success("deployment.saved");
+                app.navigate("#deployment/" + this.model.id, {trigger: true});
+            }, this),
+            error: _.bind(function () {
+                toastr.error("deployment.save-failed");
+            }, this)
+        });
+    },
+
+    destroy: function (event) {
+        event.preventDefault();
+
+        this.confirm("deployment.delete-deployment-confirm", function (ok) {
+        });
+    }
+});
+
+DeploymentRepositoryView = AwsDeploy.View.extend({
+    initialize: function () {
+        this.template = Templates.get("main/deployment-tab-repository");
+
+        this.repository = new DeploymentRepositoryModel();
+        this.repository.deployment_id = this.model.id;
+        this.listenTo(this.repository, 'change', this.render);
+
+        this.repository.fetch({
+            success: _.bind(function () {
+                this.refreshUrls();
+            }, this)
+        });
+    },
+
+    events: {
+        "change #repository_type": "onChangeRepositoryType",
+        "change #repository_name": "onChangeRepositoryName",
+        "change #repository_branch": "onChangeRepositoryBranch",
+        "click #link": "link",
+        "click #save": "save",
+        "click #unlink": "unlink"
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.repository.toJSON()));
+        this.$el.find("#repository_type").val(this.repository.get("repository_type")).prop('disabled', !!this.repository.get("repository_linked"));
+        return this;
+    },
+
+    onChangeRepositoryType: function (event) {
+        this.repository.set("repository_type", event.target.value);
+    },
+
+    refreshUrls: function () {
+        if (this.repository.get("repository_linked") && !this.repository.get("repository_url")) {
+            this.urls = new GithubUrlCollection();
+            this.urls.deployment_id = this.model.id;
+
+            var target = this.$el.find("select#repository_name");
+
+            this.urls.fetch({
+                reset: true,
+                success: _.bind(function (collection) {
+                    $("<option>").attr("value","").html("repository.pick-repository").appendTo(target);
+                    target.prop("disabled", false);
+
+                    collection.each(function (url) {
+                        $("<option>").html(url.get("full_name")).appendTo(target);
+                    });
+                }, this)
+            });
+        }
+    },
+
+    onChangeRepositoryName: function () {
+        var repository_name = this.$el.find("#repository_name").val();
+
+        if (this.repository.get("repository_linked") && !this.repository.get("repository_url")) {
+            this.branches = new GithubBranchCollection();
+            this.branches.deployment_id = this.model.id;
+            this.branches.repository_name = repository_name;
+
+            var target = this.$el.find("select#repository_branch");
+
+            this.branches.fetch({
+                reset: true,
+                success: _.bind(function (collection) {
+                    $("<option>").attr("value", "").html("repository.pick-branch").appendTo(target);
+                    target.prop("disabled", false);
+
+                    collection.each(function (branch) {
+                        $("<option>").attr("value", branch.get("name")).html(branch.get("name") + " (" + branch.get("sha") + ")").appendTo(target);
+                    });
+                }, this)
+            });
+        }
+    },
+
+    onChangeRepositoryBranch: function () {
+        var repository_name = this.$el.find("#repository_name").val();
+        var repository_branch = this.$el.find("#repository_branch").val();
+
+        this.$el.find("button#save").prop('disabled', !(!!repository_name && !!repository_branch));
+    },
+
+    save: function (event) {
+        event.preventDefault();
+
+        var repository_name = this.$el.find("#repository_name").val();
+        var repository_branch = this.$el.find("#repository_branch").val();
+
+        this.repository.save({
+            repository_url: repository_name + "#" + repository_branch
+        }, {
+            wait: true,
+            error: function () {
+                toastr.error("repository.repo-link-failed");
+            }
+        })
+    },
+
+    link: function (event) {
+        event.preventDefault();
+
+        this.repository.emit('link', {
+            success: _.bind(function (model, url) {
+                window.location.href = url;
+            }, this),
+            error: function () {
+                toastr.error("deployment.repo-link-error");
+            }
+        });
+    },
+
+    unlink: function (event) {
+        event.preventDefault();
+
+        this.confirm("repository.unlink-repo-confirm", function (ok) {
+            if (ok) {
+                this.repository.emit('unlink', {
+                    success: _.bind(function () {
+                        this.repository.fetch();
+                    }, this),
+                    error: function () {
+                        toastr.error("deployment.repo-unlink-error");
+                    }
+                });
+            }
+        });
+    }
+});
+
+DeploymentAwsView = AwsDeploy.View.extend({
+    initialize: function () {
+        this.template = Templates.get("main/deployment-tab-aws");
+
         this.versions = new AwsApplicationVersionCollection();
         if (!!this.model.get("deployment_application")) {
             this.versions.app_name = this.model.get("deployment_application");
@@ -211,26 +450,6 @@ DeploymentView = AwsDeploy.View.extend({
         }
     },
 
-    events: {
-        "submit form#deployment": "saveDeployment",
-        "click button#link": "linkDeployment",
-        "click button#delete": "destroyDeployment"
-    },
-
-    render: function () {
-        this.$el.html(this.template(this.model.toJSON()));
-
-        this.$el.find("#deployment_name").val(this.model.get("deployment_name"));
-        this.$el.find("#deployment_application").val(this.model.get("deployment_application"));
-        this.$el.find("#deployment_environment").val(this.model.get("deployment_environment"));
-        this.$el.find("#deployment_repo_type").val(this.model.get("deployment_repo_type"));
-        this.$el.find("#deployment_repo_url").val(this.model.get("deployment_repo_url"));
-
-        this.setEditMode(!!this.options.edit);
-        this.delegateEvents();
-        return this;
-    },
-
     environment: function () {
         if (!this.model.get("deployment_environment")) {
             return null;
@@ -239,57 +458,8 @@ DeploymentView = AwsDeploy.View.extend({
         return this.environments.get(this.model.get("deployment_environment"));
     },
 
-    saveDeployment: function (event) {
-        event.preventDefault();
-
-        var deployment_name = this.$el.find("#deployment_name").val();
-        var deployment_application = this.$el.find("#deployment_application").val();
-        var deployment_environment = this.$el.find("#deployment_environment").val();
-        var deployment_repo_type = this.$el.find("#deployment_repo_type").val();
-        var deployment_repo_url = this.$el.find("#deployment_repo_url").val();
-
-        this.model.save({
-            deployment_name: deployment_name,
-            deployment_application: deployment_application,
-            deployment_environment: deployment_environment,
-            deployment_repo_type: !!deployment_repo_type ? deployment_repo_type : null,
-            deployment_repo_url: deployment_repo_url
-        }, {
-            wait: true,
-            success: _.bind(function () {
-                toastr.success("deployment.saved");
-                app.navigate("#deployment/" + this.model.id, {trigger: true});
-            }, this),
-            error: _.bind(function () {
-                toastr.error("deployment.save-failed");
-            }, this)
-        })
-    },
-
-    linkDeployment: function (event) {
-        event.preventDefault();
-
-        switch (this.model.get("deployment_repo_type")) {
-            case 'github': {
-                var github = new GithubApi();
-                github.link(this.model.id, function (err) {
-                    if (err) {
-                        toastr.error("deployment.repo-link-failed");
-                    }
-                });
-            } break;
-
-            default: {
-                toastr.error("deployment.repo-type-invalid");
-            } break;
-        }
-
-    },
-
-    destroyDeployment: function (event) {
-        event.preventDefault();
-
-        this.confirm("deployment.delete-deployment-confirm", function (ok) {
-        });
+    render: function () {
+        this.$el.html(this.template());
+        return this;
     }
 });
