@@ -31,10 +31,11 @@ function (callback, info) {
                 body: {
                     client_id: config.github.client,
                     client_secret: config.github.secret,
-                    code: info.request.query["code"]
+                    code: info.request.query["code"],
                 },
                 headers: {
-                    "accept": "application/json"
+                    "Accept": "application/json",
+                    "User-Agent": config.github.useragent
                 }
             }, function (err, response, body) {
                 if (err || response.statusCode != 200 || !body.hasOwnProperty("access_token")) {
@@ -76,7 +77,7 @@ function (deployment_id, callback) {
                 json: true,
                 headers: {
                     "Authorization": "token " + repository.repository_credentials,
-                    "User-Agent": "node-aws-deploy",
+                    "User-Agent": config.github.useragent,
                     "Accept": "application/vnd.github.moondragon-preview+json"
                 }
             }, function (err, response, body) {
@@ -122,7 +123,7 @@ function (deployment_id, owner, repo, callback) {
                 json: true,
                 headers: {
                     "Authorization": "token " + repository.repository_credentials,
-                    "User-Agent": "node-aws-deploy",
+                    "User-Agent": config.github.useragent,
                     "Accept": "application/vnd.github.moondragon-preview+json"
                 }
             }, function (err, response, body) {

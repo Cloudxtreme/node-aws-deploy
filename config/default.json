@@ -43,6 +43,7 @@
         "endpoint": {
             "api": "https://api.github.com",
             "auth": "https://github.com"
-        }
+        },
+        "useragent": "node-aws-deploy"
     }
 }
