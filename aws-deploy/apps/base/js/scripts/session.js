@@ -8,18 +8,19 @@ _.extend(SessionManager.prototype, {
         this.session = new SessionModel();
         this.users = new LocalUserCollection();
 
-        this.listenTo(this.session, 'change', this.onChange);
-        this.listenTo(this.users, 'reset', this.onChange);
+        this.listenTo(this.session, 'change', this.onSession);
+
+        this._isReady = false;
 
         this.session.fetch();
     },
 
     isReady: function () {
-        return this.session.has("session_id") && (!this.session.get("user_id") || this.users.length > 0);
+        return this._isReady;
     },
 
     isAuthorized: function () {
-        return this.isReady() && this.session.get("user_id") > 0;
+        return this.isReady() && !!this.users.get(this.session.get("user_id"));
     },
 
     user: function () {
@@ -62,22 +63,26 @@ _.extend(SessionManager.prototype, {
         });
     },
 
-    onChange: function () {
-        if (this.isReady()) {
-            if (_.isUndefined(this._user_id)) {
-                this._user_id = this.session.get("user_id");
-                if (this._user_id > 0) {
-                    this.trigger("signin signin:authorized");
-                } else {
-                    this.trigger("signin signin:unauthorized");
-                }
-            } else if (this.session.get("user_id") !== this._user_id) {
-                window.location.reload();
-            }
-        } else if (this.session.has("session_id") && this.session.get("user_id") > 0) {
+    onSession: function () {
+        if (this.session.has("session_id") && this.session.get("user_id") > 0) {
             this.users.fetch({
-                reset: true
+                reset: true,
+                success: _.bind(function (collection) {
+                    this._isReady = true;
+                    var user = collection.get(this.session.get("user_id"));
+                    if (user) {
+                        this.trigger("signin signin:authorized");
+                    } else {
+                        this.trigger("signin signin:unauthorized");
+                    }
+                }, this), error: _.bind(function () {
+                    this._isReady = true;
+                    this.trigger("signin signin:unauthorized");
+                }, this)
             });
+        } else if (this.session.has("session_id")) {
+            this._isReady = true;
+            this.trigger("signin signin:unauthorized");
         }
     }
 });
