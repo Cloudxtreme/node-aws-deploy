@@ -10,7 +10,7 @@ var SchemaError = schema.SchemaError;
 var filters = require('../filters');
 var db = require('../../server/db');
 
-schema.on('read', '/repositories/:deployment_id',
+schema.on('read', '/repo/:deployment_id',
     filters.authCheck, filters.deploymentWriteCheck,
 function readRepository(deployment_id, callback) {
     db.querySingle("SELECT" +
@@ -29,7 +29,7 @@ function readRepository(deployment_id, callback) {
     });
 });
 
-schema.on('update', '/repositories/:deployment_id',
+schema.on('update', '/repo/:deployment_id',
     filters.authCheck, filters.deploymentWriteCheck,
 function updateRepository(deployment_id, data, callback) {
     db.query("UPDATE awd_repositories" +
@@ -39,7 +39,7 @@ function updateRepository(deployment_id, data, callback) {
     });
 });
 
-schema.on('emit', '/repositories/:deployment_id',
+schema.on('emit', '/repo/:deployment_id',
     filters.authCheck, filters.deploymentWriteCheck,
 function emitRepository (deployment_id, method, data, callback, info) {
     switch (method) {

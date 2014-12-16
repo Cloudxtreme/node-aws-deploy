@@ -12,7 +12,7 @@ AWS.config.update({
 
 var ELB = new AWS.ElasticBeanstalk();
 
-schema.on('read', '/aws-applications',
+schema.on('read', '/aws/apps',
 filters.authCheck,
 function (callback) {
     ELB.describeApplications({}, function (err, data) {
@@ -23,18 +23,18 @@ function (callback) {
 
         callback(null, data.Applications.map(function (app) {
             return {
-                app_name: app.ApplicationName,
-                app_templates: app.ConfigurationTemplates,
-                app_created_at: app.DateCreated,
-                app_updated_at: app.DateUpdated,
-                app_description: app.Description,
-                app_versions: app.Versions
+                application_name: app.ApplicationName,
+                application_templates: app.ConfigurationTemplates,
+                application_created_at: app.DateCreated,
+                application_updated_at: app.DateUpdated,
+                application_description: app.Description,
+                application_versions: app.Versions
             };
         }));
     });
 });
 
-schema.on('read', '/aws-environments/:app_name',
+schema.on('read', '/aws/apps/:app_name/environments',
 filters.authCheck,
 function (app_name,callback) {
     if (!app_name) {
@@ -52,24 +52,24 @@ function (app_name,callback) {
 
         callback(null, data.Environments.map(function (env) {
             return {
-                env_id: env.EnvironmentId,
-                env_name: env.EnvironmentName,
-                env_application: env.ApplicationName,
-                env_version: env.VersionLabel,
-                env_solution: env.SolutionStackName,
-                env_description: env.Description,
-                env_endpoint: env.EndpointURL,
-                env_cname: env.CNAME,
-                env_created_at: env.DateCreated,
-                env_updated_at: env.DateUpdated,
-                env_status: env.Status,
-                env_health: env.Health
+                environment_id: env.EnvironmentId,
+                environment_name: env.EnvironmentName,
+                environment_application: env.ApplicationName,
+                environment_version: env.VersionLabel,
+                environment_solution: env.SolutionStackName,
+                environment_description: env.Description,
+                environment_endpoint: env.EndpointURL,
+                environment_cname: env.CNAME,
+                environment_created_at: env.DateCreated,
+                environment_updated_at: env.DateUpdated,
+                environment_status: env.Status,
+                environment_health: env.Health
             };
         }));
     });
 });
 
-schema.on('read', '/aws-versions/:app_name',
+schema.on('read', '/aws/:app_name/versions',
 filters.authCheck,
 function (app_name, callback) {
     if (!app_name) {
@@ -87,7 +87,7 @@ function (app_name, callback) {
 
         callback(null, data.ApplicationVersions.map(function (version) {
             return {
-                app_name: version.ApplicationName,
+                application_name: version.ApplicationName,
                 version_description: version.Description,
                 version_label: version.VersionLabel,
                 version_s3_bucket: version.SourceBundle.S3Bucket,

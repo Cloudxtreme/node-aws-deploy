@@ -10,6 +10,13 @@ DeploymentCollection = AwsDeploy.Collection.extend({
 DeploymentRepositoryModel = AwsDeploy.Model.extend({
     idAttribute: "deployment_id",
     url: function () {
-        return "/repositories/" + this.deployment_id;
+        return "/repo/" + this.deployment_id;
+    }
+});
+
+DeploymentApplicationModel = AwsDeploy.Model.extend({
+    idAttribute: "deployment_id",
+    url: function () {
+        return "/apps/" + this.deployment_id;
     }
 });

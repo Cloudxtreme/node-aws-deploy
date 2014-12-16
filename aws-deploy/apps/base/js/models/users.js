@@ -1,6 +1,6 @@
 SessionModel = AwsDeploy.Model.extend({
     idAttribute: "session_id",
-    url: "/session"
+    url: "/user/session"
 });
 
 UserModel = AwsDeploy.Model.extend({

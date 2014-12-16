@@ -13,13 +13,13 @@ module.exports = Base.extend({
 
     "js": {
         "main": [
-            "js/views/*.js",
+            "js/views/**/*.js",
             "js/scripts/main.js"
         ]
     },
     "templates": {
         "main": [
-            "templates/*.html"
+            "templates/**/*.html"
         ]
     },
     "css": {

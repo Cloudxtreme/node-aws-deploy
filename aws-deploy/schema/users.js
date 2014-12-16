@@ -7,7 +7,7 @@ var bcrypt = require('bcryptjs');
 var config = require('config');
 var async = require('async');
 
-schema.on('read', '/session', function (callback, info) {
+schema.on('read', '/user/session', function (callback, info) {
     var session = info.session;
     callback(null, {
         session_id: session.id,
@@ -15,7 +15,7 @@ schema.on('read', '/session', function (callback, info) {
     });
 });
 
-schema.on('destroy', '/session',
+schema.on('destroy', '/user/session',
 filters.authCheck,
 function destroySession(callback, info) {
     var session = info.session;
@@ -27,7 +27,7 @@ function destroySession(callback, info) {
     });
 });
 
-schema.on('emit', '/session', function (method, data, callback, info) {
+schema.on('emit', '/user/session', function (method, data, callback, info) {
     var session = info.session;
 
     if (!_.isString(data.user_pass)) {
