@@ -13,7 +13,8 @@ module.exports = Application.create({
             "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.js",
             "//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.js",
             "//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone.js",
-            "//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.js"
+            "//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.js",
+            "//cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"
         ],
         "common": [
             "js/scripts/*.js",
