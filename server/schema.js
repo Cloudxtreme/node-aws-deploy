@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('lodash');
 var debug = require('debug')('aws-deploy:schema');
+var pathToRegexp = require('path-to-regexp');
 
 var handlers = {
     'create': {},
@@ -51,24 +52,11 @@ _.assign(Handler.prototype, {
             return;
         }
 
-        var output = "^";
-        var params = [];
-
-        while (!_.isUndefined(pattern)) {
-            var match = /^\:([^\/])+?(?:\/(.*))?$/.exec(pattern);
-            pattern = match[2];
-            params.push(match[1]);
-            output += "([^\/]+)?";
-
-            if (!_.isUndefined(pattern)) {
-                output += "\/";
-            }
-        }
-
-        output += "$";
-
-        this.pattern = new RegExp(output);
-        this.params = params;
+        var keys = [];
+        this.pattern = pathToRegexp(pattern, keys);
+        this.params = keys.map(function (key) {
+            return key.name
+        });
     },
 
     call: function (url, args, method, data, info, callback) {
@@ -140,7 +128,7 @@ exports.on = function (type, pattern) {
     var handler = new Handler(components[2], filters, method);
 
     var key = components[1];
-    var target = handlers[type][key] = [];
+    var target = handlers[type][key] || [];
     target.push(handler);
     handlers[type][key] = target;
 };

@@ -18,6 +18,7 @@
     "mysql": "^2.5.3",
     "react": "^0.12.1",
     "react-tools": "^0.12.1",
-    "request": "^2.51.0"
+    "request": "^2.51.0",
+    "path-to-regexp": "^1.0.1"
   }
 }
