@@ -9,6 +9,11 @@ AwsDeploy.sync = function (method, model, options) {
 };
 
 AwsDeploy.emit = function (rpc, attrs, options) {
+    if (_.isObject(attrs) && _.isUndefined(options)) {
+        options = attrs;
+        attrs = this.toJSON();
+    }
+
     options = options ? _.clone(options) : {};
     var model = this;
 
