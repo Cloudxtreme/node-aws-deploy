@@ -1,0 +1,29 @@
+<form role="form" id="application">
+<% if (!this.application.get("application_name") || !this.application.get("application_environment")) { %>
+    <div class="form-group">
+        <label for="application_name">application.name</label>
+        <input id="application_name" type="text" class="form-control" list="applications">
+        <datalist id="applications"></datalist>
+    </div>
+
+    <div class="form-group">
+        <label for="application_environment">application.environment</label>
+        <input id="application_environment" text="text" class="form-control" list="environments">
+        <datalist id="environments"></datalist>
+    </div>
+
+    <button id="link" class="btn btn-primary">application.link</button>
+<% } else { %>
+    <div class="form-group">
+        <label for="application_name">application.name</label>
+        <input id="application_name" type="text" class="form-control" disabled value="<%= this.application.get('application_name') %>">
+    </div>
+
+    <div class="form-group">
+        <label for="application_environment">application.environment</label>
+        <input id="application_environment" text="text" class="form-control" disabled value="<%= this.application.get('application_environment') %>">
+    </div>
+
+    <button id="unlink" class="btn btn-primary pull-right">application.unlink</button>
+<% } %>
+</form>

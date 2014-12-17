@@ -14,7 +14,7 @@ var MainApp = AwsDeploy.Router.extend({
         "deployments/:deployment_id": "showDeploymentOverview",
         "deployments/:deployment_id/edit": "showDeploymentEdit",
         "deployments/:deployment_id/repository": "showDeploymentRepository",
-        "deployments/:deployment_id/aws": "showDeploymentAws"
+        "deployments/:deployment_id/application": "showDeploymentApplication"
     },
 
     showDeployments: function () {
@@ -71,7 +71,7 @@ var MainApp = AwsDeploy.Router.extend({
         });
     },
 
-    showDeploymentAws: function (deployment_id) {
+    showDeploymentApplication: function (deployment_id) {
         if (!this.session.isAuthorized()) {
             this.navbar.showLogin();
             return;
@@ -81,7 +81,7 @@ var MainApp = AwsDeploy.Router.extend({
             deployment_id: deployment_id
         }, function (deployment) {
             this.showView("#content", new DeploymentView({
-                model: deployment, type: 'aws'
+                model: deployment, type: 'application'
             }));
         });
     },

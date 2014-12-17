@@ -1,3 +1,4 @@
+require('./schema/applications');
 require('./schema/aws');
 require('./schema/common');
 require('./schema/deployments');

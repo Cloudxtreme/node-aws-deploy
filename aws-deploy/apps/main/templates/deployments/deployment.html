@@ -1,5 +1,6 @@
 <ol class="breadcrumb">
     <li><a href="#">breadcrumbs.home</a></li>
+    <li><%= deployment_name %></li>
 </ol>
 
 <div class="row">
@@ -8,7 +9,7 @@
             <li id="overview"><a href="#deployments/<%= deployment_id %>">deployment.overview</a></li>
             <li id="edit"><a href="#deployments/<%= deployment_id %>/edit">deployment.edit</a></li>
             <li id="repository"><a href="#deployments/<%= deployment_id %>/repository">deployment.repository</a></li>
-            <li id="aws"><a href="#deployments/<%= deployment_id %>/aws">deployment.aws</a></li>
+            <li id="application"><a href="#deployments/<%= deployment_id %>/application">deployment.application</a></li>
         </ul>
     </div>
     <div class="col-md-9 well" id="deployment"></div>

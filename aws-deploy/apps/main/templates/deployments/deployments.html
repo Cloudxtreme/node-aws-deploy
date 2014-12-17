@@ -1,17 +1,21 @@
 <ol class="breadcrumb">
-    <li><a href="#">breadcrumbs.home</a></li>
+    <li>breadcrumbs.home</li>
 </ol>
 
-<div>
-    <h1 class="pull-left">deployments.label</h1>
-    <button id="add_deployment" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
-</div>
+<h3>deployments.label</h3>
 
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>deployment.name</th>
+            <th class="col-xs-3">deployment.name</th>
+            <th class="col-xs-1">deployment.status</th>
+            <th>deployment.repository</th>
         </tr>
     </thead>
+    <tfoot>
+    <tr>
+        <td colspan="3"><a href="#" id="add_deployment"><span class="glyphicon glyphicon-plus"></span>&nbsp;deployment.add</a></td>
+    </tr>
+    </tfoot>
     <tbody></tbody>
 </table>

@@ -13,9 +13,9 @@ schema.on('create', '/deployments',
 function createDeployment(data, callback, info) {
     data.deployment_created_by = info.session.user_id;
     db.query("INSERT INTO awd_deployments" +
-    " (deployment_name,deployment_created_at,deployment_created_by,deployment_application,deployment_environment,deployment_repo_type,deployment_repo_url)" +
+    " (deployment_name,deployment_created_at,deployment_created_by)" +
     " VALUES" +
-    " (:deployment_name,NOW(),:deployment_created_by,:deployment_application,:deployment_environment,:deployment_repo_type,:deployment_repo_url)", data, function (err, result) {
+    " (:deployment_name,NOW(),:deployment_created_by)", data, function (err, result) {
         if (err) {
             callback(err);
             return;
@@ -30,8 +30,8 @@ schema.on('read', '/deployments',
     filters.authCheck,
 function getDeployments(callback) {
     db.query("SELECT " +
-    " awd_deployments.deployment_id,deployment_name,deployment_created_at,deployment_created_by," +
-    " deployment_application,deployment_environment," +
+    " awd_deployments.deployment_id," +
+    " deployment_name,deployment_created_at,deployment_created_by," +
     " repository_type, repository_url, ISNULL(repository_credentials) AS repository_linked" +
     " FROM awd_deployments" +
     " LEFT JOIN awd_repositories ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
@@ -59,12 +59,14 @@ function updateDeployment(deployment_id, data, callback, info) {
         }, function (callback) {
             db.query("UPDATE awd_deployments SET" +
             " deployment_name = :deployment_name," +
-            " deployment_application = :deployment_application," +
-            " deployment_environment = :deployment_environment," +
-            " deployment_repo_type = :deployment_repo_type," +
-            " deployment_repo_url = :deployment_repo_url" +
+            " deployment_updated_at = NOW()," +
+            " deployment_updated_by = :deployment_updated_by" +
             " WHERE deployment_id = :deployment_id" +
-            " LIMIT 1", data, callback);
+            " LIMIT 1", {
+                deployment_name: data.deployment_name,
+                deployment_updated_by: info.session.user_id,
+                deployment_id: deployment_id
+            }, callback);
         }
     ], function (err) {
         callback(err);

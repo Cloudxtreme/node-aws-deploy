@@ -14,7 +14,7 @@ AwsEnvironmentModel = AwsDeploy.Model.extend({
 AwsEnvironmentCollection = AwsDeploy.Collection.extend({
     model: AwsEnvironmentModel,
     url: function () {
-        return "/aws/apps/" + this.app_name + "/environments";
+        return "/aws/apps/" + this.application_name + "/environments";
     }
 });
 
@@ -25,6 +25,6 @@ AwsApplicationVersionModel = AwsDeploy.Model.extend({
 AwsApplicationVersionCollection = AwsDeploy.Collection.extend({
     model: AwsApplicationVersionModel,
     url: function () {
-        return "/aws/apps/" + this.app_name + "/versions";
+        return "/aws/apps/" + this.application_name + "/versions";
     }
 });
