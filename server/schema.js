@@ -54,7 +54,7 @@ _.assign(Handler.prototype, {
 
         var keys = [];
         this.pattern = pathToRegexp(pattern, keys, {
-            sensitive: false
+            sensitive: true
         });
         this.params = keys.map(function (key) {
             return key.name
@@ -74,7 +74,6 @@ _.assign(Handler.prototype, {
         var filters = _.clone(this.filters);
 
         var match = this.pattern.exec(args ? args : "");
-        console.log(this.pattern, args, !!match);
         if (!match) {
             callback(new SchemaError("Pattern mismatch"));
             return;
