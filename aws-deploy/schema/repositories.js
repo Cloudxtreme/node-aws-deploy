@@ -10,7 +10,7 @@ var SchemaError = schema.SchemaError;
 var filters = require('../filters');
 var db = require('../../server/db');
 
-schema.on('read', '/repo/:deployment_id',
+schema.on('read', '/deployments/:deployment_id/repository',
     filters.authCheck, filters.deploymentWriteCheck,
 function readRepository(deployment_id, callback) {
     db.querySingle("SELECT" +
@@ -24,12 +24,13 @@ function readRepository(deployment_id, callback) {
         callback(null, repository || {
             deployment_id: deployment_id,
             repository_type: null,
+            repository_url: null,
             repository_linked: false
         });
     });
 });
 
-schema.on('update', '/repo/:deployment_id',
+schema.on('update', '/deployments/:deployment_id/repository',
     filters.authCheck, filters.deploymentWriteCheck,
 function updateRepository(deployment_id, data, callback) {
     db.query("UPDATE awd_repositories" +
@@ -39,7 +40,7 @@ function updateRepository(deployment_id, data, callback) {
     });
 });
 
-schema.on('emit', '/repo/:deployment_id',
+schema.on('emit', '/deployments/:deployment_id/repository',
     filters.authCheck, filters.deploymentWriteCheck,
 function emitRepository (deployment_id, method, data, callback, info) {
     switch (method) {

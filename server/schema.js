@@ -47,13 +47,15 @@ _.assign(Handler, {
 _.assign(Handler.prototype, {
     build: function (pattern) {
         if (!pattern) {
-            this.pattern = null;
+            this.pattern = /^$/;
             this.params = [];
             return;
         }
 
         var keys = [];
-        this.pattern = pathToRegexp(pattern, keys);
+        this.pattern = pathToRegexp(pattern, keys, {
+            sensitive: false
+        });
         this.params = keys.map(function (key) {
             return key.name
         });
@@ -71,17 +73,16 @@ _.assign(Handler.prototype, {
 
         var filters = _.clone(this.filters);
 
-        if (this.pattern) {
-            var match = this.pattern.exec(args);
-            if (!match) {
-                callback(new SchemaError("Pattern mismatch"));
-                return;
-            }
-            filterData.input = match.slice(1);
-            _.each(this.params, function (param, index) {
-                filterData.params[param] = filterData.input[index];
-            });
+        var match = this.pattern.exec(args ? args : "");
+        console.log(this.pattern, args, !!match);
+        if (!match) {
+            callback(new SchemaError("Pattern mismatch"));
+            return;
         }
+        filterData.input = match.slice(1);
+        _.each(this.params, function (param, index) {
+            filterData.params[param] = filterData.input[index];
+        });
 
         var next = function (err) {
             if (err) {

@@ -9,7 +9,7 @@ var SchemaError = schema.SchemaError;
 var db = require("../../../server/db")
 var filters = require('../../filters');
 
-schema.on('read', '/repo/github/callback',
+schema.on('read', '/repository/github/callback',
     filters.authCheck,
 function (callback, info) {
     async.waterfall([
@@ -53,7 +53,7 @@ function (callback, info) {
     });
 });
 
-schema.on('read', '/repo/github/:deployment_id/urls',
+schema.on('read', '/repository/github/:deployment_id/urls',
     filters.authCheck, filters.deploymentWriteCheck,
 function (deployment_id, callback) {
     async.waterfall([
@@ -99,7 +99,7 @@ function (deployment_id, callback) {
     ], callback);
 });
 
-schema.on('read', '/repo/github/:deployment_id/branches/:owner/:repo',
+schema.on('read', '/repository/github/:deployment_id/branches/:owner/:repo',
     filters.authCheck, filters.deploymentWriteCheck,
 function (deployment_id, owner, repo, callback) {
     async.waterfall([

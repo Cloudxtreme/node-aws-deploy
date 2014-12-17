@@ -4,16 +4,14 @@ GithubUrlModel = AwsDeploy.Model.extend({
 
 GithubUrlCollection = AwsDeploy.Collection.extend({
     url: function () {
-        return "/repo/github/" + this.deployment_id + "/urls";
+        return "/repository/github/" + this.deployment_id + "/urls";
     }
 });
 
-GithubBranchModel = AwsDeploy.Model.extend({
-
-});
+GithubBranchModel = AwsDeploy.Model.extend({});
 
 GithubBranchCollection = AwsDeploy.Collection.extend({
     url: function () {
-        return "/repo/github/" + this.deployment_id + "/branches/" + this.repository_name;
+        return "/repository/github/" + this.deployment_id + "/branches/" + this.repository_name;
     }
 });
