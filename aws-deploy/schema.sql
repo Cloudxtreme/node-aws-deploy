@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.9 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.11, for Win64 (x86_64)
 --
 -- Host: localhost    Database: aws_deploy
 -- ------------------------------------------------------
--- Server version	5.6.19
+-- Server version	5.6.11-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -42,11 +42,8 @@ CREATE TABLE `awd_deployments` (
   `deployment_name` varchar(45) NOT NULL,
   `deployment_created_at` datetime NOT NULL,
   `deployment_created_by` bigint(20) NOT NULL,
-  `deployment_application` varchar(100) NOT NULL,
-  `deployment_environment` varchar(64) NOT NULL,
-  `deployment_repo_type` enum('github') DEFAULT NULL,
-  `deployment_repo_url` text,
-  `deployment_repo_access_token` text,
+  `deployment_updated_at` datetime DEFAULT NULL,
+  `deployment_updated_by` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`deployment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -116,4 +113,4 @@ CREATE TABLE `awd_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-17  1:55:21
+-- Dump completed on 2014-12-17 15:47:42
