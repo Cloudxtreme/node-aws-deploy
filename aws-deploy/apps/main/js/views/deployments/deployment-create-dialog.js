@@ -22,7 +22,10 @@ DeploymentCreateDialogView = AwsDeploy.View.extend({
         }, {
             success: _.bind(function (model) {
                 toastr.success("deployments.deployment-created");
-                app.navigate("/#deployments/" + model.id, { trigger: true });
+                this.collection.fetch({
+                    reset: true
+                });
+                this.close();
             }, this),
             error: _.bind(function () {
                 toastr.error("deployments.deployment-creation-failed");
