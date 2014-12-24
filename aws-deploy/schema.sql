@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.11, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.9 (x86_64)
 --
 -- Host: localhost    Database: aws_deploy
 -- ------------------------------------------------------
--- Server version	5.6.11-log
+-- Server version	5.6.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,9 +26,19 @@ CREATE TABLE `awd_applications` (
   `deployment_id` varchar(45) NOT NULL,
   `application_name` varchar(100) NOT NULL,
   `application_environment` text NOT NULL,
+  `application_bucket` text NOT NULL,
   PRIMARY KEY (`deployment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `awd_applications`
+--
+
+LOCK TABLES `awd_applications` WRITE;
+/*!40000 ALTER TABLE `awd_applications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `awd_applications` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `awd_deployments`
@@ -49,6 +59,15 @@ CREATE TABLE `awd_deployments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `awd_deployments`
+--
+
+LOCK TABLES `awd_deployments` WRITE;
+/*!40000 ALTER TABLE `awd_deployments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `awd_deployments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `awd_products`
 --
 
@@ -65,6 +84,15 @@ CREATE TABLE `awd_products` (
   PRIMARY KEY (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `awd_products`
+--
+
+LOCK TABLES `awd_products` WRITE;
+/*!40000 ALTER TABLE `awd_products` DISABLE KEYS */;
+/*!40000 ALTER TABLE `awd_products` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `awd_repositories`
@@ -86,6 +114,15 @@ CREATE TABLE `awd_repositories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `awd_repositories`
+--
+
+LOCK TABLES `awd_repositories` WRITE;
+/*!40000 ALTER TABLE `awd_repositories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `awd_repositories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `awd_users`
 --
 
@@ -103,6 +140,15 @@ CREATE TABLE `awd_users` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `awd_users`
+--
+
+LOCK TABLES `awd_users` WRITE;
+/*!40000 ALTER TABLE `awd_users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `awd_users` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -113,4 +159,4 @@ CREATE TABLE `awd_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-17 15:47:42
+-- Dump completed on 2014-12-24 15:17:27

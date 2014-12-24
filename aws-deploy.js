@@ -6,6 +6,8 @@ var async = require('async');
 var debug = require("debug")("aws-deploy:main");
 
 var apps = require('./aws-deploy/apps');
+var schedule = require('./aws-deploy/schedule');
+/*var tasks = */require('./aws-deploy/tasks');
 /*var schemas = */require('./aws-deploy/schemas');
 
 var DeployService = Service.extend({
@@ -40,4 +42,5 @@ new DeployService(function (err) {
         throw new Error(err);
     }
     this.start();
+    schedule.start();
 });

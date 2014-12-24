@@ -8,8 +8,14 @@
 
     <div class="form-group">
         <label for="application_environment">application.environment</label>
-        <input id="application_environment" text="text" class="form-control" list="environments">
+        <input id="application_environment" type="text" class="form-control" list="environments">
         <datalist id="environments"></datalist>
+    </div>
+
+    <div class="form-group">
+        <label for="application_bucket">application.bucket</label>
+        <input id="application_bucket" type="text" class="form-control" list="buckets">
+        <datalist id="buckets"></datalist>
     </div>
 
     <button id="link" class="btn btn-primary">application.link</button>
@@ -21,9 +27,28 @@
 
     <div class="form-group">
         <label for="application_environment">application.environment</label>
-        <input id="application_environment" text="text" class="form-control" disabled value="<%= this.application.get('application_environment') %>">
+        <input id="application_environment" type="text" class="form-control" disabled value="<%= this.application.get('application_environment') %>">
     </div>
 
-    <button id="unlink" class="btn btn-primary pull-right">application.unlink</button>
+    <div class="form-group">
+        <label for="application_bucket">application.bucket</label>
+        <input id="application_bucket" type="text" class="form-control" disabled value="<%= this.application.get('application_bucket') %>">
+    </div>
+
+    <div class="form-group">
+        <label for="application_status">application.status</label>
+        <input id="application_status" type="text" class="form-control text-status-<%= this.application.get('application_status') %>" value="<%= this.application.get('application_status') %>" disabled>
+    </div>
+
+    <div class="form-group">
+        <label for="application_version">application.version</label>
+        <input id="application_version" type="text" class="form-control" value="<%= this.application.get('application_version') %>" disabled>
+    </div>
+
+    <div class="form-group">
+        <button type="button" id="refresh" class="btn btn-primary">application.refresh</button>
+        <button type="button" id="deploy" class="btn btn-success">application.deploy</button>
+        <button type="button" id="unlink" class="btn btn-danger pull-right">application.unlink</button>
+    </div>
 <% } %>
 </form>

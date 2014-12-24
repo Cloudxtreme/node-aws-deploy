@@ -19,12 +19,15 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
         "change #repository_branch": "onChangeRepositoryBranch",
         "click #link": "link",
         "click #save": "save",
-        "click #unlink": "unlink"
+        "click #unlink": "unlink",
+        "click #refresh": "refresh",
+        "click #package": "showPackageDialog"
     },
 
     render: function () {
         this.$el.html(this.template(this.repository.toJSON()));
         this.$el.find("#repository_type").val(this.repository.get("repository_type")).prop('disabled', !!this.repository.get("repository_linked"));
+        this.$el.find("#package").prop("disabled", !(this.repository.get("repository_status") != "error" && !!this.repository.get("repository_commit")));
         return this;
     },
 
@@ -127,6 +130,56 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
                     }
                 });
             }
+        });
+    },
+
+    refresh: function (event) {
+        event.preventDefault();
+
+        this.repository.emit('refresh', {}, {
+            success: _.bind(function () {
+                this.repository.fetch();
+            }, this)
+        });
+    },
+
+    showPackageDialog: function (event) {
+        event.preventDefault();
+        this.modalView(new DeploymentRepositoryPackageDialogView({model: this.repository}));
+    }
+});
+
+DeploymentRepositoryPackageDialogView = AwsDeploy.View.extend({
+    initialize: function () {
+        this.template = Templates.get('main/deployment-repository-package-dialog');
+        this.listenTo(this.model, 'change', this.render);
+    },
+
+    events: {
+        "submit form": "submit"
+    },
+
+    render: function () {
+        this.$el.html(this.template(this.model.toJSON()));
+        this.delegateEvents();
+        return this;
+    },
+
+    submit: function (event) {
+        event.preventDefault();
+
+        this.$el.find("#progress").removeClass('hidden');
+        this.$el.find('button[type=submit]').prop('disabled', true);
+        this.model.emit('create-package', {}, {
+            success: _.bind(function () {
+                toastr.success('repository.package-created');
+                this.close();
+            }, this),
+            error: _.bind(function () {
+                toastr.error('repository.create-package-failed');
+                this.$el.find("#progress").addClass('hidden');
+                this.$el.find('button[type=submit]').prop('disabled', false);
+            }, this)
         });
     }
 });

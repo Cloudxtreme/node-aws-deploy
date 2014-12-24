@@ -7,8 +7,10 @@ var config = require('config');
 
 var schema = require('../../server/schema');
 var SchemaError = schema.SchemaError;
+var schedule = require('../schedule');
 var filters = require('../filters');
 var db = require('../../server/db');
+var cache = require('../cache');
 
 schema.on('read', '/deployments/:deployment_id/repository',
     filters.authCheck, filters.deploymentWriteCheck,
@@ -21,12 +23,20 @@ function readRepository(deployment_id, callback) {
             return;
         }
 
-        callback(null, repository || {
+        var repository_commit = cache.get("repository-commit:" + deployment_id);
+        var repository_status = cache.get("repository-status:" + deployment_id);
+
+        repository = repository ? _.merge(repository, {
+            repository_commit: repository_commit,
+            repository_status: repository_status ? repository_status : "unknown"
+        }) : {
             deployment_id: deployment_id,
             repository_type: null,
             repository_url: null,
             repository_linked: false
-        });
+        };
+
+        callback(null, repository);
     });
 });
 
@@ -37,6 +47,11 @@ function updateRepository(deployment_id, data, callback) {
     " SET repository_url = ?" +
     " WHERE deployment_id = ? LIMIT 1", [data.repository_url, deployment_id], function (err) {
         callback(err);
+
+        cache.del("repository-status:" + deployment_id);
+        cache.del("repository-commit:" + deployment_id);
+
+        schedule.run('check-repository-status', deployment_id);
     });
 });
 
@@ -44,6 +59,16 @@ schema.on('emit', '/deployments/:deployment_id/repository',
     filters.authCheck, filters.deploymentWriteCheck,
 function emitRepository (deployment_id, method, data, callback, info) {
     switch (method) {
+        case 'refresh': {
+            schedule.run('check-repository-status', deployment_id, function (err) {
+                if (err) {
+                    callback(new SchemaError(err));
+                    return;
+                }
+
+                callback(null);
+            });
+        } break;
         case 'link': {
             async.waterfall([
                 function (callback) {
@@ -104,7 +129,14 @@ function emitRepository (deployment_id, method, data, callback, info) {
             db.query("DELETE FROM awd_repositories" +
             " WHERE deployment_id = ? LIMIT 1", [deployment_id], function (err) {
                 callback(err);
+
+                cache.del("repository-status:" + deployment_id);
+                cache.del("repository-commit:" + deployment_id);
             });
+        } break;
+
+        case 'create-package': {
+            schedule.run('create-application-package', deployment_id, callback);
         } break;
 
         default: {

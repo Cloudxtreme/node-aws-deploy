@@ -11,3 +11,23 @@ div#content {
     box-shadow: 2px 2px 12px #aaa;
     background: #fefefe;
 }
+
+.text-status-ok {
+    color: #0a0;
+}
+
+.text-status-warning {
+    color: #aa0;
+}
+
+.text-status-error {
+    color: #a00;
+}
+
+.text-status-processing {
+    color: #00a;
+}
+
+.text-status-unknown {
+    color: #777;
+}

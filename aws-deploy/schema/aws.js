@@ -1,21 +1,15 @@
-var config = require('config');
-var AWS = require('aws-sdk');
+var AWS = require('../aws-sdk');
 
 var schema = require('../../server/schema');
 var filters = require('../filters');
 
-AWS.config.update({
-    "accessKeyId": config.aws.key,
-    "secretAccessKey": config.aws.secret,
-    "region": config.aws.region
-});
-
-var ELB = new AWS.ElasticBeanstalk();
+var EB = new AWS.ElasticBeanstalk();
+var S3 = new AWS.S3();
 
 schema.on('read', '/aws/apps',
 filters.authCheck,
 function (callback) {
-    ELB.describeApplications({}, function (err, data) {
+    EB.describeApplications({}, function (err, data) {
         if (err) {
             callback(err);
             return;
@@ -42,7 +36,7 @@ function (app_name,callback) {
         return;
     }
 
-    ELB.describeEnvironments({
+    EB.describeEnvironments({
         "ApplicationName": app_name
     }, function (err, data) {
         if (err) {
@@ -69,31 +63,19 @@ function (app_name,callback) {
     });
 });
 
-schema.on('read', '/aws/:app_name/versions',
+schema.on('read', '/aws/s3/buckets',
 filters.authCheck,
-function (app_name, callback) {
-    if (!app_name) {
-        callback("No app specified");
-        return;
-    }
-
-    ELB.describeApplicationVersions({
-        "ApplicationName": app_name
-    }, function (err, data) {
+function (callback) {
+    S3.listBuckets({}, function (err, data) {
         if (err) {
             callback(err);
             return;
         }
 
-        callback(null, data.ApplicationVersions.map(function (version) {
+        callback(null, data.Buckets.map(function (bucket) {
             return {
-                application_name: version.ApplicationName,
-                version_description: version.Description,
-                version_label: version.VersionLabel,
-                version_s3_bucket: version.SourceBundle.S3Bucket,
-                version_s3_key: version.SourceBundle.S3Key,
-                version_created_at: version.DateCreated,
-                version_updated_at: version.DateUpdated
+                bucket_name: bucket.Name,
+                bucket_created_at: bucket.CreationDate
             };
         }));
     });

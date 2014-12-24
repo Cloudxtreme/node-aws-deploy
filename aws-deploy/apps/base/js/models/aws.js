@@ -28,3 +28,14 @@ AwsApplicationVersionCollection = AwsDeploy.Collection.extend({
         return "/aws/apps/" + this.application_name + "/versions";
     }
 });
+
+AwsS3BucketModel = AwsDeploy.Model.extend({
+    idAttribute: "bucket_name"
+});
+
+AwsS3BucketCollection = AwsDeploy.Collection.extend({
+    model: AwsS3BucketModel,
+    url: function () {
+        return "/aws/s3/buckets";
+    }
+});

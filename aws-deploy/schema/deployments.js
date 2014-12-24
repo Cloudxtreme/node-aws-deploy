@@ -7,6 +7,7 @@ var schema = require('../../server/schema');
 var SchemaError = schema.SchemaError;
 var filters = require('../filters');
 var db = require('../../server/db');
+var cache = require('../cache');
 
 schema.on('create', '/deployments',
     filters.authCheck,
@@ -36,7 +37,22 @@ function getDeployments(callback) {
     " FROM awd_deployments" +
     " LEFT JOIN awd_repositories ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
     " ORDER BY deployment_name", function (err, rows) {
-        callback(err, rows);
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        var deployments = rows.map(function (deployment) {
+            var application_status = cache.get('application-status:' + deployment.deployment_id);
+            var repository_status = cache.get('repository-status:' + deployment.deployment_id);
+
+            return _.merge(deployment, {
+                application_status: application_status ? application_status : "unknown",
+                repository_status: repository_status ? repository_status : "unknown"
+            });
+        });
+
+        callback(null, deployments);
     });
 });
 

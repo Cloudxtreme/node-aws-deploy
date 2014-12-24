@@ -27,3 +27,14 @@ DeploymentApplicationModel = AwsDeploy.Model.extend({
         return "/deployments/" + this.deployment_id + "/application";
     }
 });
+
+DeploymentApplicationVersionModel = AwsDeploy.Model.extend({
+    idAttribute: "version_label"
+});
+
+DeploymentApplicationVersionCollection = AwsDeploy.Collection.extend({
+    model: DeploymentApplicationVersionModel,
+    url: function () {
+        return "/deployments/" + this.deployment_id + "/versions";
+    }
+});

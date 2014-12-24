@@ -1,0 +1,14 @@
+<form role="form">
+    <div class="form-group">
+        <span>Upload repository version to application storage</span>
+    </div>
+    <div class="form-group">
+        <label for="repository_commit">repository.commit</label>
+        <input id="repository_commit" type="text" class="form-control" disabled value="<%= repository_commit %>">
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">repository.create-package</button>
+        <span id="progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
+    </div>
+</form>
