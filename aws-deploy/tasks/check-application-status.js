@@ -19,6 +19,7 @@ function checkApplicationStatus(deployment_id, callback) {
                 if (err) {
                     debug("could not retrieve application list");
                     callback(err);
+                    return;
                 }
 
                 applications = rows.filter(function (row) {

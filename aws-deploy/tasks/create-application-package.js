@@ -1,11 +1,14 @@
 var debug = require('debug')('aws-deploy:task:create-application-version');
+var spawn = require('child_process').spawn;
 var config = require('config');
 var request = require('request');
 var url = require('url');
 var async = require('async');
 var crypto = require('crypto');
-var JSZip = require('jszip');
+var temp = require('temp');
 var _ = require('lodash');
+var path = require('path');
+var fs = require('fs');
 
 var db = require('../../server/db');
 var AWS = require('../aws-sdk');
@@ -21,6 +24,10 @@ function createApplicationPackage(deployment_id, callback) {
     var content;
     var filename;
     var version;
+    var temppath;
+    var datapath;
+    var inzip;
+    var outzip;
 
     if (repository_status == "error") {
         callback("repository state is not valid");
@@ -35,15 +42,33 @@ function createApplicationPackage(deployment_id, callback) {
     async.series([
         function (callback) {
             db.querySingle("SELECT * FROM awd_deployments" +
-            " JOIN awd_repositories ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
-            " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
-            " WHERE awd_deployments.deployment_id = ?", [deployment_id], function (err, result) {
+                " JOIN awd_repositories ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
+                " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
+                " WHERE awd_deployments.deployment_id = ?", [deployment_id], function (err, result) {
                 if (err || !result) {
                     callback(err || "could not find deployment");
                     return;
                 }
 
                 deployment = result;
+                callback(null);
+            });
+        }, function (callback) {
+            temp.mkdir('awsdeploy', function (err, dirPath) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
+                debug("tempdir", dirPath);
+
+                temppath = dirPath;
+                inzip = path.join(temppath, 'in.zip');
+                outzip = path.join(temppath, 'out.zip');
+
+                debug("inzip", inzip);
+                debug("outzip", outzip);
+
                 callback(null);
             });
         }, function (callback) {
@@ -55,72 +80,63 @@ function createApplicationPackage(deployment_id, callback) {
                 headers: {
                     "Authorization": "token " + deployment.repository_credentials,
                     "User-Agent": config.github.useragent                }
-            }, function (err, response, body) {
-                if (err || response.statusCode != 200) {
-                    callback(err || "Invalid response");
-                    return;
+            }).on('response', function (response) {
+                if (response.statusCode != 200) {
+                    callback("Invalid request");
                 }
-
-                if (response.headers["content-type"] != "application/zip") {
-                    callback("Invalid response type");
-                    return;
+                response.on('end', function () {
+                    callback(null);
+                });
+            }).on('error', function (err) {
+                callback(err);
+            }).pipe(fs.createWriteStream(inzip));
+        }, function (callback) {
+            var unzip = spawn('unzip', [inzip, '-d', temppath]);
+            unzip.on('close', function (code) {
+                if (code > 0) {
+                    callback("unzip failed");
                 }
-
-                content = body;
                 callback(null);
             });
         }, function (callback) {
-            try {
-                var zip = new JSZip(content);
-                _.each(zip.files, function (file, name) {
-                    var newName = /^[^\/]+\/(.*)$/.exec(name);
-                    if (newName) {
-                        file.name = newName[1];
-                        if (newName[1].length != 0) {
-                            zip.files[newName[1]] = file;
-                        }
-                        delete zip.files[name];
+            fs.readdir(temppath, function (err, files) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
+                async.detect(files, function (file, callback) {
+                    fs.stat(path.join(temppath, file), function (err, stats) {
+                        callback(!err && stats.isDirectory());
+                    });
+                }, function (result) {
+                    if (!result) {
+                        callback("dir not found");
+                        return;
                     }
+                    datapath = path.join(temppath, result);
+                    callback(null);
                 });
-
-                content = zip.generate({
-                    compression: 'STORE',
-                    type: 'nodebuffer'
-                });
-                callback(null);
-            } catch (e) {
-                callback(e);
-            }
+            });
         }, function (callback) {
-            var repo = /([^\/]+)\/([^#]+)#(.+)/i.exec(deployment.repository_url);
-
-            request.get({
-                url: url.resolve(config.github.endpoint.api, '/repos/' + repo[1] + '/' + repo[2] + '/contents/package.json?sha=' + repository_commit),
-                json: true,
-                headers: {
-                    "Authorization": "token " + deployment.repository_credentials,
-                    "User-Agent": config.github.useragent,
-                    "Accept": "application/vnd.github.moondragon-preview+json"
-                }
-            }, function (err, response, body) {
-                if (err || response.statusCode != 200) {
-                    callback(err || "Invalid response");
+            var zip = spawn('zip', ['-r', outzip, '.'], { cwd: datapath});
+            zip.on('close', function (code) {
+                if (code > 0) {
+                    callback("zip failed");
                     return;
                 }
-
-                if (!_.isObject(body)) {
-                    callback("Not a JSON object");
-                    return;
-                }
-
-                if (!body.hasOwnProperty("content")) {
-                    callback("Content not returned");
+                callback(null);
+            });
+        }, function (callback) {
+            fs.readFile(path.join(datapath, 'package.json'), 'utf8', function (err, data) {
+                if (err) {
+                    callback(err);
                     return;
                 }
 
                 var json;
                 try {
-                    json = JSON.parse(new Buffer(body.content, 'base64'));
+                    json = JSON.parse(data);
                 } catch (e) {
                     callback(e);
                     return;
@@ -146,12 +162,11 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(null);
             });
         }, function (callback) {
-            debug("uploading file '%s' (%d bytes) to bucket '%s'", filename, content.length, deployment.application_bucket);
+            debug("uploading file '%s' to bucket '%s'", filename, deployment.application_bucket);
             S3.upload({
                 Bucket: deployment.application_bucket,
                 Key: filename,
-                Body: content,
-                ContentLength: content.length,
+                Body: fs.createReadStream(outzip),
                 ContentType: "application/zip"
             }, function (err, data) {
                 if (err) {
@@ -186,7 +201,9 @@ function createApplicationPackage(deployment_id, callback) {
             });
         }
     ], function (err) {
-        callback(err);
+        temp.cleanup(function () {
+            callback(err);
+        });
     });
 }
 exports.name = 'create-application-package';
