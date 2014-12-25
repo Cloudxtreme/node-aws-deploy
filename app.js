@@ -19,7 +19,7 @@ while ((match = re.exec(PARAM1)) !== null) {
 // PARAM2 is fed into the NODE_CONFIG environment variable
 var PARAM2 = process.env["PARAM2"];
 if (PARAM2) {
-    env["NODE_CONFIG"] = PARAM2;
+    env["NODE_CONFIG"] = PARAM2.replace(/\\"/g,'"'); // AWS destroys unescaped quotes
 }
 
 var script = path.join(__dirname, manifest.main ? manifest.main + '.js' : 'index.js');
