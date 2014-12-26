@@ -29,6 +29,8 @@ function createApplicationPackage(deployment_id, callback) {
     var inzip;
     var outzip;
 
+    var zip, unzip;
+
     if (repository_status == "error") {
         callback("repository state is not valid");
         return;
@@ -74,6 +76,7 @@ function createApplicationPackage(deployment_id, callback) {
         }, function (callback) {
             var repo = /([^\/]+)\/([^#]+)#(.+)/i.exec(deployment.repository_url);
 
+            debug("downloading package from github");
             request.get({
                 url: url.resolve(config.github.endpoint.api, '/repos/' + repo[1] + '/' + repo[2] + '/zipball/' + repository_commit),
                 encoding: null,
@@ -83,6 +86,7 @@ function createApplicationPackage(deployment_id, callback) {
             }).on('response', function (response) {
                 if (response.statusCode != 200) {
                     callback("Invalid request");
+                    return;
                 }
                 response.on('end', function () {
                     callback(null);
@@ -91,10 +95,18 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(err);
             }).pipe(fs.createWriteStream(inzip));
         }, function (callback) {
-            var unzip = spawn('unzip', [inzip, '-d', temppath]);
+            debug("extracting package from github");
+
+            callback = _.once(callback);
+
+            unzip = spawn('unzip', [inzip], { cwd: temppath, stdio: [0,1,2] });
+            unzip.on('error', function (err) {
+                callback(err);
+            });
             unzip.on('close', function (code) {
                 if (code > 0) {
                     callback("unzip failed");
+                    return;
                 }
                 callback(null);
             });
@@ -119,7 +131,14 @@ function createApplicationPackage(deployment_id, callback) {
                 });
             });
         }, function (callback) {
-            var zip = spawn('zip', ['-r', outzip, '.'], { cwd: datapath});
+            debug("compressing package for AWS");
+
+            callback = _.once(callback);
+
+            zip = spawn('zip', ['-r', outzip, '.'], { cwd: datapath, stdio: [0,1,2] });
+            zip.on('error', function (err) {
+                callback(err);
+            });
             zip.on('close', function (code) {
                 if (code > 0) {
                     callback("zip failed");
@@ -128,6 +147,7 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(null);
             });
         }, function (callback) {
+            debug("reading package manifest");
             fs.readFile(path.join(datapath, 'package.json'), 'utf8', function (err, data) {
                 if (err) {
                     callback(err);
@@ -179,6 +199,7 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(null);
             });
         }, function (callback) {
+            debug("deleting old application version");
             EB.deleteApplicationVersion({
                 ApplicationName: deployment.application_name,
                 VersionLabel: version,
@@ -187,6 +208,7 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(null);
             });
         }, function (callback) {
+            debug("creating new application version");
             EB.createApplicationVersion({
                 ApplicationName: deployment.application_name,
                 VersionLabel: version,
@@ -201,6 +223,7 @@ function createApplicationPackage(deployment_id, callback) {
             });
         }
     ], function (err) {
+        debug("application publication status: %s", err ? "success" : "failed");
         temp.cleanup(function () {
             callback(err);
         });
