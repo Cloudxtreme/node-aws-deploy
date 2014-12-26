@@ -48,6 +48,7 @@ function getDeployments(callback) {
 
             return _.merge(deployment, {
                 application_status: application_status ? application_status : "unknown",
+                application_version: cache.get('application-version:' + deployment.deployment_id),
                 repository_status: repository_status ? repository_status : "unknown"
             });
         });

@@ -30,70 +30,86 @@ function checkApplicationStatus(deployment_id, callback) {
             });
         }, function (callback) {
             async.eachSeries(applications, function (application, callback) {
-                EB.describeEnvironments({
-                    'ApplicationName': application.application_name,
-                    'EnvironmentIds': [
-                        application.application_environment
-                    ]
-                }, function (err, data) {
-                    if (err) {
-                        debug("error querying application status (%d): %s", application.deployment_id, err);
-                        callback(err);
-                        return;
-                    }
+                async.series([
+                    function (callback) {
+                        EB.describeEnvironments({
+                            'ApplicationName': application.application_name,
+                            'EnvironmentIds': [
+                                application.application_environment
+                            ]
+                        }, function (err, data) {
+                            if (err) {
+                                debug("error querying application status (%d): %s", application.deployment_id, err);
+                                callback(err);
+                                return;
+                            }
 
-                    var status = "error";
-                    do {
-                        var environment = _.first(data.Environments);
-                        if (!environment) {
-                            debug("could not find environment for %d", application.deployment_id);
-                            status = "error";
-                            break;
-                        }
-
-                        switch (environment.Status) {
-                            case "Updating": status = "processing"; break;
-                            default: {
-                                switch (environment.Health) {
-                                    case "Green": status = "ok"; break;
-                                    case "Yellow": status = "warning"; break;
-                                    case "Red": status = "error"; break;
-                                    case "Grey": status = "unknown"; break;
+                            var status = "error";
+                            do {
+                                var environment = _.first(data.Environments);
+                                if (!environment) {
+                                    debug("could not find environment for %d", application.deployment_id);
+                                    status = "error";
+                                    break;
                                 }
-                            } break;
-                        }
-                    } while (0);
 
-                    cache.put("application-status:" + application.deployment_id, status, exports.timeout * 2);
-                    cache.put("application-version:" + application.deployment_id, environment.VersionLabel, exports.timeout * 2);
+                                switch (environment.Status) {
+                                    case "Updating":
+                                        status = "processing";
+                                        break;
+                                    default:
+                                    {
+                                        switch (environment.Health) {
+                                            case "Green":
+                                                status = "ok";
+                                                break;
+                                            case "Yellow":
+                                                status = "warning";
+                                                break;
+                                            case "Red":
+                                                status = "error";
+                                                break;
+                                            case "Grey":
+                                                status = "unknown";
+                                                break;
+                                        }
+                                    }
+                                        break;
+                                }
+                            } while (0);
 
-                    callback(null);
-                }, function (callback) {
-                    EB.describeApplicationVersions({
-                        "ApplicationName": application.application_name,
-                        VersionLabels: [
-                            cache.get("application-version:" + application.deployment_id)
-                        ]
-                    }, function (err, data) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
+                            cache.put("application-status:" + application.deployment_id, status, exports.timeout * 2);
+                            cache.put("application-version:" + application.deployment_id, environment.VersionLabel, exports.timeout * 2);
 
-                        var version = _.first(data.ApplicationVersions);
-                        if (!version) {
-                            callback("version not found");
-                            return;
-                        }
+                            callback(null);
+                        });
+                    }, function (callback) {
+                        EB.describeApplicationVersions({
+                            "ApplicationName": application.application_name,
+                            VersionLabels: [
+                                cache.get("application-version:" + application.deployment_id)
+                            ]
+                        }, function (err, data) {
+                            if (err) {
+                                callback(err);
+                                return;
+                            }
 
-                        var sha = /SHA: ([A-F0-9]+){40}/i.exec(version.Description);
-                        if (sha) {
-                            cache.put("application-commit:" + application.deployment_id, sha[1]);
-                        }
+                            var version = _.first(data.ApplicationVersions);
+                            if (!version) {
+                                callback("version not found");
+                                return;
+                            }
 
-                        callback(null);
-                    });
-                });
+                            var sha = /SHA: ([A-F0-9]{40})/i.exec(version.Description);
+                            if (sha) {
+                                cache.put("application-commit:" + application.deployment_id, sha[1]);
+                            }
+
+                            callback(null);
+                        });
+                    }
+                ], callback)
             }, callback);
         }
     ], callback);
