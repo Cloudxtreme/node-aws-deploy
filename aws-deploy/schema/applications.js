@@ -144,6 +144,67 @@ function (deployment_id, method, data, callback) {
             });
         } break;
 
+        case 'restart': {
+            async.waterfall([
+                function (callback) {
+                    db.querySingle("SELECT * FROM awd_deployments" +
+                        " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
+                        " WHERE awd_deployments.deployment_id = ? LIMIT 1", [deployment_id], function (err,result) {
+                        if (err || !result) {
+                            callback(err || new SchemaError("Application not found"));
+                            return;
+                        }
+
+                        callback(null, result);
+                    });
+                }, function (application, callback) {
+                    EB.restartAppServer({
+                        EnvironmentId: application.application_environment
+                    }, function (err, data) {
+                        callback(err);
+                    });
+                }
+            ], function (err) {
+                callback(err);
+            });
+        } break;
+
+        case 'refresh': {
+            schedule.run('check-application-status', deployment_id, function (err) {
+                if (err) {
+                    callback(new SchemaError(err));
+                    return;
+                }
+
+                callback(null);
+            });
+        } break;
+
+        case 'rebuild': {
+            async.waterfall([
+                function (callback) {
+                    db.querySingle("SELECT * FROM awd_deployments" +
+                        " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
+                        " WHERE awd_deployments.deployment_id = ? LIMIT 1", [deployment_id], function (err,result) {
+                        if (err || !result) {
+                            callback(err || new SchemaError("Application not found"));
+                            return;
+                        }
+
+                        callback(null, result);
+                    });
+                }, function (application, callback) {
+                    EB.rebuildEnvironment({
+                        EnvironmentId: application.application_environment
+                    }, function (err, data) {
+                        callback(err);
+                    });
+                }
+            ], function (err) {
+                callback(err);
+            });
+        } break;
+
         default: {
             callback("Unknown method");
         } break;

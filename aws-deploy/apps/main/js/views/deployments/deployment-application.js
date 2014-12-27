@@ -12,7 +12,10 @@ DeploymentApplicationView = AwsDeploy.View.extend({
         "change #application_name": "refreshEnvironments",
         "click #link": "link",
         "click #unlink": "unlink",
-        "click #deploy": "showDeployDialog"
+        "click #deploy": "showDeployDialog",
+        "click #refresh": "refresh",
+        "click #restart": "restart",
+        "click #rebuild": "rebuild"
     },
 
     render: function () {
@@ -124,6 +127,25 @@ DeploymentApplicationView = AwsDeploy.View.extend({
 
     showDeployDialog: function () {
         this.modalView(new DeploymentApplicationDeployDialogView({model: this.application}));
+    },
+
+    restart: function () {
+        this.confirm("application.restart-confirm", function (ok) {
+            if (ok) {
+                this.application.emit('restart', {}, {
+                    success: _.bind(function () {
+                        toastr.success("application.restart-success");
+                    }, this),
+                    error: _.bind(function () {
+                        toastr.error("application.restart-failed");
+                    }, this)
+                })
+            }
+        });
+    },
+
+    refresh: function () {
+        this.application.emit('refresh', {});
     }
 });
 
