@@ -18,11 +18,6 @@ var MainApp = AwsDeploy.Router.extend({
     },
 
     showDeployments: function () {
-        if (!this.session.isAuthorized()) {
-            this.navbar.showLogin();
-            return;
-        }
-
         this.showView("#content", new DeploymentsListView());
     },
 

@@ -57,6 +57,36 @@ function getDeployments(callback) {
     });
 });
 
+schema.on('read', '/deployments',
+function getDeployments(callback) {
+    db.query("SELECT " +
+        " awd_deployments.deployment_id," +
+        " deployment_name," +
+        " repository_type" +
+        " FROM awd_deployments" +
+        " LEFT JOIN awd_repositories ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
+        " ORDER BY deployment_name", function (err, rows) {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        var deployments = rows.map(function (deployment) {
+            var application_status = cache.get('application-status:' + deployment.deployment_id);
+            var repository_status = cache.get('repository-status:' + deployment.deployment_id);
+
+            return _.merge(deployment, {
+                application_status: application_status ? application_status : "unknown",
+                application_version: null,
+                repository_status: repository_status ? repository_status : "unknown",
+                repository_url: null
+            });
+        });
+
+        callback(null, deployments);
+    });
+});
+
 schema.on('update', '/deployments/:deployment_id',
     filters.authCheck, filters.deploymentWriteCheck,
 function updateDeployment(deployment_id, data, callback, info) {
