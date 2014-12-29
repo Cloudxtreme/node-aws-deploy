@@ -64,6 +64,8 @@ AwsDeploy.View = Backbone.View.extend({
         this.closeDialogs();
         this.closeChildViews();
         this.closeTrackedViews();
+        this.clearTimeouts();
+        this.clearIntervals();
 
         this.remove();
         this.unbind();
@@ -194,10 +196,43 @@ AwsDeploy.View = Backbone.View.extend({
         return d;
     },
 
-    setEditMode: function (editing) {
-        this.$el.find('form :input:not(.ignore-edit-mode)').prop('disabled', !editing);
-        this.$el.find('.edit-mode-only:not(.ignore-edit-mode)').toggle(editing);
-        this.$el.find('.read-mode-only:not(.ignore-edit-mode)').toggle(!editing);
+    setTimeout: function (func, timeout, context) {
+        this._timeouts = this._timeouts || [];
+        var handle = setTimeout(_.bind(function () {
+            this._timeouts = _.without(this._timeouts, handle);
+            _.bind(func, context)();
+        }, this), timeout);
+        this._timeouts.push(handle);
+    },
+
+    clearTimeout: function (handle) {
+        clearTimeout(handle);
+        this._timeouts = _.without(this._timeouts, handle);
+    },
+
+    clearTimeouts: function () {
+        _.each(this._timeouts, function (timeout) {
+            clearTimeout(timeout);
+        });
+        delete this._timeouts;
+    },
+
+    setInterval: function (func, timeout, context) {
+        this._intervals = this._intervals || [];
+        var handle = setInterval(_.bind(func, context), timeout);
+        this._intervals.push(handle);
+    },
+
+    clearInterval: function (handle) {
+        clearInterval(handle);
+        this._intervals = _.without(this._intervals, handle);
+    },
+
+    clearIntervals: function () {
+        _.each(this._intervals, function (interval) {
+            clearInterval(interval);
+        });
+        delete this._intervals;
     }
 });
 
