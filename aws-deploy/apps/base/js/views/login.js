@@ -28,10 +28,10 @@ LoginView = AwsDeploy.View.extend({
         this.$el.find("#login_progress").toggleClass("hidden", false);
         this.$el.find("form#login button[type=submit]").prop("disabled", true);
 
-        var user_email = this.$el.find("form#login input#user_email").val();
-        var user_pass = this.$el.find("form#login input#user_pass").val();
+        var username = this.$el.find("form#login input#username").val();
+        var password = this.$el.find("form#login input#password").val();
 
-        this.options.session.login(user_email, user_pass, _.bind(function (err) {
+        this.options.session.login(username, password, _.bind(function (err) {
             if (err) {
                 toastr.error("login.login-failed");
 
