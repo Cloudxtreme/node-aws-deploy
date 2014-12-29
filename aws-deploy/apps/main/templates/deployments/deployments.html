@@ -1,20 +1,20 @@
 <ol class="breadcrumb">
-    <li>breadcrumbs.home</li>
+    <li><span class="fa fa-home"></span></li>
 </ol>
 
-<h3>deployments.label</h3>
+<h3><%= i18n.t('deployments.label') %></h3>
 
 <table class="table table-striped">
     <thead>
         <tr>
-            <th class="col-xs-3">deployment.name</th>
-            <th class="col-xs-3">deployment.application</th>
-            <th>deployment.repository</th>
+            <th class="col-md-3"><%= i18n.t('deployments.name') %></th>
+            <th class="col-md-3"><%= i18n.t('deployments.application') %></th>
+            <th><%= i18n.t('deployments.repository') %></th>
         </tr>
     </thead>
     <tfoot>
     <tr>
-        <td colspan="3"><a href="#" id="add_deployment"><span class="glyphicon glyphicon-plus"></span>&nbsp;deployment.add</a></td>
+        <td colspan="3"><a href="#" id="add_deployment"><span class="glyphicon glyphicon-plus"></span>&nbsp;<%= i18n.t('deployments.add') %></a></td>
     </tr>
     </tfoot>
     <tbody></tbody>

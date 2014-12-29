@@ -33,7 +33,7 @@ LoginView = AwsDeploy.View.extend({
 
         this.options.session.login(username, password, _.bind(function (err) {
             if (err) {
-                toastr.error("login.login-failed");
+                toastr.error(i18n.t("login.login-failed"));
 
                 this.$el.find("#login_progress").toggleClass("hidden", true);
                 this.$el.find("form#login button[type=submit]").prop("disabled", false);
@@ -53,12 +53,12 @@ LoginView = AwsDeploy.View.extend({
         var user_pass_repeat = this.$el.find("form#register input#user_pass_repeat").val();
 
         if (!user_name.length) {
-            this.alert("register.name-missing");
+            this.alert(i18n.t("register.name-missing"));
             return;
         }
 
         if (user_pass !== user_pass_repeat) {
-            this.alert("register.password-mismatch");
+            this.alert(i18n.t("register.password-mismatch"));
             return;
         }
 
@@ -71,7 +71,7 @@ LoginView = AwsDeploy.View.extend({
             user_pass: user_pass
         }, _.bind(function (err) {
             if (err) {
-                toastr.error("register.registration-failed");
+                toastr.error(i18n.t("register.registration-failed"));
 
                 this.$el.find("#registration_progress").toggleClass("hidden", true);
                 this.$el.find("form#register button[type=submit]").prop("disabled", false);

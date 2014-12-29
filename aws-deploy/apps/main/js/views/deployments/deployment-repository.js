@@ -99,7 +99,7 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
         }, {
             wait: true,
             error: function () {
-                toastr.error("repository.repo-link-failed");
+                toastr.error(i18n.t("repository.link-failed"));
             }
         })
     },
@@ -112,7 +112,7 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
                 window.location.href = url;
             }, this),
             error: function () {
-                toastr.error("deployment.repo-link-error");
+                toastr.error(i18n.t("deployment.link-failed"));
             }
         });
     },
@@ -120,14 +120,14 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
     unlink: function (event) {
         event.preventDefault();
 
-        this.confirm("repository.unlink-repo-confirm", function (ok) {
+        this.confirm(i18n.t("repository.unlink-confirm"), function (ok) {
             if (ok) {
                 this.repository.emit('unlink', {
                     success: _.bind(function () {
                         this.repository.fetch();
                     }, this),
                     error: function () {
-                        toastr.error("deployment.repo-unlink-error");
+                        toastr.error(i18n.t("deployment.unlink-failed"));
                     }
                 });
             }
@@ -173,11 +173,11 @@ DeploymentRepositoryPackageDialogView = AwsDeploy.View.extend({
         this.$el.find('button[type=submit]').prop('disabled', true);
         this.model.emit('create-package', {}, {
             success: _.bind(function () {
-                toastr.success('repository.package-created');
+                toastr.success(i18n.t('repository.create-package-success'));
                 this.close();
             }, this),
             error: _.bind(function () {
-                toastr.error('repository.create-package-failed');
+                toastr.error(i18n.t('repository.create-package-failed'));
                 this.$el.find("#progress").addClass('hidden');
                 this.$el.find('button[type=submit]').prop('disabled', false);
             }, this)

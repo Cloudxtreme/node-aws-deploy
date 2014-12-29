@@ -97,11 +97,11 @@ DeploymentApplicationView = AwsDeploy.View.extend({
             application_bucket: application_bucket
         }, {
             success: _.bind(function () {
-                toastr.success("application.linked");
+                toastr.success(i18n.t("application.link-success"));
                 this.application.fetch();
             }, this),
             error: function () {
-                toastr.error("application.link-failed");
+                toastr.error(i18n.t("application.link-failed"));
             }
         });
     },
@@ -113,11 +113,11 @@ DeploymentApplicationView = AwsDeploy.View.extend({
             if (ok) {
                 this.application.emit("unlink", {
                     success: _.bind(function () {
-                        toastr.success("application.unlinked");
+                        toastr.success(i18n.t("application.unlink-success"));
                         this.application.fetch();
                     }, this),
                     error: function () {
-                        toastr.error("application.unlink-failed");
+                        toastr.error(i18n.t("application.unlink-failed"));
                     }
                 });
             }
@@ -133,10 +133,10 @@ DeploymentApplicationView = AwsDeploy.View.extend({
             if (ok) {
                 this.application.emit('restart', {}, {
                     success: _.bind(function () {
-                        toastr.success("application.restart-success");
+                        toastr.success(i18n.t("application.restart-success"));
                     }, this),
                     error: _.bind(function () {
-                        toastr.error("application.restart-failed");
+                        toastr.error(i18n.t("application.restart-failed"));
                     }, this)
                 })
             }
@@ -213,11 +213,11 @@ DeploymentApplicationDeployDialogView = AwsDeploy.View.extend({
             version_label: version_label
         }, {
             success: _.bind(function () {
-                toastr.success('application.version-deployed');
+                toastr.success(i18n.t('application.version-deploy-success'));
                 this.close();
             }, this),
             error: _.bind(function () {
-                toastr.error('application.version-deploy-failed');
+                toastr.error(i18n.t('application.version-deploy-failed'));
                 this.$el.find("#progress").addClass('hidden');
                 this.$el.find('button[type=submit]').prop('disabled', false);
             }, this)

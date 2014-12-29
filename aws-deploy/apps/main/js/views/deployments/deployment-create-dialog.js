@@ -21,14 +21,14 @@ DeploymentCreateDialogView = AwsDeploy.View.extend({
             deployment_name: deployment_name
         }, {
             success: _.bind(function (model) {
-                toastr.success("deployments.deployment-created");
+                toastr.success(i18n.t("deployments.create-success"));
                 this.collection.fetch({
                     reset: true
                 });
                 this.close();
             }, this),
             error: _.bind(function () {
-                toastr.error("deployments.deployment-creation-failed");
+                toastr.error(i18n.t("deployments.create-failed"));
             }, this)
         });
     }

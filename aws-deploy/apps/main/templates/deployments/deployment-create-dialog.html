@@ -1,8 +1,8 @@
 <form role="form">
     <div class="form-group">
-        <label for="deployment_name">deployment.name</label>
-        <input type="text" class="form-control" id="deployment_name" placeholder="deployment.name" autofocus>
+        <label for="deployment_name"><%= i18n.t('deployment.name') %></label>
+        <input type="text" class="form-control" id="deployment_name" placeholder="<%= i18n.t('deployment.name-hint') %>" autofocus>
     </div>
 
-    <button class="btn btn-success">deployment.save</button>
+    <button type="submit" class="btn btn-success"><%= i18n.t('deployment.submit') %></button>
 </form>

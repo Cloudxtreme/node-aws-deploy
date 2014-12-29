@@ -1,4 +1,4 @@
-var MainApp = AwsDeploy.Router.extend({
+var MainRouter = AwsDeploy.Router.extend({
     initialize: function () {
         this.session = new SessionManager();
         this.listenTo(this.session, 'signin', this.onSignin);
@@ -117,4 +117,14 @@ var MainApp = AwsDeploy.Router.extend({
     }
 });
 
-var app = new MainApp();
+var app;
+new (MainApp = AppMain.extend({
+    initialize: function () {
+        this.create(function (err) {
+            if (err) {
+                return;
+            }
+            app = new MainRouter();
+        })
+    }
+}));

@@ -32,11 +32,11 @@ ProfileView = AwsDeploy.View.extend({
         }, {
             wait: true,
             success: _.bind(function () {
-                toastr.success("profile.saved");
+                toastr.success(i18n.t("profile.save-success"));
                 this.close();
             }, this),
             error: _.bind(function () {
-                toastr.error("profile.save-failed");
+                toastr.error(i18n.t("profile.save-failed"));
             }, this)
         });
 
@@ -78,11 +78,11 @@ ProfilePasswordView = AwsDeploy.View.extend({
             new_password: new_password
         }, {
             success: _.bind(function () {
-                toastr.success("profile.password-changed");
+                toastr.success(i18n.t("profile.change-password-success"));
                 this.close();
             }, this),
             error: _.bind(function () {
-                toastr.error("profile.password-change-failed");
+                toastr.error(i18n.t("profile.change-password-failed"));
                 this.$el.find("#password_progress").addClass("hidden");
             }, this)
         });

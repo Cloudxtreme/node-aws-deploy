@@ -1,58 +1,58 @@
 <form role="form" id="application">
 <% if (!this.application.get("application_name") || !this.application.get("application_environment")) { %>
     <div class="form-group">
-        <label for="application_name">application.name</label>
-        <input id="application_name" type="text" class="form-control" list="applications">
+        <label for="application_name"><%= i18n.t('application.name') %></label>
+        <input id="application_name" type="text" class="form-control" list="applications" placeholder="%= i18n.t('application.name-hint') %>">
         <datalist id="applications"></datalist>
     </div>
 
     <div class="form-group">
-        <label for="application_environment">application.environment</label>
-        <input id="application_environment" type="text" class="form-control" list="environments">
+        <label for="application_environment"><%= i18n.t('application.environment') %></label>
+        <input id="application_environment" type="text" class="form-control" list="environments" placeholder="<%= i18n.t('application.environment-hint') %>">
         <datalist id="environments"></datalist>
     </div>
 
     <div class="form-group">
-        <label for="application_bucket">application.bucket</label>
-        <input id="application_bucket" type="text" class="form-control" list="buckets">
+        <label for="application_bucket"><%= i18n.t('application.bucket') %></label>
+        <input id="application_bucket" type="text" class="form-control" list="buckets" placeholder="%= i18n.t('application.bucket-hint') %>">
         <datalist id="buckets"></datalist>
     </div>
 
-    <button id="link" class="btn btn-primary">application.link</button>
+    <button id="link" class="btn btn-primary"><%= i18n.t('application.link') %></button>
 <% } else { %>
     <div class="form-group">
-        <label for="application_name">application.name</label>
+        <label for="application_name"><%= i18n.t('application.name') %></label>
         <input id="application_name" type="text" class="form-control" disabled value="<%= this.application.get('application_name') %>">
     </div>
 
     <div class="form-group">
-        <label for="application_environment">application.environment</label>
+        <label for="application_environment"><%= i18n.t('application.environment') %></label>
         <input id="application_environment" type="text" class="form-control" disabled value="<%= this.application.get('application_environment') %>">
     </div>
 
     <div class="form-group">
-        <label for="application_bucket">application.bucket</label>
+        <label for="application_bucket"><%= i18n.t('application.bucket') %></label>
         <input id="application_bucket" type="text" class="form-control" disabled value="<%= this.application.get('application_bucket') %>">
     </div>
 
     <div class="form-group">
-        <label for="application_status">application.status</label>
-        <input id="application_status" type="text" class="form-control text-status-<%= this.application.get('application_status') %>" value="<%= this.application.get('application_status') %>" disabled>
+        <label for="application_status"><%= i18n.t('application.status') %></label>
+        <input id="application_status" type="text" class="form-control text-status-<%= this.application.get('application_status') %>" value="<%= i18n.t('application.' + this.application.get('application_status')) %>" disabled>
     </div>
 
     <div class="form-group">
-        <label for="application_version">application.version</label>
+        <label for="application_version"><%= i18n.t('application.version') %></label>
         <input id="application_version" type="text" class="form-control" value="<%= this.application.get('application_version') %>" disabled>
     </div>
 
     <div class="form-group">
-        <button type="button" id="refresh" class="btn btn-primary">application.refresh</button>
-        <button type="button" id="unlink" class="btn btn-danger pull-right">application.unlink</button>
+        <button type="button" id="refresh" class="btn btn-primary"><%= i18n.t('application.refresh') %></button>
+        <button type="button" id="unlink" class="btn btn-danger pull-right"><%= i18n.t('application.unlink') %></button>
     </div>
 
     <div class="form-group">
-        <button type="button" id="deploy" class="btn btn-success">application.deploy</button>
-        <button type="button" id="restart" class="btn btn-warning">application.restart</button>
+        <button type="button" id="deploy" class="btn btn-success"><%= i18n.t('application.deploy') %></button>
+        <button type="button" id="restart" class="btn btn-warning"><%= i18n.t('application.restart') %></button>
         <!-- button type="button" id="rebuild" class="btn btn-info">application.rebuild</button -->
     </div>
 <% } %>

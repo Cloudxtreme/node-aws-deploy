@@ -1,16 +1,16 @@
 <form role="form">
     <div class="form-group">
-        <span>Deploy application version to hosted environment</span>
+        <span><%= i18n.t('deploy.description') %></span>
     </div>
 
     <div class="form-group">
-        <label for="version_label">version.label</label>
+        <label for="version_label"><%= i18n.t('deploy.version') %></label>
         <select id="version_label" class="form-control" disabled>
         </select>
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">application.deploy</button>
+        <button type="submit" class="btn btn-primary"><%= i18n.t('application.deploy') %></button>
         <span id="progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
     </div>
 </form>

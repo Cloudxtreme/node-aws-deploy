@@ -1,0 +1,127 @@
+{
+    "navbar": {
+        "label": "AWS Deploy",
+        "connecting": "Connecting...",
+        "profile": "Profile",
+        "login": "Login",
+        "logout": "Logout"
+    },
+
+    "login": {
+        "email": "E-mail",
+        "password": "Password",
+        "submit": "Login",
+        "register": "Register",
+
+        "login-failed": "Login failed"
+    },
+
+    "register": {
+        "email": "E-mail",
+        "name": "Name",
+        "password": "Password",
+        "password-repeat": "Repeat password",
+        "submit": "Register",
+
+        "name-missing": "Name missing",
+        "password-mismatch": "Passwords are mismatching",
+        "registration-failed": "Registration failed"
+    },
+
+    "profile": {
+        "email": "E-mail",
+        "name": "Name",
+        "save": "Save Profile",
+        "save-success": "Profile saved",
+        "save-failed": "Profile failed to save",
+
+        "change-password": "Change Password",
+        "old-password": "Old password",
+        "new-password": "New password",
+        "new-password-repeat": "Repeat new password",
+        "change-password-success": "Password change success",
+        "change-password-failed": "Failed to change password"
+    },
+
+    "deployments": {
+        "label": "Deployments",
+        "name": "Name",
+        "application": "Application",
+        "repository": "Repository",
+        "add": "Add..."
+    },
+
+    "deployment": {
+        "name": "Name",
+        "name-hint": "Application Name",
+        "submit": "Save",
+        "delete": "Delete",
+
+        "overview": "Overview",
+        "edit": "Edit",
+        "repository": "Repository",
+        "application": "Application",
+
+        "auto-package": "Auto-Package",
+        "auto-deploy": "Auto-Deploy"
+    },
+
+    "repository": {
+        "type": "Type",
+        "url": "URL",
+        "status": "Status",
+        "commit": "Commit",
+
+        "pick-type": "Pick repository type",
+        "github": "Github",
+
+        "unknown": "Unknown",
+        "error": "Error while checking status",
+        "warning": "Out of date",
+        "ok": "Up to date",
+
+        "refresh": "Refresh",
+        "link": "Link",
+        "link-failed": "Linking failed",
+        "unlink": "Unlink",
+        "unlink-confirm": "Are you sure you want to unlink repository?",
+        "unlink-failed": "Unlinking failed",
+        "create-package": "Create Application Package",
+        "create-package-failed": "Creating application package failed",
+        "create-package-success": "Application package successfully created"
+    },
+
+    "package": {
+        "description": "Upload repository version to application storage"
+    },
+
+    "application": {
+        "name": "Name",
+        "name-hint": "Application Name",
+        "environment": "Environment",
+        "environment-hint": "Environment Name",
+        "bucket": "S3 Bucket",
+        "bucket-hint": "Bucket Name",
+        "status": "Status",
+        "version": "Version",
+
+        "unknown": "Unknown",
+        "error": "Error",
+        "warning": "Warning",
+        "ok": "OK",
+        "processing": "Processing action...",
+
+        "link": "Link",
+        "unlink": "Unlink",
+        "unlink-confirm": "Are you sure you want to unlink application?",
+        "refresh": "Refresh",
+        "deploy": "Deploy Version",
+        "restart": "Restart Servers"
+    },
+
+    "deploy": {
+        "description": "Deploy application version to hosted environment",
+        "version": "Version"
+    }
+
+}

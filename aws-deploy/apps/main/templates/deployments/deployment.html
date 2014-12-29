@@ -1,15 +1,15 @@
 <ol class="breadcrumb">
-    <li><a href="#">breadcrumbs.home</a></li>
+    <li><a href="#"><span class="fa fa-home"></span></a></li>
     <li><%= deployment_name %></li>
 </ol>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <ul class="nav nav-pills nav-stacked" id="menu">
-            <li id="overview"><a href="#deployments/<%= deployment_id %>">deployment.overview</a></li>
-            <li id="edit"><a href="#deployments/<%= deployment_id %>/edit">deployment.edit</a></li>
-            <li id="repository"><a href="#deployments/<%= deployment_id %>/repository">deployment.repository</a></li>
-            <li id="application"><a href="#deployments/<%= deployment_id %>/application">deployment.application</a></li>
+            <li id="overview" class="text-center"><a href="#deployments/<%= deployment_id %>"><%= i18n.t('deployment.overview') %></a></li>
+            <li id="edit" class="text-center"><a href="#deployments/<%= deployment_id %>/edit"><%= i18n.t('deployment.edit') %></a></li>
+            <li id="repository" class="text-center"><a href="#deployments/<%= deployment_id %>/repository"><%= i18n.t('deployment.repository') %></a></li>
+            <li id="application" class="text-center"><a href="#deployments/<%= deployment_id %>/application"><%= i18n.t('deployment.application') %></a></li>
         </ul>
     </div>
     <div class="col-md-9 well" id="deployment"></div>

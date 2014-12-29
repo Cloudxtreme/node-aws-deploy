@@ -1,15 +1,15 @@
 <form class="form">
     <div class="form-group">
-        <label for="repository_type">repository.type</label>
+        <label for="repository_type"><%= i18n.t('repository.type') %></label>
         <select id="repository_type" class="form-control">
-            <option value="">repository.pick-repository-type</option>
-            <option value="github">repository.github</option>
+            <option value=""><%= i18n.t('repository.pick-type') %></option>
+            <option value="github"><%= i18n.t('repository.github') %></option>
         </select>
     </div>
 <% if (this.repository.get("repository_type")) { %>
 <% if (!this.repository.get("repository_linked")) { %>
     <div class="form-group">
-        <button id="link" class="btn btn-primary">repository.link</button>
+        <button type="button" id="link" class="btn btn-primary"><%= i18n.t('repository.link') %></button>
     </div>
 <%
 } else if (!this.repository.get("repository_url")) {
@@ -17,44 +17,44 @@
         case 'github': {
 %>
     <div class="form-group">
-        <label for="repository_name">repository.name</label>
+        <label for="repository_name"><%= i18n.t('repository.name') %></label>
         <select id="repository_name" class="form-control" disabled></select>
     </div>
 
     <div class="form-group">
-        <label for="repository_branch">repository.branch</label>
+        <label for="repository_branch"><%= i18n.t('repository.branch') %></label>
         <select id="repository_branch" class="form-control" disabled></select>
     </div>
 
     <div class="form-group">
-        <button id="save" class="btn btn-primary" disabled>repository.save</button>
+        <button id="save" class="btn btn-primary" disabled><%= i18n.t('repository.save') %></button>
     </div>
 <%
         } break;
     }
 } else {%>
     <div class="form-group">
-        <label for="repository_url">repository.url</label>
+        <label for="repository_url"><%= i18n.t('repository.url') %></label>
         <input id="repository_url" class="form-control" type="text" value="<%= repository_url %>" disabled>
     </div>
 
     <div class="form-group">
-        <label for="repository_status">repository.status</label>
-        <input id="repository_status" class="form-control text-status-<%= repository_status %>" type="text" value="<%= repository_status %>" disabled>
+        <label for="repository_status"><%= i18n.t('repository.status') %></label>
+        <input id="repository_status" class="form-control text-status-<%= repository_status %>" type="text" value="<%= i18n.t('repository.' + repository_status) %>" disabled>
     </div>
 
     <div class="form-group">
-        <label for="repository_commit">repository.commit</label>
+        <label for="repository_commit"><%= i18n.t('repository.commit') %></label>
         <input id="repository_commit" class="form-control" type="text" value="<%= repository_commit %>" disabled>
     </div>
 
     <div class="form-group">
-        <button id="refresh" class="btn btn-primary">repository.refresh</button>
-        <button id="unlink" class="btn btn-danger pull-right">repository.unlink</button>
+        <button id="refresh" class="btn btn-primary"><%= i18n.t('repository.refresh') %></button>
+        <button id="unlink" class="btn btn-danger pull-right"><%= i18n.t('repository.unlink') %></button>
     </div>
 
     <div class="form-group">
-        <button id="package" class="btn btn-success">repository.create-package</button>
+        <button id="package" class="btn btn-success"><%= i18n.t('repository.create-package') %></button>
     </div>
 <% } %>
 <% } %>

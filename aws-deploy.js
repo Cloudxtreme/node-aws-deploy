@@ -27,7 +27,7 @@ var DeployService = Service.extend({
                 app.all('/api/1/*', api.request);
                 app.use('/api', api.errorHandler);
 
-                app.use(express.static('./client'));
+                app.use(express.static('./aws-deploy/client'));
 
                 apps.mount(app, callback);
             }.bind(this)

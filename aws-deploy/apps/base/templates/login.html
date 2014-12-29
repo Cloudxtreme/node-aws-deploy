@@ -1,45 +1,45 @@
 <form id="login" role="form">
     <div class="form-group">
         <% if (this.config.get("user_registration")) { %>
-        <a class="pull-right" href="#" id="show_register">login.register</a>
+        <a class="pull-right" href="#" id="show_register"><%= i18n.t('login.register') %></a>
         <% } %>
-        <label for="username">login.email</label>
-        <input type="email" class="form-control" id="username" placeholder="login.email" autofocus>
+        <label for="username"><%= i18n.t('login.email') %></label>
+        <input type="email" class="form-control" id="username" placeholder="<%= i18n.t('login.email') %>" autofocus>
     </div>
 
     <div class="form-group">
-        <label for="password">login.password</label>
-        <input type="password" class="form-control" id="password" placeholder="login.password">
+        <label for="password"><%= i18n.t('login.password') %></label>
+        <input type="password" class="form-control" id="password" placeholder="<%= i18n.t('login.password') %>">
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-default">login.submit</button>
+        <button type="submit" class="btn btn-default"><%= i18n.t('login.submit') %></button>
         <span id="login_progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
     </div>
 </form>
 <form id="register" class="hidden" role="form">
     <div class="form-group">
-        <label for="user_email">register.email</label>
-        <input type="email" class="form-control" id="user_email" placeholder="register.email">
+        <label for="user_email"><%= i18n.t('register.email') %></label>
+        <input type="email" class="form-control" id="user_email" placeholder="<%= i18n.t('register.email') %>">
     </div>
 
     <div class="form-group">
-        <label for="user_name">register.name</label>
-        <input type="text" class="form-control" id="user_name" placeholder="register.name">
+        <label for="user_name"><%= i18n.t('register.name') %></label>
+        <input type="text" class="form-control" id="user_name" placeholder="<%= i18n.t('register.name') %>">
     </div>
 
     <div class="form-group">
-        <label for="user_pass">register.password</label>
-        <input type="password" class="form-control" id="user_pass">
+        <label for="user_pass"><%= i18n.t('register.password') %></label>
+        <input type="password" class="form-control" id="user_pass" placeholder="<%= i18n.t('register.password') %>">
     </div>
 
     <div class="form-group">
-        <label for="user_pass_repeat">register.password-repeat</label>
-        <input type="password" class="form-control" id="user_pass_repeat">
+        <label for="user_pass_repeat"><%= i18n.t('register.password-repeat') %></label>
+        <input type="password" class="form-control" id="user_pass_repeat" placeholder="<%= i18n.t('register.password-repeat') %>">
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-default">register.submit</button>
+        <button type="submit" class="btn btn-default"><%= i18n.t('register.submit') %></button>
         <span id="registration_progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
     </div>
 </form>

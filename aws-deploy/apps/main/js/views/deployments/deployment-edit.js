@@ -27,11 +27,11 @@ DeploymentEditView = AwsDeploy.View.extend({
         }, {
             wait: true,
             success: _.bind(function () {
-                toastr.success("deployment.saved");
+                toastr.success(i18n.t("deployment.save-success"));
                 app.navigate("#deployments/" + this.model.id, {trigger: true});
             }, this),
             error: _.bind(function () {
-                toastr.error("deployment.save-failed");
+                toastr.error(i18n.t("deployment.save-failed"));
             }, this)
         });
     },
@@ -39,7 +39,7 @@ DeploymentEditView = AwsDeploy.View.extend({
     destroy: function (event) {
         event.preventDefault();
 
-        this.confirm("deployment.delete-deployment-confirm", function (ok) {
+        this.confirm(i18n.t("deployment.delete-confirm"), function (ok) {
         });
     }
 });
