@@ -5,7 +5,11 @@ DeploymentApplicationView = AwsDeploy.View.extend({
         this.application = new DeploymentApplicationModel();
         this.application.deployment_id = this.model.id;
         this.listenTo(this.application, 'change', this.onApplication);
-        this.application.fetch();
+        this.application.fetch({
+            success: _.bind(function () {
+                this.setInterval(this.application.fetch, 15000, this.application);
+            }, this)
+        });
     },
 
     events: {
@@ -29,8 +33,6 @@ DeploymentApplicationView = AwsDeploy.View.extend({
             this.refreshApplications();
             this.refreshEnvironments();
             this.refreshBuckets();
-        } else {
-            this.refreshVersions();
         }
 
         this.render();
@@ -80,9 +82,6 @@ DeploymentApplicationView = AwsDeploy.View.extend({
                 });
             }, this)
         })
-    },
-
-    refreshVersions: function () {
     },
 
     link: function (event) {
@@ -145,7 +144,11 @@ DeploymentApplicationView = AwsDeploy.View.extend({
     },
 
     refresh: function () {
-        this.application.emit('refresh', {});
+        this.application.emit('refresh', {}, {
+            success: _.bind(function () {
+                this.application.fetch();
+            }, this)
+        });
     }
 });
 

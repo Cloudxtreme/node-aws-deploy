@@ -7,7 +7,10 @@ DeploymentsListView = AwsDeploy.View.extend({
         this.listenTo(this.deployments, 'reset', this.addAll);
 
         this.deployments.fetch({
-            reset: true
+            reset: true,
+            success: _.bind(function () {
+                this.setInterval(this.deployments.fetch, 15000, this.deployments);
+            }, this)
         });
     },
 
@@ -98,6 +101,8 @@ DeploymentView = AwsDeploy.View.extend({
                 });
             } break;
         }
+
+        this.addTrackedView(this.tabView);
     },
 
     render: function () {

@@ -8,6 +8,7 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
 
         this.repository.fetch({
             success: _.bind(function () {
+                this.setInterval(this.repository.fetch, 15000, this.repository);
                 this.refreshUrls();
             }, this)
         });
