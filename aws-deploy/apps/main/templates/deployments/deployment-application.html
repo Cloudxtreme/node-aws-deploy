@@ -2,7 +2,7 @@
 <% if (!this.application.get("application_name") || !this.application.get("application_environment")) { %>
     <div class="form-group">
         <label for="application_name"><%= i18n.t('application.name') %></label>
-        <input id="application_name" type="text" class="form-control" list="applications" placeholder="%= i18n.t('application.name-hint') %>">
+        <input id="application_name" type="text" class="form-control" list="applications" placeholder="<%= i18n.t('application.name-hint') %>">
         <datalist id="applications"></datalist>
     </div>
 
@@ -14,7 +14,7 @@
 
     <div class="form-group">
         <label for="application_bucket"><%= i18n.t('application.bucket') %></label>
-        <input id="application_bucket" type="text" class="form-control" list="buckets" placeholder="%= i18n.t('application.bucket-hint') %>">
+        <input id="application_bucket" type="text" class="form-control" list="buckets" placeholder="<%= i18n.t('application.bucket-hint') %>">
         <datalist id="buckets"></datalist>
     </div>
 
