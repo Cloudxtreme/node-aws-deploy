@@ -208,12 +208,14 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(null);
             });
         }, function (callback) {
+            var repo = /([^\/]+)\/([^#]+)#(.+)/i.exec(deployment.repository_url);
+
             debug("creating new application version");
             EB.createApplicationVersion({
                 ApplicationName: deployment.application_name,
                 VersionLabel: version,
                 AutoCreateApplication: false,
-                Description: "Deploy of repository " + deployment.repository_url + " (SHA: " + repository_commit + ")",
+                Description: "Deploy of repository " + deployment.repository_url + " (SHA: " + repository_commit + " Branch: " + repo[3] + ")",
                 SourceBundle: {
                     S3Bucket: deployment.application_bucket,
                     S3Key: filename
