@@ -47,27 +47,16 @@ function checkRepositoryStatus(deployment_id, callback) {
                                 return;
                             }
 
-                            var status = "warning";
-                            do {
-                                var repository_commit = body.hasOwnProperty("commit") ? body.commit.sha : null;
-                                cache.put("repository-commit:" + repository.deployment_id, repository_commit, exports.timeout * 2);
-
-                                var deployed_commit = cache.get("application-commit:" + repository.deployment_id);
-                                if (repository_commit != deployed_commit) {
-                                    break;
-                                }
-
-                                status = "ok";
-                            } while(0);
-
-                            cache.put("repository-status:" + repository.deployment_id, status, exports.timeout * 2);
+                            var repository_commit = body.hasOwnProperty("commit") ? body.commit.sha : null;
+                            cache.put("repository-commit:" + repository.deployment_id, repository_commit, exports.timeout * 2);
+                            cache.put("repository-status:" + repository.deployment_id, "ok", exports.timeout * 2);
 
                             callback(null);
                         });
                     } break;
                     default: {
                         async.nextTick(function () {
-                            cache.put("repository-status:" + repository.deployment_id, "error");
+                            cache.put("repository-status:" + repository.deployment_id, "error", exports.timeout * 2);
                             callback("Unknown repository type");
                         });
                     } break;

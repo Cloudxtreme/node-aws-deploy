@@ -26,6 +26,12 @@ function readRepository(deployment_id, callback) {
         var repository_commit = cache.get("repository-commit:" + deployment_id);
         var repository_status = cache.get("repository-status:" + deployment_id);
 
+        var application_commit = cache.get('application-commit:' + deployment_id);
+
+        if ((repository_status === "ok") && (application_commit !== repository_commit)) {
+            repository_status = "warning";
+        }
+
         repository = repository ? _.merge(repository, {
             repository_commit: repository_commit,
             repository_status: repository_status ? repository_status : "unknown"

@@ -46,6 +46,13 @@ function getDeployments(callback) {
             var application_status = cache.get('application-status:' + deployment.deployment_id);
             var repository_status = cache.get('repository-status:' + deployment.deployment_id);
 
+            var application_commit = cache.get('application-commit:' + deployment.deployment_id);
+            var repository_commit = cache.get('repository-commit:' + deployment.deployment_id);
+
+            if ((repository_status === "ok") && (application_commit !== repository_commit)) {
+                repository_status = "warning";
+            }
+
             return _.merge(deployment, {
                 application_status: application_status ? application_status : "unknown",
                 application_version: cache.get('application-version:' + deployment.deployment_id),
@@ -74,6 +81,13 @@ function getDeployments(callback) {
         var deployments = rows.map(function (deployment) {
             var application_status = cache.get('application-status:' + deployment.deployment_id);
             var repository_status = cache.get('repository-status:' + deployment.deployment_id);
+
+            var application_commit = cache.get('application-commit:' + deployment.deployment_id);
+            var repository_commit = cache.get('repository-commit:' + deployment.deployment_id);
+
+            if ((repository_status === "ok") && (application_commit !== repository_commit)) {
+                repository_status = "warning";
+            }
 
             return _.merge(deployment, {
                 application_status: application_status ? application_status : "unknown",
