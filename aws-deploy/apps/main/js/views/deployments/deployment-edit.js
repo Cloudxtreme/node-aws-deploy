@@ -5,13 +5,18 @@ DeploymentEditView = AwsDeploy.View.extend({
 
     events: {
         "submit form": "save",
-        "click button#destroy": "destroy"
+        "click button#destroy": "destroy",
+        "change #deployment_auto_clean input[type=checkbox]": "changeAutoClean",
     },
 
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
 
         this.$el.find("#deployment_name").val(this.model.get("deployment_name"));
+        this.$el.find("#deployment_auto_package").prop("checked", this.model.get("deployment_auto_package"));
+        this.$el.find("#deployment_auto_deploy").prop("checked", this.model.get("deployment_auto_deploy"));
+        this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked", this.model.get("deployment_auto_clean") > 0);
+        this.$el.find("#deployment_auto_clean input[type=number]").prop("disabled", this.model.get("deployment_auto_clean") == 0).val(this.model.get("deployment_auto_clean") > 0 ? this.model.get("deployment_auto_clean") : undefined);
 
         this.delegateEvents();
         return this;
@@ -21,9 +26,15 @@ DeploymentEditView = AwsDeploy.View.extend({
         event.preventDefault();
 
         var deployment_name = this.$el.find("#deployment_name").val();
+        var deployment_auto_package = this.$el.find("#deployment_auto_package").prop("checked");
+        var deployment_auto_deploy = this.$el.find("#deployment_auto_deploy").prop("checked");
+        var deployment_auto_clean = this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked") ? this.$el.find("#deployment_auto_clean input[type=number]").val() : 0;
 
         this.model.save({
-            deployment_name: deployment_name
+            deployment_name: deployment_name,
+            deployment_auto_package: deployment_auto_package,
+            deployment_auto_deploy: deployment_auto_deploy,
+            deployment_auto_clean: deployment_auto_clean
         }, {
             wait: true,
             success: _.bind(function () {
@@ -41,5 +52,10 @@ DeploymentEditView = AwsDeploy.View.extend({
 
         this.confirm(i18n.t("deployment.delete-confirm"), function (ok) {
         });
+    },
+
+    changeAutoClean: function () {
+        var checked = this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked");
+        this.$el.find("#deployment_auto_clean input[type=number]").prop("disabled", !checked);
     }
 });

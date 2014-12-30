@@ -7,7 +7,7 @@
     <div class="form-group">
         <div class="checkbox">
             <label>
-                <input id="deployment_auto_package" type="checkbox" disabled> <%= i18n.t('deployment.auto-package') %>
+                <input id="deployment_auto_package" type="checkbox"> <%= i18n.t('deployment.auto-package') %>
             </label>
         </div>
     </div>
@@ -15,17 +15,17 @@
     <div class="form-group">
         <div class="checkbox">
             <label>
-                <input id="deployment_auto_deploy" type="checkbox" disabled> <%= i18n.t('deployment.auto-deploy') %>
+                <input id="deployment_auto_deploy" type="checkbox"> <%= i18n.t('deployment.auto-deploy') %>
             </label>
         </div>
     </div>
 
     <div class="form-group">
-        <div class="checkbox">
+        <div class="checkbox" id="deployment_auto_clean">
             <label>
-                <span><input type="checkbox" disabled></span>
+                <span><input type="checkbox"></span>
                 <span> <%= i18n.t('deployment.auto-clean') %></span>
-                <span><input id="deployment_auto_clean" type="number" placeholder="<%= i18n.t('deployment.auto-clean-hint') %>" disabled></span>
+                <span><input type="number" placeholder="<%= i18n.t('deployment.auto-clean-hint') %>"></span>
             </label>
         </div>
     </div>

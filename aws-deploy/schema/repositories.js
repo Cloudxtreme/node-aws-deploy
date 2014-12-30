@@ -50,8 +50,12 @@ schema.on('update', '/deployments/:deployment_id/repository',
     filters.authCheck, filters.deploymentWriteCheck,
 function updateRepository(deployment_id, data, callback) {
     db.query("UPDATE awd_repositories" +
-    " SET repository_url = ?" +
-    " WHERE deployment_id = ? LIMIT 1", [data.repository_url, deployment_id], function (err) {
+    " SET repository_url = :repository_url, repository_secret = :repository_secret" +
+    " WHERE deployment_id = :deployment_id LIMIT 1", {
+        repository_url: data.repository_url,
+        repository_secret: data.repository_secret,
+        deployment_id: deployment_id
+    }, function (err) {
         callback(err);
 
         cache.del("repository-status:" + deployment_id);

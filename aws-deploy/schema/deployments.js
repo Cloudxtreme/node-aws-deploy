@@ -32,7 +32,7 @@ schema.on('read', '/deployments',
 function getDeployments(callback) {
     db.query("SELECT " +
     " awd_deployments.deployment_id," +
-    " deployment_name,deployment_created_at,deployment_created_by," +
+    " deployment_name,deployment_created_at,deployment_created_by, deployment_auto_package, deployment_auto_deploy, deployment_auto_clean," +
     " repository_type, repository_url, ISNULL(repository_credentials) AS repository_linked" +
     " FROM awd_deployments" +
     " LEFT JOIN awd_repositories ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
@@ -120,11 +120,17 @@ function updateDeployment(deployment_id, data, callback, info) {
         }, function (callback) {
             db.query("UPDATE awd_deployments SET" +
             " deployment_name = :deployment_name," +
+            " deployment_auto_package = :deployment_auto_package," +
+            " deployment_auto_deploy = :deployment_auto_deploy," +
+            " deployment_auto_clean = :deployment_auto_clean," +
             " deployment_updated_at = NOW()," +
             " deployment_updated_by = :deployment_updated_by" +
             " WHERE deployment_id = :deployment_id" +
             " LIMIT 1", {
                 deployment_name: data.deployment_name,
+                deployment_auto_package: data.deployment_auto_package,
+                deployment_auto_deploy: data.deployment_auto_deploy,
+                deployment_auto_clean: data.deployment_auto_clean,
                 deployment_updated_by: info.session.user_id,
                 deployment_id: deployment_id
             }, callback);

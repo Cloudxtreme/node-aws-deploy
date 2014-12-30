@@ -93,9 +93,11 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
 
         var repository_name = this.$el.find("#repository_name").val();
         var repository_branch = this.$el.find("#repository_branch").val();
+        var repository_secret = this.$el.find("#repository_secret").val();
 
         this.repository.save({
-            repository_url: repository_name + "#" + repository_branch
+            repository_url: repository_name + "#" + repository_branch,
+            repository_secret: repository_secret ? repository_secret : null
         }, {
             wait: true,
             error: function () {

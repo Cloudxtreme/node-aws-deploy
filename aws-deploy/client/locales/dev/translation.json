@@ -81,6 +81,7 @@
         "url": "URL",
         "status": "Status",
         "commit": "Commit",
+        "secret": "Secret",
 
         "pick-type": "Pick repository type",
         "github": "Github",
