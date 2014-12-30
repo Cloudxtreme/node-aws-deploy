@@ -62,8 +62,10 @@
         "repository": "Repository",
         "application": "Application",
 
-        "auto-package": "Auto-Package",
-        "auto-deploy": "Auto-Deploy"
+        "auto-package": "Automatically package new commits",
+        "auto-deploy": "Automatically deploy new version after packaging",
+        "auto-clean": "Keep a maximum of older versions: ",
+        "auto-clean-hint": "Older version count"
     },
 
     "repository": {
