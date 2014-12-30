@@ -6,8 +6,9 @@ var url = require('url');
 
 var schema = require('../../../server/schema');
 var SchemaError = schema.SchemaError;
-var db = require("../../../server/db")
+var db = require("../../../server/db");
 var filters = require('../../filters');
+var schedule = require('../../schedule');
 
 schema.on('read', '/repository/github/callback',
     filters.authCheck,
@@ -55,8 +56,70 @@ function (callback, info) {
 
 schema.on('create', '/repository/github/trigger',
 function (data, callback, info) {
-    console.log("TRIGGER", data, info.request.headers);
-    callback(null);
+    var url;
+    var repositories;
+
+    async.series([
+        function (callback) {
+            var event = info.request.headers['x-github-event'];
+            if (event !== "push") {
+                callback(new SchemaError("not a push event"));
+                return;
+            }
+
+            var m1 = /([^\/]+)\/(.+)/.exec(data.hasOwnProperty("repository") ? data.repository.full_name : "");
+            if (!m1) {
+                callback(new SchemaError("no repo in request"));
+            }
+            var owner = m1[1];
+            var repo = m1[2];
+
+            var m2 = /refs\/heads\/(.+)/.exec(data.ref);
+            if (!m2) {
+                callback(new SchemaError("no branch in request"));
+                return;
+            }
+            var branch = m2[1];
+
+            url = owner + "/" + repo + "#" + branch;
+            callback(null);
+        }, function (callback) {
+            db.query("SELECT * FROM awd_repositories" +
+            " JOIN awd_deployments ON awd_deployments.deployment_id = awd_repositories.deployment_id" +
+            " WHERE repository_url = ? AND NOT ISNULL(repository_secret) AND repository_type = 'github'", [url], function (err, rows) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
+                repositories = rows;
+                callback(null);
+            });
+        }, function (callback) {
+            var m = /sha1=([0-9A-F]{40})/i.exec(info.request.headers['x-hub-signature']);
+            if (!m) {
+                callback(new SchemaError("could not find signature"));
+                return;
+            }
+
+            var signature = m[1];
+            var body = JSON.stringify(data);
+
+            async.eachSeries(repositories, function (repository, callback) {
+                var hash = crypto.createHmac('sha1', repository.repository_secret).update(body).digest('hex');
+                if (hash !== signature) {
+                    async.nextTick(callback);
+                    return;
+                }
+
+                schedule.run('check-repository-status', repository.deployment_id, function (err) {
+                    async.nextTick(callback);
+                });
+            }, callback);
+        }
+    ], function (err) {
+        callback(err);
+    });
 });
 
 schema.on('read', '/repository/github/:deployment_id/urls',
