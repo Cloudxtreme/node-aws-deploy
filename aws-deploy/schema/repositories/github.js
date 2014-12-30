@@ -53,6 +53,12 @@ function (callback, info) {
     });
 });
 
+schema.on('create', '/repository/github/trigger',
+function (data, callback, info) {
+    console.log("TRIGGER", data, info.request.headers);
+    callback(null);
+});
+
 schema.on('read', '/repository/github/:deployment_id/urls',
     filters.authCheck, filters.deploymentWriteCheck,
 function (deployment_id, callback) {
