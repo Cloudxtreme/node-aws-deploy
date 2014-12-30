@@ -100,6 +100,12 @@ DeploymentView = AwsDeploy.View.extend({
                     model: this.model
                 });
             } break;
+
+            case 'log': {
+                this.tabView = new DeploymentLogView({
+                    model: this.model
+                });
+            } break;
         }
 
         this.addTrackedView(this.tabView);

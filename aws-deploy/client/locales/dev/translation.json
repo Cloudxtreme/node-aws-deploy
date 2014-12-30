@@ -68,6 +68,7 @@
         "edit": "Edit",
         "repository": "Repository",
         "application": "Application",
+        "log": "Log",
 
         "auto-package": "Automatically package new commits",
         "auto-deploy": "Automatically deploy new version after packaging",
