@@ -28,7 +28,7 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
     render: function () {
         this.$el.html(this.template(this.repository.toJSON()));
         this.$el.find("#repository_type").val(this.repository.get("repository_type")).prop('disabled', !!this.repository.get("repository_linked"));
-        this.$el.find("#package").prop("disabled", !(this.repository.get("repository_status") != "error" && !!this.repository.get("repository_commit")));
+        this.$el.find("#package").prop("disabled", !(this.repository.get("repository_status") != "error" && !!this.repository.get("repository_commit") && (this.model.get("application_status") == "ok")));
         return this;
     },
 

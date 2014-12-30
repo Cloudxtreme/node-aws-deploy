@@ -18,13 +18,13 @@ DeploymentApplicationView = AwsDeploy.View.extend({
         "click #unlink": "unlink",
         "click #deploy": "showDeployDialog",
         "click #refresh": "refresh",
-        "click #restart": "restart",
-        "click #rebuild": "rebuild"
+        "click #restart": "restart"
     },
 
     render: function () {
         this.$el.html(this.template());
         this.delegateEvents();
+        this.$el.find("#deploy").prop("disabled", !(this.application.get("application_status") != "processing"));
         return this;
     },
 

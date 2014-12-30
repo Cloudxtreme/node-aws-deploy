@@ -180,31 +180,6 @@ function (deployment_id, method, data, callback) {
             });
         } break;
 
-        case 'rebuild': {
-            async.waterfall([
-                function (callback) {
-                    db.querySingle("SELECT * FROM awd_deployments" +
-                        " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
-                        " WHERE awd_deployments.deployment_id = ? LIMIT 1", [deployment_id], function (err,result) {
-                        if (err || !result) {
-                            callback(err || new SchemaError("Application not found"));
-                            return;
-                        }
-
-                        callback(null, result);
-                    });
-                }, function (application, callback) {
-                    EB.rebuildEnvironment({
-                        EnvironmentId: application.application_environment
-                    }, function (err, data) {
-                        callback(err);
-                    });
-                }
-            ], function (err) {
-                callback(err);
-            });
-        } break;
-
         default: {
             callback("Unknown method");
         } break;
