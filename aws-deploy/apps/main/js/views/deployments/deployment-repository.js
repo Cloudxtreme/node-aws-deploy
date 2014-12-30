@@ -112,7 +112,7 @@ DeploymentRepositoryView = AwsDeploy.View.extend({
                 window.location.href = url;
             }, this),
             error: function () {
-                toastr.error(i18n.t("deployment.link-failed"));
+                toastr.error(i18n.t("repository.link-failed"));
             }
         });
     },

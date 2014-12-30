@@ -48,14 +48,21 @@
         "name": "Name",
         "application": "Application",
         "repository": "Repository",
-        "add": "Add..."
+        "create": "Add...",
+        "create-success": "Application added successfully",
+        "create-failed": "Failed to add application"
     },
 
     "deployment": {
         "name": "Name",
-        "name-hint": "Application Name",
+        "name-hint": "Deployment Name",
         "submit": "Save",
+        "save-success": "Deployment saved",
+        "save-failed": "Deployment failed to save",
         "delete": "Delete",
+        "delete-confirm": "Are you sure you want to delete this deployment? This will not remove anything from the backend.",
+        "delete-success": "Deployment deleted",
+        "delete-failed": "Failed to delete deployment",
 
         "overview": "Overview",
         "edit": "Edit",
@@ -114,11 +121,20 @@
         "processing": "Processing action...",
 
         "link": "Link",
+        "link-success": "Application linked successfully",
+        "link-failed": "Application linking failed",
         "unlink": "Unlink",
+        "unlink-success": "Application unlinked successfully",
         "unlink-confirm": "Are you sure you want to unlink application?",
+        "unlink-failed": "Application failed to unlink",
         "refresh": "Refresh",
         "deploy": "Deploy Version",
-        "restart": "Restart Servers"
+        "deploy-success": "Application version deployment request accepted, deployment now in progress...",
+        "deploy-failed": "Application version deployment request failed",
+        "restart": "Restart Servers",
+        "restart-confirm": "Are you sure you want to restart all application servers?",
+        "restart-success": "Request to restart application servers sent successfully",
+        "restart-failed": "Failed to send application server restart request"
     },
 
     "deploy": {

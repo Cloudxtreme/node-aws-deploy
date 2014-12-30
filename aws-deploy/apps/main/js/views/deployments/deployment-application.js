@@ -212,11 +212,11 @@ DeploymentApplicationDeployDialogView = AwsDeploy.View.extend({
             version_label: version_label
         }, {
             success: _.bind(function () {
-                toastr.success(i18n.t('application.version-deploy-success'));
+                toastr.success(i18n.t('application.deploy-success'));
                 this.close();
             }, this),
             error: _.bind(function () {
-                toastr.error(i18n.t('application.version-deploy-failed'));
+                toastr.error(i18n.t('application.deploy-failed'));
                 this.$el.find("#progress").addClass('hidden');
                 this.$el.find('button[type=submit]').prop('disabled', false);
             }, this)

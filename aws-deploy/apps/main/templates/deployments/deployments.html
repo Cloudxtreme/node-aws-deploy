@@ -12,10 +12,12 @@
             <th><%= i18n.t('deployments.repository') %></th>
         </tr>
     </thead>
+<% if (app.session.isAuthorized()) { %>
     <tfoot>
     <tr>
-        <td colspan="3"><a href="#" id="add_deployment"><span class="glyphicon glyphicon-plus"></span>&nbsp;<%= i18n.t('deployments.add') %></a></td>
+        <td colspan="3"><a href="#" id="add_deployment"><span class="glyphicon glyphicon-plus"></span>&nbsp;<%= i18n.t('deployments.create') %></a></td>
     </tr>
     </tfoot>
+<% } %>
     <tbody></tbody>
 </table>
