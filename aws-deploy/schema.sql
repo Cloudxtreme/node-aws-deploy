@@ -54,6 +54,9 @@ CREATE TABLE `awd_deployments` (
   `deployment_created_by` bigint(20) NOT NULL,
   `deployment_updated_at` datetime DEFAULT NULL,
   `deployment_updated_by` bigint(20) DEFAULT NULL,
+  `deployment_auto_package` tinyint(1) NOT NULL DEFAULT '0',
+  `deployment_auto_deploy` tinyint(1) NOT NULL DEFAULT '0',
+  `deployment_auto_clean` tinyint(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`deployment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -159,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-24 15:17:27
+-- Dump completed on 2014-12-30  6:08:17
