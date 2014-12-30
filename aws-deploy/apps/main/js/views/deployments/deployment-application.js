@@ -193,7 +193,6 @@ DeploymentApplicationDeployDialogView = AwsDeploy.View.extend({
     update: function (force) {
         var target = this.$el.find("select#version_label");
         this.$el.find("button[type=submit]").prop('disabled', (target.val() == this.model.get("application_version")) && !force);
-        console.log("update", force, (target.val() == this.model.get("application_version")) && !force);
     },
 
     render: function () {
@@ -225,15 +224,12 @@ DeploymentApplicationDeployDialogView = AwsDeploy.View.extend({
     },
 
     keyToggle: function (event) {
-        console.log("keyToggle");
         if (event.shiftKey == this.shiftKey) {
-            console.log("a");
             return;
         }
         if (event.shiftKey && event.currentTarget != document) {
             return;
         }
-        console.log("upp");
         this.shiftKey = event.shiftKey;
         this.update(this.shiftKey);
     },
