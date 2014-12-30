@@ -1,8 +1,5 @@
 <form id="login" role="form">
     <div class="form-group">
-        <% if (this.config.get("user_registration")) { %>
-        <a class="pull-right" href="#" id="show_register"><%= i18n.t('login.register') %></a>
-        <% } %>
         <label for="username"><%= i18n.t('login.email') %></label>
         <input type="email" class="form-control" id="username" placeholder="<%= i18n.t('login.email') %>" autofocus>
     </div>
@@ -13,7 +10,10 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-default"><%= i18n.t('login.submit') %></button>
+        <% if (this.config.get("user_registration")) { %>
+        <button type="button" class="pull-right btn btn-info" id="show_register"><%= i18n.t('login.register') %></a>
+        <% } %>
+        <button type="submit" class="btn btn-primary"><%= i18n.t('login.submit') %></button>
         <span id="login_progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
     </div>
 </form>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-default"><%= i18n.t('register.submit') %></button>
+        <button type="submit" class="btn btn-primary"><%= i18n.t('register.submit') %></button>
         <span id="registration_progress" class="pull-right fa fa-cog fa-spin fa-2x hidden"></span>
     </div>
 </form>
