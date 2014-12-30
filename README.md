@@ -6,3 +6,5 @@ Simple service to automate deploying Node.JS applications into AWS Elastic Beans
 Usage
 -----
 
+Triggers
+--------
