@@ -14,12 +14,12 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= this.options.session.user().get("user_name") %><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" id="profile"><%= i18n.t('navbar.profile') %></a></li>
-                        <li><a href="#" id="logout"><%= i18n.t('navbar.logout') %></a></li>
+                        <li><a href="#" id="profile"><span class="glyphicon glyphicon-user"></span> <%= i18n.t('navbar.profile') %></a></li>
+                        <li><a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> <%= i18n.t('navbar.logout') %></a></li>
                     </ul>
                 </li>
             <% } else { %>
-                <li><button type="button" id="login" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-user">&nbsp;</span><%= i18n.t('navbar.login') %></button></li>
+                <li><button type="button" id="login" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-log-in">&nbsp;</span><%= i18n.t('navbar.login') %></button></li>
             <% } %>
             </ul>
         </div>
