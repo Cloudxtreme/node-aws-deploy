@@ -124,7 +124,7 @@
         "error": "Error",
         "warning": "Warning",
         "ok": "OK",
-        "processing": "Processing action...",
+        "processing": "Processing...",
 
         "link": "Link",
         "link-success": "Application linked successfully",
