@@ -1,14 +1,18 @@
 <form id="login" role="form">
-    <div class="form-group has-feedback">
+    <div class="form-group">
         <label for="username"><%= i18n.t('login.email') %></label>
-        <input type="email" class="form-control" id="username" placeholder="<%= i18n.t('login.email') %>" autofocus>
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        <div class="input-group">
+            <span class="input-group-addon" id="username-addon"><span class="glyphicon glyphicon-user"></span></span>
+            <input type="email" class="form-control" id="username" placeholder="<%= i18n.t('login.email') %>" aria-describedby="username-addon" autofocus>
+        </div>
     </div>
 
-    <div class="form-group has-feedback">
+    <div class="form-group">
         <label for="password"><%= i18n.t('login.password') %></label>
-        <input type="password" class="form-control" id="password" placeholder="<%= i18n.t('login.password') %>">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        <div class="input-group">
+            <span class="input-group-addon" id="password-addon"><span class="glyphicon glyphicon-lock"></span></span>
+            <input type="password" class="form-control" id="password" placeholder="<%= i18n.t('login.password') %>" aria-describedby="password-addon">
+        </div>
     </div>
 
     <div class="form-group">
