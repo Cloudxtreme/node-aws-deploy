@@ -115,6 +115,5 @@ function checkApplicationStatus(deployment_id, callback) {
     ], callback);
 }
 
-exports.name = "check-application-status";
-exports.timeout = 60 * 1000;
+exports.schedule = '0 * * * * *';
 exports.run = checkApplicationStatus;

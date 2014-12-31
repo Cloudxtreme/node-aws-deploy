@@ -4,6 +4,7 @@ var request = require('request');
 var config = require('config');
 var _ = require('lodash');
 var url = require('url');
+var CronJob = require('cron').CronJob;
 
 var db = require('../../server/db');
 var cache = require('../cache');
@@ -66,6 +67,5 @@ function checkRepositoryStatus(deployment_id, callback) {
     ], callback);
 }
 
-exports.name = "check-repository-status";
-exports.timeout = 15 * 60 * 1000;
+exports.schedule = '0 */15 * * * *';
 exports.run = checkRepositoryStatus;
