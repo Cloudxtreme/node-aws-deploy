@@ -78,8 +78,8 @@ function checkApplicationStatus(deployment_id, callback) {
                                 }
                             } while (0);
 
-                            cache.put("application-status:" + application.deployment_id, status, exports.timeout * 2);
-                            cache.put("application-version:" + application.deployment_id, environment.VersionLabel, exports.timeout * 2);
+                            cache.put("application-status:" + application.deployment_id, status);
+                            cache.put("application-version:" + application.deployment_id, environment.VersionLabel);
 
                             callback(null);
                         });
