@@ -135,7 +135,7 @@ function createApplicationPackage(deployment_id, callback) {
 
             callback = _.once(callback);
 
-            zip = spawn('zip', ['-r', outzip, '.'], { cwd: datapath, stdio: [0,1,2] });
+            zip = spawn('zip', ['-x', '*.git*', '-r', outzip, '.'], { cwd: datapath, stdio: [0,1,2] });
             zip.on('error', function (err) {
                 callback(err);
             });
