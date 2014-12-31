@@ -5,7 +5,10 @@ var CronJob = require('cron').CronJob;
 var entries = {
     'check-application-status': require('./schedule/check-application-status'),
     'check-repository-status': require('./schedule/check-repository-status'),
-    'create-application-package': require('./schedule/create-application-package')
+    'create-application-package': require('./schedule/create-application-package'),
+    'clean-application-versions': require('./schedule/clean-application-versions'),
+    'deploy-application-version': require('./schedule/deploy-application-version'),
+    'auto-package': require('./schedule/auto-package')
 };
 
 exports.start = function (callback) {

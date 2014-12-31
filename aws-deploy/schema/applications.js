@@ -117,29 +117,10 @@ function (deployment_id, method, data, callback) {
         } break;
 
         case 'deploy-version': {
-            var application;
-            async.series([
-                function (callback) {
-                    db.querySingle("SELECT * FROM awd_deployments" +
-                    " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
-                    " WHERE awd_deployments.deployment_id = ? LIMIT 1", [deployment_id], function (err,result) {
-                        if (err || !result) {
-                            callback(err || new SchemaError("Application not found"));
-                            return;
-                        }
-
-                        application = result;
-                        callback(null);
-                    });
-                }, function (callback) {
-                    EB.updateEnvironment({
-                        EnvironmentId: application.application_environment,
-                        VersionLabel: data.version_label
-                    }, function (err, data) {
-                        callback(err);
-                    });
-                }
-            ], function (err) {
+            schedule.run('deploy-application-version', {
+                deployment_id: deployment_id,
+                version_label: data.version_label
+            }, function (err) {
                 callback(err);
             });
         } break;

@@ -235,7 +235,7 @@ function createApplicationPackage(deployment_id, callback) {
         debug("application publication status: %s", err ? "success" : "failed");
         temp.cleanup(function () {
             cache.del("creating-application-package");
-            callback(err);
+            callback(err, version);
         });
     });
 }
