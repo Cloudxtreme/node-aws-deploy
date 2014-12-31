@@ -111,6 +111,10 @@ DeploymentView = AwsDeploy.View.extend({
         this.addTrackedView(this.tabView);
     },
 
+    events: {
+        "change #target": "changeTarget"
+    },
+
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
 
@@ -118,8 +122,15 @@ DeploymentView = AwsDeploy.View.extend({
             this.$el.find("div#deployment").html(this.tabView.render().el);
         }
 
+        this.$el.find("select#target").val(this.options.type);
         this.$el.find("ul#menu li#" + this.options.type).addClass("active");
 
+        this.delegateEvents();
         return this;
+    },
+
+    changeTarget: function (event) {
+        var target = $(event.target).val();
+        app.navigate("#deployments/" + this.model.id + "/" + target, { trigger: true });
     }
 });
