@@ -3,16 +3,6 @@
     <li><%= deployment_name %></li>
 </ol>
 
-<div class="row hidden-md hidden-lg well-sm">
-    <select id="target" class="form-control">
-        <option value=""><%= i18n.t('deployment.overview') %></option>
-        <option value="edit"><%= i18n.t('deployment.edit') %></option>
-        <option value="repository"><%= i18n.t('deployment.repository') %></option>
-        <option value="application"><%= i18n.t('deployment.application') %></option>
-        <option value="log"><%= i18n.t('deployment.log') %></option>
-    </select>
-</div>
-
 <div class="row">
     <div class="col-md-2 hidden-xs hidden-sm">
         <ul class="nav nav-pills nav-stacked" id="menu">
@@ -22,6 +12,15 @@
             <li id="application" class="text-center"><a href="#deployments/<%= deployment_id %>/application"><%= i18n.t('deployment.application') %></a></li>
             <li id="log" class="text-center"><a href="#deployments/<%= deployment_id %>/log"><%= i18n.t('deployment.log') %></a></li>
         </ul>
+    </div>
+    <div class="hidden-md hidden-lg well well-sm">
+        <select id="target" class="form-control">
+            <option value=""><%= i18n.t('deployment.overview') %></option>
+            <option value="edit"><%= i18n.t('deployment.edit') %></option>
+            <option value="repository"><%= i18n.t('deployment.repository') %></option>
+            <option value="application"><%= i18n.t('deployment.application') %></option>
+            <option value="log"><%= i18n.t('deployment.log') %></option>
+        </select>
     </div>
     <div class="col-md-9 well" id="deployment"></div>
 </div>
