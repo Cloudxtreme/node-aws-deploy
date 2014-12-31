@@ -231,5 +231,4 @@ function createApplicationPackage(deployment_id, callback) {
         });
     });
 }
-exports.name = 'create-application-package';
 exports.run = createApplicationPackage;

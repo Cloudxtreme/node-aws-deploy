@@ -9,6 +9,11 @@ var entries = {
 
 exports.start = function (callback) {
     async.eachSeries(_.values(entries), function (entry, callback) {
+        if (!entry.schedule) {
+            async.nextTick(callback);
+            return;
+        }
+
         entry.run(null, function () {
             var job = new CronJob(entry.schedule, entry.run);
             job.start();
@@ -23,6 +28,7 @@ exports.run = function (name, data, callback) {
         async.nextTick(function () {
             callback && callback("could not find function");
         });
+        return;
     }
 
     entry.run(data, callback);
