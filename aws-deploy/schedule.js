@@ -4,7 +4,8 @@ var CronJob = require('cron').CronJob;
 
 var entries = {
     'check-application-status': require('./schedule/check-application-status'),
-    'check-repository-status': require('./schedule/check-repository-status')
+    'check-repository-status': require('./schedule/check-repository-status'),
+    'create-application-package': require('./schedule/create-application-package')
 };
 
 exports.start = function (callback) {

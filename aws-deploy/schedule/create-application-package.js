@@ -41,6 +41,12 @@ function createApplicationPackage(deployment_id, callback) {
         return;
     }
 
+    if (cache.get('creating-application-package')) {
+        callback("application package processor is busy");
+        return;
+    }
+
+    cache.put("creating-application-package", true, 5 * 60 * 1000);
     async.series([
         function (callback) {
             db.querySingle("SELECT * FROM awd_deployments" +
@@ -56,6 +62,7 @@ function createApplicationPackage(deployment_id, callback) {
                 callback(null);
             });
         }, function (callback) {
+            temp.track();
             temp.mkdir('awsdeploy', function (err, dirPath) {
                 if (err) {
                     callback(err);
@@ -227,6 +234,7 @@ function createApplicationPackage(deployment_id, callback) {
     ], function (err) {
         debug("application publication status: %s", err ? "success" : "failed");
         temp.cleanup(function () {
+            cache.del("creating-application-package");
             callback(err);
         });
     });
