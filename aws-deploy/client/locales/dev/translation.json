@@ -76,7 +76,7 @@
 
         "auto-package": "Automatically package new commits",
         "auto-deploy": "Automatically deploy new version after packaging",
-        "auto-clean": "Keep a maximum of old versions",
+        "auto-clean": "Keep a maximum number of old versions",
         "auto-clean-hint": "Version count"
     },
 

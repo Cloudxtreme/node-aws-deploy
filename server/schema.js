@@ -75,7 +75,7 @@ _.assign(Handler.prototype, {
 
         var match = this.pattern.exec(args ? args : "");
         if (!match) {
-            callback(new SchemaError("Pattern mismatch"));
+            callback(new SchemaError("Permission denied"));
             return;
         }
         filterData.input = match.slice(1);
