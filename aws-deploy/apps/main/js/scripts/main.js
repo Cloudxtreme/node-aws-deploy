@@ -7,6 +7,9 @@ var MainRouter = AwsDeploy.Router.extend({
             session: this.session
         });
         $('#header').html(this.navbar.render().el);
+
+        this.footer = new FooterView();
+        $('#footer').html(this.footer.render().el);
     },
 
     routes: {
