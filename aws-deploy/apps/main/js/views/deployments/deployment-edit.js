@@ -6,7 +6,7 @@ DeploymentEditView = AwsDeploy.View.extend({
     events: {
         "submit form": "save",
         "click button#destroy": "destroy",
-        "change #deployment_auto_clean input[type=checkbox]": "changeAutoClean",
+        "change input[type=checkbox]": "update"
     },
 
     render: function () {
@@ -15,8 +15,10 @@ DeploymentEditView = AwsDeploy.View.extend({
         this.$el.find("#deployment_name").val(this.model.get("deployment_name"));
         this.$el.find("#deployment_auto_package").prop("checked", this.model.get("deployment_auto_package"));
         this.$el.find("#deployment_auto_deploy").prop("checked", this.model.get("deployment_auto_deploy"));
-        this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked", this.model.get("deployment_auto_clean") > 0);
+        this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked", (this.model.get("deployment_auto_clean") > 0));
         this.$el.find("#deployment_auto_clean input[type=number]").prop("disabled", this.model.get("deployment_auto_clean") == 0).val(this.model.get("deployment_auto_clean") > 0 ? this.model.get("deployment_auto_clean") : undefined);
+
+        this.update();
 
         this.delegateEvents();
         return this;
@@ -54,8 +56,13 @@ DeploymentEditView = AwsDeploy.View.extend({
         });
     },
 
-    changeAutoClean: function () {
-        var checked = this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked");
-        this.$el.find("#deployment_auto_clean input[type=number]").prop("disabled", !checked);
+    update: function () {
+        var deployment_auto_package = this.$el.find("#deployment_auto_package").prop("checked");
+        var deployment_auto_deploy = this.$el.find("#deployment_auto_deploy").prop("checked");
+        var deployment_auto_clean = this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("checked");
+
+        this.$el.find("#deployment_auto_deploy").prop("disabled", !deployment_auto_package);
+        this.$el.find("#deployment_auto_clean input[type=checkbox]").prop("disabled", !(deployment_auto_package && deployment_auto_deploy));
+        this.$el.find("#deployment_auto_clean input[type=number]").prop("disabled", !(deployment_auto_package && deployment_auto_deploy && deployment_auto_clean));
     }
 });
