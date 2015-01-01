@@ -63,7 +63,7 @@ DeploymentsItemView = AwsDeploy.View.extend({
     getRepositoryClass: function () {
         switch (this.model.get("repository_type")) {
             case 'github': return "fa fa-github";
-            default: return "";
+            default: return "fa fa-circle";
         }
     }
 });
