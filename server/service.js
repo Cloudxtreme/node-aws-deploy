@@ -65,6 +65,9 @@ _.assign(Service.prototype, {
         assert(hostPort, "Invalid HTTP endpoint listen address");
 
         var args = [Number(hostPort[2])];
+        if (process.env.PORT) {
+            args = [Number(process.env.PORT)];
+        }
 
         if (!_.isUndefined(hostPort[1])) {
             args.push(hostPort[1]);
