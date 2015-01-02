@@ -4,6 +4,7 @@ var async = require('async');
 
 var db = require('../../server/db');
 var AWS = require('../aws-sdk');
+var log = require('../log');
 
 var EB = new AWS.ElasticBeanstalk();
 
