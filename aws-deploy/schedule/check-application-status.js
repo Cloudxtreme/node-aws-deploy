@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var db = require('../../server/db');
 var cache = require('../cache');
+var log = require('../log');
 
 var EB = new AWS.ElasticBeanstalk();
 
@@ -30,6 +31,10 @@ function checkApplicationStatus(deployment_id, callback) {
             });
         }, function (callback) {
             async.eachSeries(applications, function (application, callback) {
+
+                var old_status = cache.get("application-status:" + application.deployment_id);
+                old_status = old_status ? old_status : "unknown";
+
                 async.series([
                     function (callback) {
                         EB.describeEnvironments({
@@ -109,7 +114,18 @@ function checkApplicationStatus(deployment_id, callback) {
                             callback(null);
                         });
                     }
-                ], callback)
+                ], function (err) {
+                    var new_status = cache.get("application-status:" + application.deployment_id);
+                    new_status = new_status ? new_status : "unknown";
+
+                    if ((new_status != old_status)) {
+                        log.send(application.deployment_id, "info", "application.status", {
+                            "old_status": old_status,
+                            "new_status": new_status
+                        });
+                    }
+                    callback(err);
+                });
             }, callback);
         }
     ], callback);

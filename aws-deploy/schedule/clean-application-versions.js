@@ -99,7 +99,20 @@ function cleanApplicationVersions(deployment_id, callback) {
                     "ApplicationName": application.application_name,
                     "VersionLabel": version,
                     "DeleteSourceBundle": true
-                }, callback);
+                }, function (err) {
+                    if (err) {
+                        log.send(application.deployment_id, 'error', 'application.clean-failed', {
+                            "version_label": version,
+                            "error": err
+                        });
+                    } else {
+                        log.send(application.deployment_id, 'info', 'application.clean-success', {
+                            "version_label": version
+                        });
+                    }
+
+                    callback(err);
+                });
             }, callback);
         }
     ], function (err) {

@@ -145,3 +145,14 @@ schema.on('destroy', '/deployments/:deployment_id',
 function destroyDeployment(deployment_id, callback) {
     db.query("DELETE FROM awd_deployments WHERE deployment_id = ? LIMIT 1", [deployment_id], callback);
 });
+
+schema.on('read', '/deployments/:deployment_id/log/:page_index',
+    filters.authCheck, filters.deploymentReadCheck,
+function (deployment_id, page_index, callback) {
+    db.query("SELECT * FROM awd_log" +
+    " WHERE deployment_id = ?" +
+    " ORDER BY log_timestamp DESC" +
+    " LIMIT ?, 25", [deployment_id, page_index * 25], function (err, rows) {
+        callback(err, rows);
+    });
+});

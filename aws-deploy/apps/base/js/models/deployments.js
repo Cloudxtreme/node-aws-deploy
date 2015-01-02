@@ -38,3 +38,14 @@ DeploymentApplicationVersionCollection = AwsDeploy.Collection.extend({
         return "/deployments/" + this.deployment_id + "/versions";
     }
 });
+
+DeploymentLogModel = AwsDeploy.Model.extend({
+    idAttribute: "log_id"
+});
+
+DeploymentLogCollection = AwsDeploy.Collection.extend({
+    model: DeploymentLogModel,
+    url: function () {
+        return "/deployments/" + this.deployment_id + "/log/" + this.page_index;
+    }
+});

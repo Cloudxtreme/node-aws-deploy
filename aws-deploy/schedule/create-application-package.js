@@ -13,6 +13,7 @@ var fs = require('fs');
 var db = require('../../server/db');
 var AWS = require('../aws-sdk');
 var cache = require('../cache');
+var log = require('../log');
 
 var S3 = new AWS.S3();
 var EB = new AWS.ElasticBeanstalk();
@@ -232,7 +233,17 @@ function createApplicationPackage(deployment_id, callback) {
             });
         }
     ], function (err) {
-        debug("application publication status: %s", err ? "success" : "failed");
+        if (err) {
+            log.send(deployment_id, 'error', 'repository.package-failed', {
+                "error": err
+            });
+        } else {
+            log.send(deployment_id, 'info', 'repository.package-success', {
+                "version_label": version
+            });
+        }
+
+        debug("application publication status: %s", err ? "failed" : "success");
         temp.cleanup(function () {
             cache.del("creating-application-package");
             callback(err, version);

@@ -6,6 +6,7 @@ var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 var config = require('config');
 var async = require('async');
+var log = require('../log');
 
 schema.on('read', '/user/session', function (callback, info) {
     var session = info.session;
@@ -50,6 +51,7 @@ schema.on('emit', '/user/session', function (method, data, callback, info) {
                 }, function verifyPassword(user, callback) {
                     bcrypt.compare(data.user_pass, user.user_pass, function (err, res) {
                         if (err || (res != true)) {
+                            log.send(null, 'error', 'login.failed', { user_id: user.user_id }, info);
                             callback(new SchemaError(err || "Password mismatch"));
                             return;
                         }
@@ -62,6 +64,8 @@ schema.on('emit', '/user/session', function (method, data, callback, info) {
                     callback(err);
                     return;
                 }
+
+                log.send(null, 'info', 'login.success', { user_id: user_id }, info);
 
                 var session = info.session;
                 session.user_id = user_id;

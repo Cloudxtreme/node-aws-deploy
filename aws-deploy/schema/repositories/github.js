@@ -9,6 +9,7 @@ var SchemaError = schema.SchemaError;
 var db = require("../../../server/db");
 var filters = require('../../filters');
 var schedule = require('../../schedule');
+var log = require('../../log');
 
 schema.on('read', '/repository/github/callback',
     filters.authCheck,
@@ -19,6 +20,9 @@ function (callback, info) {
             " JOIN awd_deployments ON awd_repositories.deployment_id = awd_deployments.deployment_id" +
             " WHERE repository_state = ? LIMIT 1", [info.request.query["state"]], function (err, deployment) {
                 if (err || !deployment) {
+                    log.send(null, "error", "github.callback-failed", {
+                        "state": info.request.query["state"]
+                    }, info);
                     callback(err || new SchemaError("Deployment not found"));
                     return;
                 }
@@ -32,7 +36,7 @@ function (callback, info) {
                 body: {
                     client_id: config.github.client,
                     client_secret: config.github.secret,
-                    code: info.request.query["code"],
+                    code: info.request.query["code"]
                 },
                 headers: {
                     "Accept": "application/json",
@@ -40,9 +44,17 @@ function (callback, info) {
                 }
             }, function (err, response, body) {
                 if (err || response.statusCode != 200 || !body.hasOwnProperty("access_token")) {
+                    log.send(deployment.deployment_id, "error", "github.oauth-failed", {
+                        "client": config.github.client,
+                        "status": response ? response.statusCode : null
+                    }, info);
                     callback(err || new SchemaError("Request failed"));
                     return;
                 }
+
+                log.send(deployment.deployment_id, "info", "github.oauth-success", {
+                    "client": config.github.client
+                });
 
                 db.query("UPDATE awd_repositories SET repository_credentials = ? WHERE deployment_id = ? LIMIT 1", [body.access_token, deployment.deployment_id], function (err) {
                     callback(err, deployment.deployment_id);
@@ -105,6 +117,7 @@ function (data, callback, info) {
             var signature = m[1];
             var body = JSON.stringify(data);
 
+            var count = 0;
             async.eachSeries(repositories, function (repository, callback) {
                 var hash = crypto.createHmac('sha1', repository.repository_secret).update(body).digest('hex');
                 if (hash !== signature) {
@@ -112,10 +125,27 @@ function (data, callback, info) {
                     return;
                 }
 
+                ++ count;
+
+                log.send(repository.deployment_id, 'info', 'github.trigger', {
+                    "url": url,
+                    "commit": body.after,
+                    "pusher": body.hasOwnProperty("pusher") ? body.pusher.name : null
+                });
+
                 schedule.run('check-repository-status', repository.deployment_id, function (err) {
                     async.nextTick(callback);
                 });
-            }, callback);
+            }, function (err) {
+                if (!count) {
+                    log.send(null, 'warning', 'github.trigger-failed', {
+                        "url": url,
+                        "commit": body.after,
+                        "pusher": body.hasOwnProperty("pusher") ? body.pusher.name : null
+                    });
+                }
+                callback(err);
+            });
         }
     ], function (err) {
         callback(err);

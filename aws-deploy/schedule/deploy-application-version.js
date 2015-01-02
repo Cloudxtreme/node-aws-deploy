@@ -27,6 +27,18 @@ function deployApplicationVersion(data, callback) {
                 EnvironmentId: application.application_environment,
                 VersionLabel: data.version_label
             }, function (err, data) {
+                if (err) {
+                    log.send(application.deployment_id, 'error', 'application.deploy-failed', {
+                        "environment_id": application.application_environment,
+                        "version_label": data.version_label,
+                        "error": err
+                    });
+                } else {
+                    log.send(application.deployment_id, 'error', 'application.deploy-success', {
+                        "environment_id": application.application_environment,
+                        "version_label": data.version_label
+                    });
+                }
                 callback(err);
             });
         }

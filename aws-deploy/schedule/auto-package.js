@@ -5,6 +5,7 @@ var _ = require('lodash');
 var db = require('../../server/db');
 var cache = require('../cache');
 var schedule = require('../schedule');
+var log = require('../log');
 
 function autoPackage(dummy, callback) {
     var deployments;
