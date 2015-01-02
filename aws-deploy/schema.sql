@@ -71,6 +71,33 @@ LOCK TABLES `awd_deployments` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `awd_log`
+--
+
+DROP TABLE IF EXISTS `awd_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `awd_log` (
+  `log_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `deployment_id` bigint(20) DEFAULT NULL,
+  `log_type` enum('info','warning','error') NOT NULL,
+  `log_event` varchar(32) NOT NULL,
+  `log_data` text NOT NULL,
+  `log_timestamp` datetime NOT NULL,
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `awd_log`
+--
+
+LOCK TABLES `awd_log` WRITE;
+/*!40000 ALTER TABLE `awd_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `awd_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `awd_products`
 --
 
@@ -163,4 +190,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-30 22:56:33
+-- Dump completed on 2015-01-02 14:10:13
