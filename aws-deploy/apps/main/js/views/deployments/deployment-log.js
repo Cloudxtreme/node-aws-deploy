@@ -8,7 +8,12 @@ DeploymentLogView = AwsDeploy.View.extend({
         this.collection.page_index = 0;
         this.listenTo(this.collection, 'reset', this.addAll);
         this.collection.fetch({
-            reset: true
+            reset: true,
+            success: _.bind(function () {
+                this.setInterval(function () {
+                    this.collection.fetch({reset: true});
+                }, 15000, this);
+            }, this)
         });
     },
 

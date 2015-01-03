@@ -1,4 +1,4 @@
 <td><%= log_type.toUpperCase() %></td>
 <td><%= log_timestamp %></td>
 <td><%= log_event %></td>
-<td><%= log_data %></td>
+<td><pre><%= JSON.stringify(JSON.parse(log_data), null, 1) %></pre></td>
