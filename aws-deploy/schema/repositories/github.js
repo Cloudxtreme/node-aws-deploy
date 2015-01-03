@@ -129,8 +129,8 @@ function (data, callback, info) {
 
                 log.send(repository.deployment_id, 'info', 'github.trigger', {
                     "url": url,
-                    "commit": body.after,
-                    "pusher": body.hasOwnProperty("pusher") ? body.pusher.name : null
+                    "commit": data.after,
+                    "pusher": data.hasOwnProperty("pusher") ? data.pusher.name : undefined
                 });
 
                 schedule.run('check-repository-status', repository.deployment_id, function (err) {
@@ -140,8 +140,8 @@ function (data, callback, info) {
                 if (!count) {
                     log.send(null, 'warning', 'github.trigger-failed', {
                         "url": url,
-                        "commit": body.after,
-                        "pusher": body.hasOwnProperty("pusher") ? body.pusher.name : null
+                        "commit": data.after,
+                        "pusher": data.hasOwnProperty("pusher") ? data.pusher.name : undefined
                     });
                 }
                 callback(err);
