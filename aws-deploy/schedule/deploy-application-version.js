@@ -35,7 +35,7 @@ function deployApplicationVersion(data, callback) {
                         "error": err
                     });
                 } else {
-                    log.send(application.deployment_id, 'error', 'application.deploy-success', {
+                    log.send(application.deployment_id, 'info', 'application.deploy-success', {
                         "environment_id": application.application_environment,
                         "version_label": data.version_label
                     });
