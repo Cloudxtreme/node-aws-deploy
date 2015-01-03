@@ -31,3 +31,8 @@ div#content {
 .text-status-unknown {
     color: #777;
 }
+
+#log pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

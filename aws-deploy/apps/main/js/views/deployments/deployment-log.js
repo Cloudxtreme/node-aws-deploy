@@ -1,4 +1,5 @@
 DeploymentLogView = AwsDeploy.View.extend({
+    id: "log",
     initialize: function () {
         this.template = Templates.get('main/deployment-log');
         this.listenTo(this.model, 'change', this.render);
