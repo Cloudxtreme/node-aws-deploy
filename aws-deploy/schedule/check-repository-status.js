@@ -31,7 +31,6 @@ function checkRepositoryStatus(deployment_id, callback) {
         }, function (callback) {
             async.each(repositories, function (repository, callback) {
                 var old_status = cache.get("repository-status:" + repository.deployment_id);
-                old_status = old_status ? old_status : "unknown";
 
                 async.series([
                     function (callback) {
@@ -73,7 +72,12 @@ function checkRepositoryStatus(deployment_id, callback) {
                     var new_status = cache.get("repository-status:" + repository.deployment_id);
                     new_status = new_status ? new_status : "unknown";
 
-                    if (old_status != new_status) {
+                    if (!old_status && (new_status != "ok")) {
+                        log.send(repository.deployment_id, 'info', 'repository.status', {
+                            "old_status": "unknown",
+                            "new_status": new_status
+                        });
+                    } else if (old_status && (old_status != new_status)) {
                         log.send(repository.deployment_id, 'info', 'repository.status', {
                             "old_status": old_status,
                             "new_status": new_status

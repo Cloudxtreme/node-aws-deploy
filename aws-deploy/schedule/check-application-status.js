@@ -33,7 +33,6 @@ function checkApplicationStatus(deployment_id, callback) {
             async.eachSeries(applications, function (application, callback) {
 
                 var old_status = cache.get("application-status:" + application.deployment_id);
-                old_status = old_status ? old_status : "unknown";
 
                 async.series([
                     function (callback) {
@@ -118,12 +117,18 @@ function checkApplicationStatus(deployment_id, callback) {
                     var new_status = cache.get("application-status:" + application.deployment_id);
                     new_status = new_status ? new_status : "unknown";
 
-                    if ((new_status != old_status)) {
+                    if (!old_status && (new_status != "ok")) {
+                        log.send(application.deployment_id, "info", "application.status", {
+                            "old_status": "unknown",
+                            "new_status": new_status
+                        });
+                    } else if (old_status && (old_status != new_status)) {
                         log.send(application.deployment_id, "info", "application.status", {
                             "old_status": old_status,
                             "new_status": new_status
                         });
                     }
+
                     callback(err);
                 });
             }, callback);
