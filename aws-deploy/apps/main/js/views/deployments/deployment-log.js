@@ -49,6 +49,10 @@ DeploymentLogItemView = AwsDeploy.View.extend({
 
     render: function () {
         this.$el.html(this.template(this.model.toJSON()));
+        this.$el.find("pre code").each(function (i, block) {
+            console.log(block);
+            hljs.highlightBlock(block);
+        });
         return this;
     }
 });
