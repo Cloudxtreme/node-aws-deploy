@@ -101,6 +101,12 @@ DeploymentView = AwsDeploy.View.extend({
                 });
             } break;
 
+            case 'health': {
+                this.tabView = new DeploymentHealthView({
+                    model: this.model
+                });
+            } break;
+
             case 'log': {
                 this.tabView = new DeploymentLogView({
                     model: this.model

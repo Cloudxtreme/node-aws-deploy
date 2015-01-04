@@ -52,6 +52,7 @@
         "name": "Name",
         "application": "Application",
         "repository": "Repository",
+        "health": "Health",
         "create": "Add...",
         "create-success": "Application added successfully",
         "create-failed": "Failed to add application"
@@ -72,6 +73,7 @@
         "edit": "Edit",
         "repository": "Repository",
         "application": "Application",
+        "health": "Health",
         "log": "Log",
 
         "auto-package": "Automatically package new commits",

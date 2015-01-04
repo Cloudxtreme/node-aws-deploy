@@ -5,12 +5,13 @@
 
 <div class="row">
     <div class="col-md-2 hidden-xs hidden-sm">
-        <ul class="nav nav-pills nav-stacked" id="menu">
-            <li id="overview" class="text-center"><a href="#deployments/<%= deployment_id %>"><%= i18n.t('deployment.overview') %></a></li>
-            <li id="edit" class="text-center"><a href="#deployments/<%= deployment_id %>/edit"><%= i18n.t('deployment.edit') %></a></li>
-            <li id="repository" class="text-center"><a href="#deployments/<%= deployment_id %>/repository"><%= i18n.t('deployment.repository') %></a></li>
-            <li id="application" class="text-center"><a href="#deployments/<%= deployment_id %>/application"><%= i18n.t('deployment.application') %></a></li>
-            <li id="log" class="text-center"><a href="#deployments/<%= deployment_id %>/log"><%= i18n.t('deployment.log') %></a></li>
+        <ul class="nav nav-pills nav-stacked text-center" id="menu">
+            <li id="overview"><a href="#deployments/<%= deployment_id %>"><%= i18n.t('deployment.overview') %></a></li>
+            <li id="edit"><a href="#deployments/<%= deployment_id %>/edit"><%= i18n.t('deployment.edit') %></a></li>
+            <li id="repository"><a href="#deployments/<%= deployment_id %>/repository"><%= i18n.t('deployment.repository') %></a></li>
+            <li id="application"><a href="#deployments/<%= deployment_id %>/application"><%= i18n.t('deployment.application') %></a></li>
+            <li id="health"><a href="#deployments/<%= deployment_id %>/health"><%= i18n.t('deployment.health') %></a></li>
+            <li id="log"><a href="#deployments/<%= deployment_id %>/log"><%= i18n.t('deployment.log') %></a></li>
         </ul>
     </div>
     <div class="hidden-md hidden-lg well well-sm">
@@ -19,6 +20,7 @@
             <option value="edit"><%= i18n.t('deployment.edit') %></option>
             <option value="repository"><%= i18n.t('deployment.repository') %></option>
             <option value="application"><%= i18n.t('deployment.application') %></option>
+            <option value="health"><%= i18n.t('deployment.health') %></option>
             <option value="log"><%= i18n.t('deployment.log') %></option>
         </select>
     </div>

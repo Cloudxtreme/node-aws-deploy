@@ -1,3 +1,4 @@
 <td><a href="#deployments/<%= deployment_id %>"><%= deployment_name %></a></td>
 <td><a href="#deployments/<%= deployment_id %>/application"><span class="fa fa-circle text-status-<%= application_status %>"></span><span class="hidden-xs">&nbsp;<%= application_version %></span></a></td>
 <td><a href="#deployments/<%= deployment_id %>/repository"><span class="text-status-<%= repository_status %> <%= this.getRepositoryClass() %>"></span><span class="hidden-xs">&nbsp;<%= repository_url %></span></a></td>
+<td><a href="#deployments/<%= deployment_id %>/health"><span class="text-status-unknown fa fa-circle"></span></a></td>

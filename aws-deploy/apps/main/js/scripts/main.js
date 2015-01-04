@@ -18,6 +18,7 @@ var MainRouter = AwsDeploy.Router.extend({
         "deployments/:deployment_id/edit": "showDeploymentEdit",
         "deployments/:deployment_id/repository": "showDeploymentRepository",
         "deployments/:deployment_id/application": "showDeploymentApplication",
+        "deployments/:deployment_id/health": "showDeploymentHealth",
         "deployments/:deployment_id/log": "showDeploymentLog"
     },
 
@@ -81,6 +82,21 @@ var MainRouter = AwsDeploy.Router.extend({
         }, function (deployment) {
             this.showView("#content", new DeploymentView({
                 model: deployment, type: 'application'
+            }));
+        });
+    },
+
+    showDeploymentHealth: function (deployment_id) {
+        if (!this.session.isAuthorized()) {
+            this.navbar.showLogin();
+            return;
+        }
+
+        this.before({
+            deployment_id: deployment_id
+        }, function (deployment) {
+            this.showView("#content", new DeploymentView({
+                model: deployment, type: 'health'
             }));
         });
     },
