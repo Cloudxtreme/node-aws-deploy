@@ -1,4 +1,4 @@
 <td><%= log_type.toUpperCase() %></td>
-<td><%= log_timestamp %></td>
+<td><%= this.timestamp() %></td>
 <td><%= log_event %></td>
 <td><pre><code class="javascript"><%= JSON.stringify(JSON.parse(log_data), null, 1) %></code></pre></td>

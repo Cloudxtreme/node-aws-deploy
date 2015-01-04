@@ -53,5 +53,15 @@ DeploymentLogItemView = AwsDeploy.View.extend({
             hljs.highlightBlock(block);
         });
         return this;
+    },
+
+    timestamp: function () {
+        var root = $("<div>");
+        var date = new Date(this.model.get("log_timestamp"));
+
+        $("<div>").html(date.toLocaleDateString()).appendTo(root);
+        $("<div>").html(date.toLocaleTimeString()).appendTo(root);
+
+        return root.html();
     }
 });
