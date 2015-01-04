@@ -12,9 +12,17 @@
 </div>
 
 <div class="form-group">
-    <label for="application_status"><%= i18n.t('deployment.repository') %></label>
+    <label for="application_status"><%= i18n.t('deployment.application') %></label>
     <div class="input-group">
         <span class="input-group-addon" id="application-addon"><span class="text-status-<%= application_status %> fa fa-circle"></span></span>
         <input id="application_status" type="text" class="form-control" disabled value="<%= application_version %>" aria-describedby="application-addon">
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="health_status"><%= i18n.t('deployment.health') %></label>
+    <div class="input-group">
+        <span class="input-group-addon" id="health-addon"><span class="fa fa-circle"></span></span>
+        <input id="health_status" type="text" class="form-control" disabled value="" aria-describedby="health-addon">
     </div>
 </div>
