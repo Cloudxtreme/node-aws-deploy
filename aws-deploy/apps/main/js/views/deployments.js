@@ -108,7 +108,9 @@ DeploymentView = AwsDeploy.View.extend({
             } break;
         }
 
-        this.addTrackedView(this.tabView);
+        if (this.tabView) {
+            this.addTrackedView(this.tabView);
+        }
     },
 
     events: {
