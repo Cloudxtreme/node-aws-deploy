@@ -32,15 +32,6 @@ CREATE TABLE `awd_applications` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `awd_applications`
---
-
-LOCK TABLES `awd_applications` WRITE;
-/*!40000 ALTER TABLE `awd_applications` DISABLE KEYS */;
-/*!40000 ALTER TABLE `awd_applications` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `awd_deployments`
 --
 
@@ -62,13 +53,23 @@ CREATE TABLE `awd_deployments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `awd_deployments`
+-- Table structure for table `awd_healthchecks`
 --
 
-LOCK TABLES `awd_deployments` WRITE;
-/*!40000 ALTER TABLE `awd_deployments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `awd_deployments` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `awd_healthchecks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `awd_healthchecks` (
+  `healthcheck_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `deployment_id` bigint(20) NOT NULL,
+  `healthcheck_type` enum('ping') NOT NULL,
+  `healthcheck_name` varchar(32) NOT NULL,
+  `healthcheck_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `healthcheck_port` int(11) NOT NULL DEFAULT '80',
+  `healthcheck_uri` text NOT NULL,
+  PRIMARY KEY (`healthcheck_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `awd_log`
@@ -89,15 +90,6 @@ CREATE TABLE `awd_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `awd_log`
---
-
-LOCK TABLES `awd_log` WRITE;
-/*!40000 ALTER TABLE `awd_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `awd_log` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `awd_products`
 --
 
@@ -114,15 +106,6 @@ CREATE TABLE `awd_products` (
   PRIMARY KEY (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `awd_products`
---
-
-LOCK TABLES `awd_products` WRITE;
-/*!40000 ALTER TABLE `awd_products` DISABLE KEYS */;
-/*!40000 ALTER TABLE `awd_products` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `awd_repositories`
@@ -145,15 +128,6 @@ CREATE TABLE `awd_repositories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `awd_repositories`
---
-
-LOCK TABLES `awd_repositories` WRITE;
-/*!40000 ALTER TABLE `awd_repositories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `awd_repositories` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `awd_users`
 --
 
@@ -171,15 +145,6 @@ CREATE TABLE `awd_users` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `awd_users`
---
-
-LOCK TABLES `awd_users` WRITE;
-/*!40000 ALTER TABLE `awd_users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `awd_users` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -190,4 +155,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-02 14:10:13
+-- Dump completed on 2015-01-05 13:31:57
