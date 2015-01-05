@@ -53,9 +53,12 @@ function getDeployments(callback) {
                 repository_status = "warning";
             }
 
+            var application_health = cache.get('application-health:' + deployment.deployment_id);
+
             return _.merge(deployment, {
                 application_status: application_status ? application_status : "unknown",
                 application_version: cache.get('application-version:' + deployment.deployment_id),
+                application_health: application_health ? application_health : "unknown",
                 repository_status: repository_status ? repository_status : "unknown"
             });
         });
@@ -89,9 +92,12 @@ function getDeployments(callback) {
                 repository_status = "warning";
             }
 
+            var application_health = cache.get('application-health:' + deployment.deployment_id);
+
             return _.merge(deployment, {
                 application_status: application_status ? application_status : "unknown",
                 application_version: null,
+                application_health: application_health ? application_health : "unknown",
                 repository_status: repository_status ? repository_status : "unknown",
                 repository_url: null
             });

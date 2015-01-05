@@ -8,6 +8,7 @@ var entries = {
     'create-application-package': require('./schedule/create-application-package'),
     'clean-application-versions': require('./schedule/clean-application-versions'),
     'deploy-application-version': require('./schedule/deploy-application-version'),
+    'health-check': require('./schedule/health-check'),
     'auto-package': require('./schedule/auto-package')
 };
 
