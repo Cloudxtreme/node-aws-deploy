@@ -49,3 +49,14 @@ DeploymentLogCollection = AwsDeploy.Collection.extend({
         return "/deployments/" + this.deployment_id + "/log/" + this.page_index;
     }
 });
+
+DeploymentHealthModel = AwsDeploy.Model.extend({
+    idAttribute: "healthcheck_id"
+});
+
+DeploymentHealthCollection = AwsDeploy.Collection.extend({
+    model: DeploymentHealthModel,
+    url: function () {
+        return "/deployments/" + this.deployment_id + "/health";
+    }
+});

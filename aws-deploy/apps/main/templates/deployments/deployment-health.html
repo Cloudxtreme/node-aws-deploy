@@ -1,1 +1,19 @@
-<h1><%= i18n.t('deployment.health') %></h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th><%= i18n.t('healthcheck.name ') %></th>
+            <th><%= i18n.t('healthcheck.type') %></th>
+            <th><%= i18n.t('healthcheck.enabled') %></th>
+            <th><%= i18n.t('healthcheck.port') %></th>
+            <th><%= i18n.t('healthcheck.uri') %></th>
+            <th><%= i18n.t('healthcheck.status') %></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7"><a href="#" id="add"><span class="fa fa-plus"></span>&nbsp;<%= i18n.t('healthcheck.add') %></a></td>
+        </tr>
+    </tfoot>
+</table>
