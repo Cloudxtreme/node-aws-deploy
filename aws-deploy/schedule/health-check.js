@@ -24,8 +24,12 @@ function healthCheck(deployment_id, callback) {
 
     async.series([
         function (callback) {
-            db.query("SELECT * FROM awd_deployments" +
-                " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id", function (err, rows) {
+            db.query("SELECT * FROM (SELECT" +
+            " awd_deployments.*, awd_applications.application_name, awd_applications.application_environment," +
+            " (SELECT COUNT(*) FROM awd_healthchecks WHERE deployment_id = awd_deployments.deployment_id AND healthcheck_enabled > 0) AS deployment_healthchecks" +
+            " FROM awd_deployments" +
+            " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id) T1" +
+            " WHERE deployment_healthchecks > 0", function (err, rows) {
                 if (err) {
                     callback(err);
                     return;
@@ -90,7 +94,7 @@ function healthCheckApplication(application, callback) {
             async.eachSeries(checks, function (check) {
                 switch (check.healthcheck_type) {
                     case 'ping': {
-                        async.eachSeries(instances, function (instance) {
+                        async.eachSeries(instances, function (instance, callback) {
                             var address = instance.hasOwnProperty("PublicIpAddress") ? instance.PublicIpAddress : instance.PrivateIpAddress;
                             var uri = url.resolve("http://" + address + ':' + check.healthcheck_port, check.healthcheck_uri ? check.healthcheck_uri : '/');
                             callback = _.once(callback);
@@ -103,7 +107,10 @@ function healthCheckApplication(application, callback) {
                                 .on('error', function (err) {
                                     callback(err);
                                 });
-                        }, callback);
+                        }, function (err) {
+                            cache.put("healthcheck-status:" + check.healthcheck_id, err ? "error" : "ok", 15 * 60 * 1000);
+                            callback(err);
+                        });
                     } break;
 
                     default: {
