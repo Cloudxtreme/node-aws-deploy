@@ -81,7 +81,7 @@ DeploymentHealthItemEditView = AwsDeploy.View.extend({
 
     events: {
         "submit form": "submit",
-        "click #delete": "destroy"
+        "click #destroy": "destroy"
     },
 
     render: function () {
@@ -109,12 +109,12 @@ DeploymentHealthItemEditView = AwsDeploy.View.extend({
                 healthcheck_uri: healthcheck_uri
             }, {
                 success: _.bind(function () {
-                    toastr.success("healthcheck.create-success");
+                    toastr.success(i18n.t("healthcheck.create-success"));
                     this.collection.fetch({reset: true});
                     this.close();
                 }, this),
                 error: _.bind(function () {
-                    toastr.error("healthcheck.create-failed");
+                    toastr.error(i18n.t("healthcheck.create-failed"));
                 })
             });
         } else {
@@ -127,11 +127,11 @@ DeploymentHealthItemEditView = AwsDeploy.View.extend({
             }, {
                 wait: true,
                 success: _.bind(function () {
-                    toastr.success("healthcheck.save-success");
+                    toastr.success(i18n.t("healthcheck.save-success"));
                     this.close();
                 }, this),
                 error: _.bind(function () {
-                    toastr.error("healthcheck.save-failed");
+                    toastr.error(i18n.t("healthcheck.save-failed"));
                 })
             });
         }
@@ -139,17 +139,20 @@ DeploymentHealthItemEditView = AwsDeploy.View.extend({
 
     destroy: function (event) {
         event.preventDefault();
-        var collection = this.model.collection;
 
-        this.model.destroy({
-            success: _.bind(function () {
-                toastr.success("healthcheck.destroy-success");
-                collection.fetch({reset: true});
-                this.close();
-            }, this),
-            error: function () {
-                toastr.error("healthcheck.destroy-failed");
-            }
+        this.confirm(i18n.t('healthcheck.destroy-confirm'), function (ok) {
+            var collection = this.model.collection;
+
+            this.model.destroy({
+                success: _.bind(function () {
+                    toastr.success(i18n.t("healthcheck.destroy-success"));
+                    collection.fetch({reset: true});
+                    this.close();
+                }, this),
+                error: function () {
+                    toastr.error(i18n.t("healthcheck.destroy-failed"));
+                }
+            });
         });
     }
 });

@@ -148,6 +148,31 @@
     "deploy": {
         "description": "Deploy application version to hosted environment",
         "version": "Version"
-    }
+    },
 
+    "healthcheck": {
+        "name": "Name",
+        "type": "Type",
+        "enabled": "Enabled",
+        "port": "Port",
+        "uri": "URI",
+        "status": "Status",
+
+        "add": "Add...",
+        "save": "Save",
+        "destroy": "Delete",
+        "destroy-confirm": "Are you sure you want to delete this healthcheck?",
+        "destroy-success": "Healthcheck deleted",
+        "destroy-failed": "Failed to delete healthcheck",
+
+        "types": {
+            "ping": "HTTP Ping"
+        },
+
+        "create-success": "Healthcheck created",
+        "create-failed": "Failed to create healthcheck",
+
+        "save-success": "Healthcheck saved",
+        "save-failed": "Failed to save healthcheck"
+    }
 }
