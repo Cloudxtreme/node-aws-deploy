@@ -95,7 +95,7 @@ function healthCheckApplication(application, callback) {
                 switch (check.healthcheck_type) {
                     case 'ping': {
                         async.eachSeries(instances, function (instance, callback) {
-                            var address = instance.hasOwnProperty("PublicIpAddress") ? instance.PublicIpAddress : instance.PrivateIpAddress;
+                            var address = instance.hasOwnProperty("PublicDnsName") ? instance.PublicDnsName : instance.PrivateDnsName;
                             var uri = url.resolve("http://" + address + ':' + check.healthcheck_port, check.healthcheck_uri ? check.healthcheck_uri : '/');
                             callback = _.once(callback);
 
