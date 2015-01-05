@@ -1,6 +1,7 @@
 var async = require('async');
 
 var schema = require('../../server/schema');
+var schedule = require('../schedule');
 var filters = require('../filters');
 var db = require('../../server/db');
 var cache = require('../cache');
@@ -11,7 +12,7 @@ function (deployment_id, data, callback) {
     db.query("INSERT INTO awd_healthchecks" +
     " (deployment_id, healthcheck_type, healthcheck_name, healthcheck_enabled, healthcheck_port, healthcheck_uri)" +
     " VALUES" +
-    " (:deployment_id, :healthcheck_type, :healthcheck_name, :healthCheck_enabled, :healthcheck_port, :healthcheck_uri)", {
+    " (:deployment_id, :healthcheck_type, :healthcheck_name, :healthcheck_enabled, :healthcheck_port, :healthcheck_uri)", {
         deployment_id: deployment_id,
         healthcheck_type: data.healthcheck_type,
         healthcheck_name: data.healthcheck_name,
@@ -19,7 +20,12 @@ function (deployment_id, data, callback) {
         healthcheck_port: data.healthcheck_port,
         healthcheck_uri: data.healthcheck_uri
     }, function (err) {
-        callback(err);
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        schedule.run('health-check', deployment_id, callback);
     });
 });
 
@@ -35,7 +41,7 @@ function (deployment_id, callback) {
         }
 
         rows.forEach(function (row) {
-            var healthcheck_status = cache.get("healthcheck_status:" + row.healthcheck_id);
+            var healthcheck_status = cache.get("healthcheck-status:" + row.healthcheck_id);
             row.healthcheck_status = healthcheck_status ? healthcheck_status : "unknown";
         });
 
@@ -56,13 +62,19 @@ function (deployment_id, healthcheck_id, data, callback) {
     " LIMIT 1", {
         deployment_id: deployment_id,
         healthcheck_id: healthcheck_id,
-        healthcheck_type: healthcheck_type,
-        healthcheck_name: healthcheck_name,
-        healthcheck_enabled: healthcheck_enabled,
-        healthcheck_port: healthcheck_port,
-        healthcheck_uri: healthcheck_uri
+        healthcheck_type: data.healthcheck_type,
+        healthcheck_name: data.healthcheck_name,
+        healthcheck_enabled: data.healthcheck_enabled,
+        healthcheck_port: data.healthcheck_port,
+        healthcheck_uri: data.healthcheck_uri
     }, function (err) {
-        callback(err);
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        cache.del("healthcheck-status:" + healthcheck_id);
+        schedule.run('health-check', deployment_id, callback);
     });
 });
 
