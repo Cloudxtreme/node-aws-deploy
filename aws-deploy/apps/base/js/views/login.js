@@ -85,5 +85,11 @@ LoginView = AwsDeploy.View.extend({
     showRegister: function () {
         this.$el.find("form#login").addClass("hidden");
         this.$el.find("form#register").removeClass("hidden");
+    },
+
+    onClose: function () {
+        if (!app.session.isAuthorized()) {
+            app.navigate("", { trigger: true });
+        }
     }
 });
