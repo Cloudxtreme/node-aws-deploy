@@ -43,6 +43,7 @@ function (deployment_id, callback) {
         rows.forEach(function (row) {
             var healthcheck_status = cache.get("healthcheck-status:" + row.healthcheck_id);
             row.healthcheck_status = healthcheck_status ? healthcheck_status : "unknown";
+            row.healthcheck_response = cache.get("healthcheck-response:" + row.healthcheck_id);
         });
 
         callback(err, rows);

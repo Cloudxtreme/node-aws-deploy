@@ -91,7 +91,7 @@ function healthCheckApplication(application, callback) {
                 callback(null);
             });
         }, function (callback) {
-            async.eachSeries(checks, function (check) {
+            async.eachSeries(checks, function (check, callback) {
                 switch (check.healthcheck_type) {
                     case 'ping': {
                         async.eachSeries(instances, function (instance, callback) {
@@ -100,16 +100,21 @@ function healthCheckApplication(application, callback) {
                             callback = _.once(callback);
 
                             request
-                                .get({uri: uri})
+                                .get({
+                                    uri: uri,
+                                    timeout: 5000
+                                })
                                 .on('response', function (response) {
+                                        cache.put("healthcheck-response:" + check.healthcheck_id, response.statusCode);
                                         callback(response.statusCode != 200);
                                     })
                                 .on('error', function (err) {
+                                    cache.put("healthcheck-response:" + check.healthcheck_id, err.code);
                                     callback(err);
                                 });
                         }, function (err) {
                             cache.put("healthcheck-status:" + check.healthcheck_id, err ? "error" : "ok", 15 * 60 * 1000);
-                            callback(err);
+                            callback(null);
                         });
                     } break;
 

@@ -4,4 +4,7 @@
 <td><%= healthcheck_enabled %></td>
 <td><%= healthcheck_port %></td>
 <td><%= healthcheck_uri %></td>
-<td><span class="text-status-<%= healthcheck_status %> fa fa-circle"></span></td>
+<td>
+    <span class="text-status-<%= healthcheck_status %> fa fa-circle"></span>
+    <span><%= healthcheck_response %></span>
+</td>
