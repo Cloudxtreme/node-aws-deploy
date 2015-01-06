@@ -5,6 +5,7 @@ module.exports = Base.extend({
     "name": "main",
     "root": __dirname,
     "target": "/",
+    "redirect": "",
     "use": [
         "lib",
         "common",

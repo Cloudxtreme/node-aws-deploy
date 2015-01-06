@@ -239,7 +239,9 @@ AwsDeploy.View = Backbone.View.extend({
 AwsDeploy.Router = Backbone.Router.extend({
     onSignin: function () {
         if (!Backbone.History.started) {
-            Backbone.history.start();
+            Backbone.history.start({
+                pushState: true
+            });
         }
     },
 
