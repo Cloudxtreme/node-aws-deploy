@@ -90,24 +90,6 @@ CREATE TABLE `awd_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `awd_products`
---
-
-DROP TABLE IF EXISTS `awd_products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `awd_products` (
-  `product_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `product_name` varchar(45) NOT NULL,
-  `product_created_at` datetime NOT NULL,
-  `product_created_by` bigint(20) NOT NULL,
-  `product_application` varchar(100) NOT NULL,
-  `product_environment` varchar(64) NOT NULL,
-  PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `awd_repositories`
 --
 
@@ -155,4 +137,4 @@ CREATE TABLE `awd_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-05 13:31:57
+-- Dump completed on 2015-01-06 22:50:18
