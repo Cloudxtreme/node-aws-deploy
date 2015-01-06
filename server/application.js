@@ -73,11 +73,20 @@ _.assign(Application.prototype, {
 
     express: function () {
         return function (req, res, next) {
-            var file = this.files[req.url.slice(1)];
-            if (!file) {
+            do {
+                var file = this.files[req.url.slice(1)];
+                if (file) {
+                    break;
+                }
+
+                var redirect = this.get("redirect");
+                if (!_.isUndefined(redirect) && (file = this.files[redirect])) {
+                    break;
+                }
+
                 next();
                 return;
-            }
+            } while (0);
 
             file.generate(file.name, file.path, function (err, data) {
                 if (err) {
@@ -237,8 +246,7 @@ _.assign(Application.prototype, {
             var file = entry.name;
             if (file[0] != '/') {
                 var absolute = path.join(this.options.target, key, use, file);
-                var relative = path.relative(root, absolute).replace(/\\/g, '/');
-                target.push({name: relative});
+                target.push({name: absolute});
             } else {
                 target.push(entry);
             }
