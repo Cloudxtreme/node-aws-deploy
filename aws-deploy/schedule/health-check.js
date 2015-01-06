@@ -1,4 +1,4 @@
-var debug = require('debug')('aws-deploy:task:clean-application-versions');
+var debug = require('debug')('aws-deploy:task:health-check');
 var _ = require('lodash');
 var async = require('async');
 var request = require('request');
@@ -9,7 +9,8 @@ var AWS = require('../aws-sdk');
 var log = require('../log');
 var cache = require('../cache');
 
-var EB = new AWS.ElasticBeanstalk();
+var ping = require('./checks/ping');
+
 var EC2 = new AWS.EC2();
 
 function healthCheck(deployment_id, callback) {
@@ -52,7 +53,7 @@ function healthCheck(deployment_id, callback) {
 
 function healthCheckApplication(application, callback) {
     var environment;
-    var health = "ok";
+    var health;
 
     var instances;
     var checks;
@@ -94,26 +95,11 @@ function healthCheckApplication(application, callback) {
             async.eachSeries(checks, function (check, callback) {
                 switch (check.healthcheck_type) {
                     case 'ping': {
-                        async.eachSeries(instances, function (instance, callback) {
-                            var address = instance.hasOwnProperty("PublicDnsName") ? instance.PublicDnsName : instance.PrivateDnsName;
-                            var uri = url.resolve("http://" + address + ':' + check.healthcheck_port, check.healthcheck_uri ? check.healthcheck_uri : '/');
-                            callback = _.once(callback);
-
-                            request
-                                .get({
-                                    uri: uri,
-                                    timeout: 5000
-                                })
-                                .on('response', function (response) {
-                                        cache.put("healthcheck-response:" + check.healthcheck_id, response.statusCode);
-                                        callback(response.statusCode != 200);
-                                    })
-                                .on('error', function (err) {
-                                    cache.put("healthcheck-response:" + check.healthcheck_id, err.code);
-                                    callback(err);
-                                });
-                        }, function (err) {
+                        ping(check, instances, function (err, message) {
+                            cache.put("healthcheck-response:" + check.healthcheck_id, message);
                             cache.put("healthcheck-status:" + check.healthcheck_id, err ? "error" : "ok", 15 * 60 * 1000);
+
+                            health = err || health;
                             callback(null);
                         });
                     } break;
@@ -125,10 +111,7 @@ function healthCheckApplication(application, callback) {
             }, callback);
         }
     ], function (err) {
-        if (err) {
-            health = "error";
-        }
-        cache.put("application-health:" + application.deployment_id, health, 15 * 60 * 1000);
+        cache.put("application-health:" + application.deployment_id, health ? "error" : "ok", 15 * 60 * 1000);
         callback(null);
     });
 }
