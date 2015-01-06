@@ -4,7 +4,8 @@
         "connecting": "Connecting...",
         "profile": "Profile",
         "login": "Login",
-        "logout": "Logout"
+        "logout": "Logout",
+        "logout-confirm": "Are you sure you want to log out?"
     },
 
     "footer": {
