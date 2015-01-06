@@ -3,6 +3,8 @@ var _ = require('lodash');
 var debug = require('debug')('aws-deploy:schema');
 var pathToRegexp = require('path-to-regexp');
 
+var SchemaError = require('./errors').SchemaError;
+
 var handlers = {
     'create': {},
     'read': {},
@@ -10,16 +12,16 @@ var handlers = {
     'destroy': {},
     'emit': {}
 };
+exports.handlers = handlers;
 
-function SchemaError(message) {
+function HandlerError(message) {
     Error.call(this);
     Error.captureStackTrace(this, arguments.callee);
 
     this.name = this.constructor.name;
     this.message = message;
 }
-require('util').inherits(SchemaError, Error);
-exports.SchemaError = SchemaError;
+require('util').inherits(HandlerError, Error);
 
 function Handler(pattern, filters, method) {
     this.build(pattern);
@@ -30,11 +32,18 @@ function Handler(pattern, filters, method) {
 
 _.assign(Handler, {
     process: function (handlers, issue, callback) {
+        var outerError;
         var processor = function (index) {
             var handler = handlers[index];
             issue(handler, function (err, data) {
+                if (err && (!outerError || (!!outerError && (err.constructor != HandlerError)))) {
+                    outerError = err;
+                }
+
                 if (!err || (handlers.length == (index + 1))) {
-                    callback(err, data);
+                    var outputError = err ? outerError && outerError.constructor == HandlerError ?
+                        new SchemaError("Permission denied") : outerError : null;
+                    callback(outputError, data);
                     return;
                 }
                 processor(index + 1);
@@ -75,7 +84,7 @@ _.assign(Handler.prototype, {
 
         var match = this.pattern.exec(args ? args : "");
         if (!match) {
-            callback(new SchemaError("Permission denied"));
+            callback(new HandlerError("Pattern mismatch"));
             return;
         }
         filterData.input = match.slice(1);

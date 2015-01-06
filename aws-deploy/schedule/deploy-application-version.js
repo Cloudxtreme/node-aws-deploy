@@ -2,7 +2,7 @@ var debug = require('debug')('aws-deploy:task:clean-application-versions');
 var _ = require('lodash');
 var async = require('async');
 
-var db = require('../../server/db');
+var db = require('../db');
 var AWS = require('../aws-sdk');
 var log = require('../log');
 

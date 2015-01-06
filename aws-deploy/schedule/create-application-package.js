@@ -10,7 +10,7 @@ var _ = require('lodash');
 var path = require('path');
 var fs = require('fs');
 
-var db = require('../../server/db');
+var db = require('../db');
 var AWS = require('../aws-sdk');
 var cache = require('../cache');
 var log = require('../log');

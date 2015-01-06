@@ -1,9 +1,9 @@
 var async = require('async');
 
-var schema = require('../../server/schema');
+var schema = require('../../server/server').schema;
 var schedule = require('../schedule');
 var filters = require('../filters');
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 
 schema.on('create', '/deployments/:deployment_id/health',

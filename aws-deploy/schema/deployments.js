@@ -3,10 +3,10 @@ var _ = require('lodash');
 var url = require('url');
 var config = require('config');
 
-var schema = require('../../server/schema');
-var SchemaError = schema.SchemaError;
+var schema = require('../../server/server').schema;
+var SchemaError = require('../../server/server').schema.SchemaError;
 var filters = require('../filters');
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 
 schema.on('create', '/deployments',
@@ -154,7 +154,7 @@ function destroyDeployment(deployment_id, callback) {
 
 schema.on('read', '/deployments/:deployment_id/log/:page_index',
     filters.authCheck, filters.deploymentReadCheck,
-function (deployment_id, page_index, callback) {
+function readDeploymentLog(deployment_id, page_index, callback) {
     db.query("SELECT * FROM awd_log" +
     " WHERE deployment_id = ?" +
     " ORDER BY log_timestamp DESC" +

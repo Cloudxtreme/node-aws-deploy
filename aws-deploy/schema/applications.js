@@ -3,10 +3,10 @@ var _ = require('lodash');
 var url = require('url');
 var config = require('config');
 
-var schema = require('../../server/schema');
-var SchemaError = schema.SchemaError;
+var schema = require('../../server/server').schema;
+var SchemaError = require('../../server/server').errors.SchemaError;
 var filters = require('../filters');
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 var schedule = require('../schedule');
 var AWS = require('../aws-sdk');

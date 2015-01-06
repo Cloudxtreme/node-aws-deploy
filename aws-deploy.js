@@ -1,5 +1,5 @@
-var Service = require('./server/service').Service;
-var api = require('./server/api');
+var Service = require('./server/server').service.Service;
+var api = require('./server/server').api;
 var express = require('express');
 var bodyParser = require('body-parser');
 var async = require('async');

@@ -1,9 +1,12 @@
-var schema = require('./schema');
-var db = require('./db');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var config = require('config');
+var debug = require('debug')('aws-deploy:api');
 var _ = require('lodash');
+
+var schema = require('./schema');
+var db = require('./../aws-deploy/db');
+var errors = require('./errors');
 
 exports.sessionHandler = function () {
     var store;
@@ -22,19 +25,10 @@ exports.sessionHandler = function () {
     });
 };
 
-function ApiError(statusCode, message) {
-    Error.call(this);
-    Error.captureStackTrace(this, arguments.callee);
-
-    this.name = this.constructor.name;
-    this.statusCode = statusCode;
-    this.message = message;
-}
-require('util').inherits(ApiError, Error);
 
 exports.errorHandler = function (err, req, res, next) {
     switch (err.constructor) {
-        case ApiError: {
+        case errors.ApiError: {
             res.status(err.statusCode).set({
                 "Content-Type": "application/json"
             }).send({
@@ -42,15 +36,7 @@ exports.errorHandler = function (err, req, res, next) {
             });
         } break;
 
-        case db.DbError: {
-            res.status(403).set({
-                "Content-Type": "application/json"
-            }).send({
-                message: err.message
-            });
-        } break;
-
-        case schema.SchemaError: {
+        case errors.SchemaError: {
             res.status(403).set({
                 "Content-Type": "application/json"
             }).send({
@@ -59,19 +45,19 @@ exports.errorHandler = function (err, req, res, next) {
         } break;
 
         default: {
+            if (err.message && (err.message.constructor == Error)) {
+                res.status(403).set({
+                    "Content-Type": "application/json"
+                }).send({
+                    message: "Permission denied"
+                });
+            }
+
             res.status(500).set({
                 "Content-Type": "text/html"
             }).send("<html><body><h1>Internal Server Error</h1></body></html>");
         } break;
     }
-};
-
-exports.login = function (req, res, next) {
-    next(new ApiError(404, "Login Not Implemented"));
-};
-
-exports.token = function (req, res, next) {
-    next(new ApiError(403, "Token Not Available"));
 };
 
 exports.request = function (req, res, next) {

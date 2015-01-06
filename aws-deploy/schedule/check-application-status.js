@@ -3,7 +3,7 @@ var async = require("async");
 var AWS = require('../aws-sdk');
 var _ = require('lodash');
 
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 var log = require('../log');
 

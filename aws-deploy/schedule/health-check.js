@@ -4,7 +4,7 @@ var async = require('async');
 var request = require('request');
 var url = require('url');
 
-var db = require('../../server/db');
+var db = require('../db');
 var AWS = require('../aws-sdk');
 var log = require('../log');
 var cache = require('../cache');

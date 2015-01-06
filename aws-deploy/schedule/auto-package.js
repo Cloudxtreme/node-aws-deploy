@@ -2,7 +2,7 @@ var debug = require('debug')('aws-deploy:task:create-application-version');
 var async = require('async');
 var _ = require('lodash');
 
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 var schedule = require('../schedule');
 var log = require('../log');

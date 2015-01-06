@@ -1,21 +1,21 @@
-var SchemaError = require("../server/schema").SchemaError;
+var SchemaError = require("../server/server").errors.SchemaError;
 var _ = require('lodash');
 
 exports.authCheck = {
-    call: function (data, next) {
+    call: function authCheck(data, next) {
         var session = data.info.session;
         next((!_.isUndefined(session) && !_.isUndefined(session.user_id)) ? null : new SchemaError("Not Authenticated"));
     }
 };
 
 exports.deploymentReadCheck = {
-    call: function (data, next) {
+    call: function deploymentReadCheck(data, next) {
         next(null);
     }
 };
 
 exports.deploymentWriteCheck = {
-    call: function (data, next) {
+    call: function deploymentWriteCheck(data, next) {
         next(null);
     }
 };

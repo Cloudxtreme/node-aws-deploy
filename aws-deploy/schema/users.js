@@ -1,11 +1,12 @@
-var schema = require('../../server/schema');
-var SchemaError = schema.SchemaError;
-var db = require('../../server/db');
-var filters = require('../filters');
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 var config = require('config');
 var async = require('async');
+
+var schema = require('../../server/server').schema;
+var SchemaError = require('../../server/server').errors.SchemaError;
+var db = require('../db');
+var filters = require('../filters');
 var log = require('../log');
 
 schema.on('read', '/user/session', function (callback, info) {

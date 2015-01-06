@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var db = require('../server/db');
+var db = require('./db');
 var debug = require('debug')('aws-deploy:log');
 
 function Logger() {}

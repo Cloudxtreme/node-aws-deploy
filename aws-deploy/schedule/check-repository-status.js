@@ -6,7 +6,7 @@ var _ = require('lodash');
 var url = require('url');
 var CronJob = require('cron').CronJob;
 
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 var log = require('../log');
 

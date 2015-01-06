@@ -5,11 +5,11 @@ var querystring = require('querystring');
 var crypto = require('crypto');
 var config = require('config');
 
-var schema = require('../../server/schema');
-var SchemaError = schema.SchemaError;
+var schema = require('../../server/server').schema;
+var SchemaError = require('../../server/server').errors.SchemaError;
 var schedule = require('../schedule');
 var filters = require('../filters');
-var db = require('../../server/db');
+var db = require('../db');
 var cache = require('../cache');
 
 schema.on('read', '/deployments/:deployment_id/repository',
