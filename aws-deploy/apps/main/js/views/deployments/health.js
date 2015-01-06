@@ -5,7 +5,13 @@ DeploymentHealthView = AwsDeploy.View.extend({
         this.collection = new DeploymentHealthCollection();
         this.collection.deployment_id = this.model.id;
         this.listenTo(this.collection, 'reset', this.addAll);
-        this.collection.fetch({reset: true});
+        this.collection.fetch(
+            {
+                reset: true,
+                success: _.bind(function () {
+                    this.setInterval(this.collection.fetch, 15000, this.collection);
+                }, this)
+            });
     },
 
     events: {
