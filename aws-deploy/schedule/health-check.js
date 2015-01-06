@@ -58,6 +58,8 @@ function healthCheckApplication(application, callback) {
     var instances;
     var checks;
 
+    var old_status = cache.get("application-health:" + application.deployment_id);
+
     async.series([
         function (callback) {
             db.query("SELECT * FROM awd_healthchecks" +
@@ -111,7 +113,23 @@ function healthCheckApplication(application, callback) {
             }, callback);
         }
     ], function (err) {
-        cache.put("application-health:" + application.deployment_id, health ? "error" : "ok", 15 * 60 * 1000);
+
+        var new_status = health ? "error" : "ok";
+        new_status = new_status ? new_status : "unknown";
+
+        if (!old_status && (new_status != "ok")) {
+            log.send(application.deployment_id, "info", "application.health", {
+                "old_status": "unknown",
+                "new_status": new_status
+            });
+        } else if (old_status && (old_status != new_status)) {
+            log.send(application.deployment_id, "info", "application.health", {
+                "old_status": old_status,
+                "new_status": new_status
+            });
+        }
+
+        cache.put("application-health:" + application.deployment_id, new_status, 15 * 60 * 1000);
         callback(null);
     });
 }
