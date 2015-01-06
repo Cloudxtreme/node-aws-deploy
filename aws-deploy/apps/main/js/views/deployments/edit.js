@@ -52,7 +52,20 @@ DeploymentEditView = AwsDeploy.View.extend({
     destroy: function (event) {
         event.preventDefault();
 
-        this.confirm(i18n.t("deployment.delete-confirm"), function (ok) {
+        this.confirm(i18n.t("deployment.destroy-confirm"), function (ok) {
+            if (!ok) {
+                return;
+            }
+
+            this.model.destroy({
+                success: _.bind(function () {
+                    toastr.success(i18n.t('deployment.destroy-success'));
+                    app.navigate("", { trigger: true });
+                }, this),
+                error: _.bind(function () {
+                    toastr.error(i18n.t('deployment.destroy-failed'));
+                }, this)
+            });
         });
     },
 

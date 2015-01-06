@@ -149,7 +149,21 @@ function updateDeployment(deployment_id, data, callback, info) {
 schema.on('destroy', '/deployments/:deployment_id',
     filters.authCheck, filters.deploymentWriteCheck,
 function destroyDeployment(deployment_id, callback) {
-    db.query("DELETE FROM awd_deployments WHERE deployment_id = ? LIMIT 1", [deployment_id], callback);
+    async.parallel([
+        function (callback) {
+            db.query("DELETE FROM awd_applications WHERE deployment_id = ? LIMIT 1", [deployment_id], callback);
+        }, function (callback) {
+            db.query("DELETE FROM awd_healthchecks WHERE deployment_id = ? LIMIT 1", [deployment_id], callback);
+        }, function (callback) {
+            db.query("DELETE FROM awd_deployments WHERE deployment_id = ? LIMIT 1", [deployment_id], callback);
+        }, function (callback) {
+            db.query("DELETE FROM awd_log WHERE deployment_id = ?", [deployment_id], callback);
+        }, function (callback) {
+            db.query("DELETE FROM awd_repositories WHERE deployment_id = ? LIMIT 1", [deployment_id], callback);
+        }
+    ], function (err) {
+        callback(err);
+    });
 });
 
 schema.on('read', '/deployments/:deployment_id/log/:page_index',
