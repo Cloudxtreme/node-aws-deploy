@@ -29,7 +29,8 @@ function healthCheck(deployment_id, callback) {
             " awd_deployments.*, awd_applications.application_name, awd_applications.application_environment," +
             " (SELECT COUNT(*) FROM awd_healthchecks WHERE deployment_id = awd_deployments.deployment_id AND healthcheck_enabled > 0) AS deployment_healthchecks" +
             " FROM awd_deployments" +
-            " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id) T1" +
+            " JOIN awd_applications ON awd_applications.deployment_id = awd_deployments.deployment_id" +
+            " WHERE NOT ISNULL(application_name) AND NOT ISNULL(application_environment)) T1" +
             " WHERE deployment_healthchecks > 0", function (err, rows) {
                 if (err) {
                     callback(err);
