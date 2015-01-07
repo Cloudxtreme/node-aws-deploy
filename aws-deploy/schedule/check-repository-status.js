@@ -16,7 +16,8 @@ function checkRepositoryStatus(deployment_id, callback) {
     async.series([
         function (callback) {
             db.query("SELECT * FROM awd_deployments" +
-            " JOIN awd_repositories ON awd_deployments.deployment_id = awd_repositories.deployment_id", function (err, rows) {
+            " JOIN awd_repositories ON awd_deployments.deployment_id = awd_repositories.deployment_id" +
+            " WHERE NOT ISNULL(repository_url)", function (err, rows) {
                 if (err) {
                     callback(err);
                     return;
@@ -37,6 +38,10 @@ function checkRepositoryStatus(deployment_id, callback) {
                         switch (repository.repository_type) {
                             case 'github': {
                                 var repo = /([^\/]+)\/([^#]+)#(.+)/i.exec(repository.repository_url);
+                                if (!repo) {
+                                    async.nextTick(callback);
+                                    return;
+                                }
 
                                 request.get({
                                     url: url.resolve(config.github.endpoint.api, '/repos/' + repo[1] + '/' + repo[2] + '/branches/' + repo[3]),

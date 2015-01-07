@@ -1,4 +1,4 @@
-var Application = require('../../../server/server').application.Application;
+var Application = require('server-core').application.Application;
 
 module.exports = Application.create({
     "publish": false,

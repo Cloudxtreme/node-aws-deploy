@@ -1,6 +1,6 @@
 var async = require('async');
 
-var schema = require('../../server/server').schema;
+var schema = require('server-core').schema;
 var schedule = require('../schedule');
 var filters = require('../filters');
 var db = require('../db');

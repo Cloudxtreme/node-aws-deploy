@@ -1,4 +1,4 @@
-var SchemaError = require("../server/server").errors.SchemaError;
+var SchemaError = require("server-core").errors.SchemaError;
 var _ = require('lodash');
 
 exports.authCheck = {

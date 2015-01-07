@@ -1,6 +1,6 @@
 var AWS = require('../aws-sdk');
 
-var schema = require('../../server/server').schema;
+var schema = require('server-core').schema;
 var filters = require('../filters');
 
 var EB = new AWS.ElasticBeanstalk();

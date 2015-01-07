@@ -4,8 +4,8 @@ var crypto = require('crypto');
 var request = require('request');
 var url = require('url');
 
-var schema = require('../../../server/server').schema;
-var SchemaError = require('../../../server/server').errors.SchemaError;
+var schema = require('server-core').schema;
+var SchemaError = require('server-core').errors.SchemaError;
 var db = require("../../db");
 var filters = require('../../filters');
 var schedule = require('../../schedule');

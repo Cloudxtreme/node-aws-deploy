@@ -3,8 +3,8 @@ var _ = require('lodash');
 var url = require('url');
 var config = require('config');
 
-var schema = require('../../server/server').schema;
-var SchemaError = require('../../server/server').schema.SchemaError;
+var schema = require('server-core').schema;
+var SchemaError = require('server-core').schema.SchemaError;
 var filters = require('../filters');
 var db = require('../db');
 var cache = require('../cache');
